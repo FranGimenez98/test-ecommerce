@@ -17,7 +17,7 @@ export default function Layout({ children, title, user }: LayoutProps) {
             {title ? title + " - Test Ecommerce" : "Test Ecommerce"}
           </title>
         </Head>
-        <div className="flex min-h-screen flex-col justify-between bg-[#fafafa]">
+        <div className="h-screen bg-[#ebebeb]">
           <Navbar />
           <main className="w-[100%] m-auto flex flex-col items-center">
             {children}
