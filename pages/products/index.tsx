@@ -13,8 +13,8 @@ export default function ProductsScreen({products }: any  ) {
     <Layout>
       <div className="w-full max-h-full flex">
         <div className="md:w-[100%] mt-5 p-2">
-          <div className="grid grid-cols-[300px_minmax(600px,_1fr)] gap-4 lg:gap-9 mr-8 ml-8">
-            <div className="bg-white border-dashed border-black border-2">
+          <div className="grid grid-cols-[300px_minmax(600px,_1fr)] col-start-1 gap-4 lg:gap-9 mr-8 ml-8">
+            <div className="bg-white h-[17.8%]">
               <span>Filters</span>
             </div>
             <div className="grid grid-cols-[auto_auto] gap-5 md:grid-cols-[auto_auto_auto_auto] text-center">
