@@ -1,5 +1,6 @@
 import Hero from "@/components/hero";
 import Layout from "@/components/layouts/layout";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 const products = [
@@ -26,6 +27,8 @@ const products = [
 ];
 
 export default function Home() {
+  const { data: session } = useSession();
+  console.log(session);
   return (
     <Layout>
       <section className="min-h-screen w-full flex flex-col items-center">
