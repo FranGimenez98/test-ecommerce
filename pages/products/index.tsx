@@ -2,48 +2,63 @@ import Layout from "@/components/layouts/layout";
 import db from "@/lib/db";
 import Product from "@/models/Product";
 import React from "react";
-import {IProduct} from '../../interfaces/IProduct';
-import {BsSuitHeart, BsSuitHeartFill} from 'react-icons/bs';
-import {FaShoppingCart} from 'react-icons/fa';
+import { IProduct } from "../../interfaces/IProduct";
+import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
+import { FaShoppingCart } from "react-icons/fa";
 
-export default function ProductsScreen({products }: any  ) {
-
+export default function ProductsScreen({ products }: any) {
   console.log(products);
   return (
     <Layout>
-      <div className="w-full max-h-full flex">
-        <div className="md:w-[100%] mt-5 p-2">
-          <div className="grid grid-cols-[300px_minmax(600px,_1fr)] gap-4 lg:gap-9 mr-8 ml-8">
-            <div className="bg-white border-dashed border-black border-2">
-              <span>Filters</span>
+      <div className="w-full max-h-full">
+        <h1 className="font-bold text-center text-2xl p-3">Products</h1>
+        <div className="md:w-[100%] w-[100%] mt-5 p-0 md:mr-[60px]">
+          <div className="font-bold text-center md:grid md:grid-cols-[300px_700px] gap-6 md:ml-[200px]">
+            <div className="md:h-[595px] md:w-[300px] md:bg-white">
+              <div className="flex md:flex-none mb-2 md:w-[200px] md:m-auto md:mt-[20px] md:shadow">
+                <div className="bg-white text-[#828282] border border-[#c7c7c7] md:h-[auto] h-[40px] w-[300px] md:w-[300px] md:row-span-2 flex flex-col justify-center m-auto">
+                  <button>SORT</button>
+                </div>
+                <div className="bg-white text-[#828282] border border-[#c7c7c7] md:h-[auto] h-[40px] w-[300px] md:w-[300px] md:row-span-2 flex flex-col justify-center m-auto">
+                  <button>FILTERS</button>
+                </div>
+              </div>
+              <div className="text-[#828282] text-sm mb-3 mt-3">
+                {products.length}
+                <span className="ml-1">Styles found</span>
+              </div>
             </div>
-            <div className="grid grid-cols-[auto_auto] gap-5 md:grid-cols-[auto_auto_auto_auto] text-center">
-              {
-                products?.map((product: IProduct) => (
-                  <div key={product._id} className="bg-white w-[15rem] h-[22rem] m-auto hover:shadow-2xl flex flex-col shadow-lg text-left relative">
-                    <img
-                      src={product.image}
-                      alt="products"
-                      className="w-[100%] h-[200px] m-auto mt-0 mb-0"
-                    />
-                    <span className="font-semibold text-base mt-[20px] ml-3">
+            <div className="flex flex-wrap md:grid md:grid-cols-[auto_auto_auto] w-[100%] gap-2 md:gap-6 md:m-auto">
+              {products?.map((product: IProduct) => (
+                <div
+                  key={product._id}
+                  className="bg-white w-[45%] md:w-[100%] h-[50%] md:h-[100%] m-auto hover:shadow-2xl shadow-lg text-left relative"
+                >
+                  <img
+                    src={product.image}
+                    alt="products"
+                    className="w-[300px] h-[200px] m-auto mt-0 mb-0"
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-[#828282] font-semibold text-[10px] mt-[10px] ml-2">
                       {product.name}
                     </span>
-                    <span className="font-bold text-2xl ml-3">
+                    <span className="text-[#828282] font-bold text-[15px] ml-2">
                       {product.price}$
                     </span>
-                    <button className="absolute bottom-[325px] left-[210px]">
-                      <BsSuitHeartFill className="text-red-500" size="1.2rem"/>
-                    </button>
-                    <button className="bg-black text-center text-white m-auto mt-[35px] flex items-center justify-center p-1 w-[80%]">
-                      <span>Add to cart</span>
-                      <FaShoppingCart className="ml-2"/>
-                    </button>
                   </div>
-                ))
-              }
+                  <button className="absolute bottom-[260px] left-[140px] md:bottom-[260px] md:left-[190px]">
+                    <BsSuitHeartFill className="text-red-500" size="1rem" />
+                  </button>
+                  <button className="bg-black text-[10px] text-center text-white m-auto mt-[5px] mb-[10px] flex items-center justify-center p-1 w-[80%]">
+                    <span>Add to cart</span>
+                    <FaShoppingCart className="ml-2" />
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
+          {/* </div> */}
         </div>
       </div>
     </Layout>
@@ -56,7 +71,7 @@ export async function getServerSideProps() {
   await db.disconnect();
   return {
     props: {
-      products:JSON.parse(JSON.stringify(products)),
-    }
-  }
+      products: JSON.parse(JSON.stringify(products)),
+    },
+  };
 }
