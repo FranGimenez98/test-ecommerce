@@ -1,8 +1,22 @@
-import Link from 'next/link'
 import React from 'react'
+import Link from 'next/link'
 import {GiClothes} from 'react-icons/gi';
+import { useSession } from "next-auth/react";
+
+// interface MyComponentProps {
+//   session: {
+//     expires: string;
+//     user: {
+//       email: string;
+//       id: string;
+//       isAdmin: boolean;
+//       name: string;
+//     };
+//   };
+// }
 
 export default function Navbar() {
+  const { data: session, status } = useSession();
   return (
     <div className="w-full h-16 bg-black flex justify-between">
       <div className="md:w-[95vw] m-auto flex items-center justify-between">
@@ -15,17 +29,21 @@ export default function Navbar() {
             </div>
           </Link>
         </div>
-        <div className="flex items-center justify-center text-white">
-          <ul className="flex items-center gap-5">
+        <div className="flex items-center justify-center">
+          {session ? (
+            <div>{session?.user?.name}</div>
+          ) : (
+            <ul className="flex items-center gap-5">
             <Link href="/products">
               <li>Products</li>
             </Link>
             <li>LINK</li>
             <li>Cart</li>
             <li>User</li>
-          </ul>
+            </ul>
+          )}
         </div>
       </div>
     </div>
-  )
+  );
 }
