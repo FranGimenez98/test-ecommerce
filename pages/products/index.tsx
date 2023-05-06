@@ -5,6 +5,7 @@ import React from "react";
 import { IProduct } from "../../interfaces/IProduct";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
 import { FaShoppingCart } from "react-icons/fa";
+import Link from "next/link";
 
 export default function ProductsScreen({ products }: any) {
   console.log(products);
@@ -30,31 +31,33 @@ export default function ProductsScreen({ products }: any) {
             </div>
             <div className="flex flex-wrap md:grid md:grid-cols-[auto_auto_auto] w-[100%] gap-2 md:gap-6 md:m-auto">
               {products?.map((product: IProduct) => (
-                <div
-                  key={product._id}
-                  className="bg-white w-[45%] md:w-[100%] h-[50%] md:h-[100%] m-auto hover:shadow-2xl shadow-lg text-left relative"
-                >
-                  <img
-                    src={product.image}
-                    alt="products"
-                    className="w-[300px] h-[200px] m-auto mt-0 mb-0"
-                  />
-                  <div className="flex flex-col">
-                    <span className="text-[#828282] font-semibold text-[10px] mt-[10px] ml-2">
+                <Link href={`/products/${product.slug}`} key={product._id}>
+                  <div
+                    key={product._id}
+                    className="bg-white w-[45%] md:w-[100%] h-[50%] md:h-[100%] m-auto hover:shadow-2xl shadow-lg text-left relative"
+                  >
+                    <img
+                      src={product.image}
+                      alt="products"
+                      className="w-[300px] h-[200px] m-auto mt-0 mb-0"
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-[#828282] font-semibold text-[10px] mt-[10px] ml-2">
                       {product.name}
                     </span>
                     <span className="text-[#828282] font-bold text-[15px] ml-2">
                       {product.price}$
                     </span>
                   </div>
-                  <button className="absolute bottom-[260px] left-[140px] md:bottom-[260px] md:left-[190px]">
-                    <BsSuitHeartFill className="text-red-500" size="1rem" />
-                  </button>
-                  <button className="bg-black text-[10px] text-center text-white m-auto mt-[5px] mb-[10px] flex items-center justify-center p-1 w-[80%]">
-                    <span>Add to cart</span>
-                    <FaShoppingCart className="ml-2" />
-                  </button>
-                </div>
+                    <button className="absolute bottom-[260px] left-[140px] md:bottom-[260px] md:left-[190px]">
+                      <BsSuitHeartFill className="text-red-500" size="1rem" />
+                    </button>
+                    <button className="bg-black text-[10px] text-center text-white m-auto mt-[5px] mb-[10px] flex items-center justify-center p-1 w-[80%]">
+                      <span>Add to cart</span>
+                      <FaShoppingCart className="ml-2" />
+                    </button>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>
