@@ -33,7 +33,7 @@ export default function Navbar() {
           {session ? (
             <div>{session?.user?.name}</div>
           ) : (
-            <ul className="flex items-center gap-5">
+            <ul className="flex items-center gap-5 text-white">
             <Link href="/products">
               <li>Products</li>
             </Link>
