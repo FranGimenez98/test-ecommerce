@@ -1,9 +1,16 @@
-import { DefaultUser } from 'next-auth';
-declare module 'next-auth' {
-    interface Session {
-        user?: DefaultUser & { id: string; isAdmin: boolean };
-    }
-    interface User extends DefaultUser {
-        isAdmin: boolean;
-    }
+import { DefaultUser, DefaultSession } from "next-auth";
+
+declare module "next-auth" {
+  interface Session {
+    expires: string;
+    user: {
+      email: string;
+      id: string;
+      isAdmin: boolean;
+      name: string;
+    } & DefaultSession["user"]
+  }
+//   interface User extends DefaultUser {
+//     isAdmin: boolean;
+//   }
 }

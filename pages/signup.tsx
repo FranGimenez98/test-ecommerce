@@ -4,16 +4,13 @@ import React, {useState} from "react";
 import { useForm } from "react-hook-form";
 import { z, ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn, SignInResponse } from "next-auth/react";
+import { signIn } from "next-auth/react";
+import {BsFacebook} from 'react-icons/bs'
+import {FcGoogle} from 'react-icons/fc'
 
 type SignUpData = {
   name: string;
   lastname: string;
-  email: string;
-  password: string;
-};
-
-type LoginData = {
   email: string;
   password: string;
 };
@@ -26,7 +23,7 @@ export default function SignupScreen() {
     name: z.string().min(4).max(20),
     lastname: z.string().min(4).max(20),
     email: z.string().email(),
-    password: z.string().min(5).max(20),
+    password: z.string().min(6).max(20),
   });
 
   const {
@@ -68,16 +65,17 @@ export default function SignupScreen() {
 
   return (
     <Layout>
-      <div className="w-[97%] lg:w-[25%] min-h-[30rem] my-1 bg-white shadow-md flex flex-col items-center">
+      {/* <div className="w-[97%] lg:w-[25%] min-h-[30rem] my-[3rem] flex flex-col items-center"> */}
+      <div className="w-[97%] lg:w-[25%] min-h-[30rem] my-[3rem] bg-white shadow-md flex flex-col items-center justify-center">
         {/* <h2 className="text-lg font-semibold">Sign up</h2> */}
         <form
           className="w-full flex flex-col items-center justify-center"
           onSubmit={handleSubmit(submitData)}
         >
-          <div className="w-[70%] flex flex-col my-4">
+          <div className="w-[70%] flex flex-col mt-4 mb-3">
             <label className="font-semibold text-slate-600">Name</label>
             <input
-              placeholder="Pone tu email..."
+
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
               {...register("name")}
             />
@@ -87,10 +85,10 @@ export default function SignupScreen() {
               </span>
             )}
           </div>
-          <div className="w-[70%] flex flex-col mb-4">
+          <div className="w-[70%] flex flex-col mb-3">
             <label className="font-semibold text-slate-600">Last name</label>
             <input
-              placeholder="Pone tu email..."
+
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
               {...register("lastname")}
             />
@@ -100,10 +98,10 @@ export default function SignupScreen() {
               </span>
             )}
           </div>
-          <div className="w-[70%] flex flex-col mb-4">
+          <div className="w-[70%] flex flex-col mb-3">
             <label className="font-semibold text-slate-600">Email</label>
             <input
-              placeholder="Pone tu email..."
+
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
               {...register("email")}
             />
@@ -116,7 +114,7 @@ export default function SignupScreen() {
           <div className="w-[70%] flex flex-col ">
             <label className="font-semibold text-slate-600">Password</label>
             <input
-              placeholder="Pone tu email..."
+
               type="password"
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
               {...register("password")}
@@ -133,29 +131,36 @@ export default function SignupScreen() {
               className="bg-black text-white text-center py-1 w-full font-semibold"
               type="submit"
             >
-              Sign up
+              Create account
             </button>
             {userError && <span className="text-red-500 text-sm">Error, email is already registered, please use a new email</span>}
           </div>
           <div className="w-[70%] flex items-center justify-center">
-            <h3 className="text-sm text-gray-500 font-semibold">
+            <h3 className="text-sm text-gray-500 font-medium">
               Already have and account?{" "}
               <Link href="/login">
                 <span className="text-emerald-500">Log in</span>
               </Link>
             </h3>
           </div>
-          <div className="w-[70%] flex items-center justify-center">
-            <h3 className="text-sm">Or</h3>
+          <div className="w-[70%] flex items-center justify-center gap-3 my-3">
+            <div className="bg-gray-300 w-full h-[1px]" />
+            <h3 className="text-sm text-gray-500">Or</h3>
+            <div className="bg-gray-300 w-full h-[1px]" />
           </div>
-          <div className="w-[70%] flex items-center justify-between gap-3 mb-8">
+          <div className="w-[70%] flex flex-col items-center justify-between gap-3 mb-8">
+            <button className="bg-[#fafafa]  border-[1px] border-gray-200 flex gap-2 items-center justify-center w-full py-1 text-gray-500 font-medium">
+              <FcGoogle className="text-xl" /> Continue with Google
+            </button>
+          </div>
+          {/* <div className="w-[70%] flex items-center justify-between gap-3 mb-8">
             <button className="bg-blue-900 flex items-center justify-center w-full py-1 text-white font-semibold">
               Facebook
             </button>
             <button className="bg-red-500 flex items-center justify-center w-full py-1 text-white font-semibold">
               Google
             </button>
-          </div>
+          </div> */}
         </form>
       </div>
     </Layout>
