@@ -1,14 +1,14 @@
 import Layout from "@/components/layouts/layout";
-import db from "@/lib/db";
+import { connect } from "@/lib/db";
 import Product from "@/models/Product";
 import React from "react";
 import { IProduct } from "../../interfaces/IProduct";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
 import { FaShoppingCart } from "react-icons/fa";
 import Link from "next/link";
+import toJSON from "@/lib/toJSON";
 
 export default function ProductsScreen({ products }: any) {
-  console.log(products);
   return (
     <Layout>
       <div className="w-full max-h-full">
@@ -43,12 +43,12 @@ export default function ProductsScreen({ products }: any) {
                     />
                     <div className="flex flex-col">
                       <span className="text-[#828282] font-semibold text-[10px] mt-[10px] ml-2">
-                      {product.name}
-                    </span>
-                    <span className="text-[#828282] font-bold text-[15px] ml-2">
-                      {product.price}$
-                    </span>
-                  </div>
+                        {product.name}
+                      </span>
+                      <span className="text-[#828282] font-bold text-[15px] ml-2">
+                        {product.price}$
+                      </span>
+                    </div>
                     <button className="absolute bottom-[260px] left-[140px] md:bottom-[260px] md:left-[190px]">
                       <BsSuitHeartFill className="text-red-500" size="1rem" />
                     </button>
@@ -69,12 +69,11 @@ export default function ProductsScreen({ products }: any) {
 }
 
 export async function getServerSideProps() {
-  await db.connect();
+  await connect();
   const products = await Product.find();
-  await db.disconnect();
   return {
     props: {
-      products: JSON.parse(JSON.stringify(products)),
+      products: toJSON(products),
     },
   };
 }

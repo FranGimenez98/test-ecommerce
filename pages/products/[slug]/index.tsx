@@ -1,36 +1,45 @@
 import Layout from "@/components/layouts/layout";
+import CartContext from "@/context/CartContext";
+import useError from "@/hooks/useError";
 import { IProduct } from "@/interfaces/IProduct";
-import db from "@/lib/db";
+import { connect } from "@/lib/db";
+import toJSON from "@/lib/toJSON";
 import Product from "@/models/Product";
 import { GetServerSidePropsContext } from "next";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 
 interface Product {
   product: IProduct;
-  products: IProduct[];
+  relatedProducts: IProduct[];
 }
 
-export default function ProductScreen(props: Product) {
-  const { product, products } = props;
+export default function ProductScreen({ product, relatedProducts }: Product) {
+  const { state, dispatch } = useContext(CartContext);
 
   const [sizeSelected, setSizeSelected] = useState("");
   const [counter, setCounter] = useState(0);
-  const [error, setError] = useState(false);
+
+  const { error, errorMessage, showError, hideError } = useError();
 
   const handleSizeSelected = (size: string) => {
     setSizeSelected(size);
-    setError(false);
+    hideError();
   };
 
-  const handleCounter = (counter: number) => {
+  const handleCounter = ({
+    counter,
+    size,
+  }: {
+    counter: number;
+    size: string;
+  }) => {
     if (counter >= 0 && counter <= getSizeQuantity()) {
       setCounter(counter);
-      setError(false);
+      hideError();
     } else {
-      setError(true);
+      showError(`El talle ${size} no cuenta con mas stock`);
     }
   };
 
@@ -39,13 +48,49 @@ export default function ProductScreen(props: Product) {
     return size ? size.quantity : 0;
   };
 
+  const handleAddToCart = () => {
+    if (sizeSelected === "") return showError("Selecciona un talle");
+    if (counter === 0) return showError("Selecciona una cantidad de productos");
+
+    const existingItem = state.cart.cartItems.find(
+      (item) => item.slug === product.slug && item.size === sizeSelected
+    );
+
+    if (existingItem) {
+      // Actualizar la cantidad del producto existente
+      const size = product.sizes.find((item) => item.size === sizeSelected);
+
+      if (!size || counter + existingItem.quantity > size.quantity) {
+        return showError("No hay suficiente stock para actualizar al carrito");
+      }
+
+      const updatedCartItems = state.cart.cartItems.map((item) =>
+        item.slug === product.slug && item.size === sizeSelected
+          ? { ...item, quantity: item.quantity + counter }
+          : item
+      );
+
+      dispatch({ type: "CART_UPDATE_ITEM", payload: updatedCartItems });
+    } else {
+      // Agregar un nuevo producto al carrito
+      const size = product.sizes.find((item) => item.size === sizeSelected);
+
+      if (!size || counter > size.quantity) {
+        return showError("No hay suficiente stock para agregar al carrito");
+      }
+
+      const newItem = { ...product, quantity: counter, size: sizeSelected };
+      dispatch({ type: "CART_ADD_ITEM", payload: newItem });
+    }
+  };
+
   return (
     <Layout>
       <section className="w-[97%] bg-white mt-2">
         <div className="w-full h-full flex flex-col md:flex-row items-center p-2 gap-2 ">
           <div className="w-full flex flex-col">
             <img
-              src={product.image}
+              src={product?.image}
               className="h-[30rem] object-cover bg-center"
             />
             <div className="flex w-full gap-2 mt-2">
@@ -55,11 +100,11 @@ export default function ProductScreen(props: Product) {
             </div>
           </div>
           <div className="flex flex-col justify-center w-full h-full gap-1">
-            <h2 className="text-2xl font-bold">{product.name}</h2>
-            <span className="text-2xl">${product.price}</span>
+            <h2 className="text-2xl font-bold">{product?.name}</h2>
+            <span className="text-2xl">${product?.price}</span>
             {/* <p>{product.description}</p> */}
             <div className="flex gap-2 w-[70%]">
-              {product.sizes.map((size, index) => (
+              {product?.sizes.map((size, index) => (
                 <button
                   key={index}
                   onClick={() => handleSizeSelected(size.size)}
@@ -76,7 +121,9 @@ export default function ProductScreen(props: Product) {
               <div className=" flex border-[1px] border-gray-400">
                 <button
                   className="w-10 h-[2.5rem] text-xl flex items-center justify-center font-semibold"
-                  onClick={() => handleCounter(counter - 1)}
+                  onClick={() =>
+                    handleCounter({ counter: counter - 1, size: sizeSelected })
+                  }
                   disabled={counter === 0}
                 >
                   -
@@ -86,30 +133,35 @@ export default function ProductScreen(props: Product) {
                 </div>
                 <button
                   className="w-10 h-[2.5rem] text-xl flex items-center justify-center font-semibold"
-                  onClick={() => handleCounter(counter + 1)}
+                  onClick={() =>
+                    handleCounter({ counter: counter + 1, size: sizeSelected })
+                  }
                 >
                   +
                 </button>
               </div>
-              <button className="bg-black w-full text-center text-white flex items-center justify-center p-1 text-xl">
+              <button
+                className="bg-black w-full text-center text-white flex items-center justify-center p-1 text-xl"
+                onClick={handleAddToCart}
+              >
                 <span>Add to cart</span>
                 <FaShoppingCart className="ml-2" />
               </button>
             </div>
             {error && (
               <div className="w-full">
-                <p className="text-red-500">{`El talle ${sizeSelected} no cuenta con mas stock.`}</p>
+                <p className="text-red-500">{errorMessage}</p>
               </div>
             )}
             <div>
               <h2 className="text-lg font-bold">Descripcion: </h2>
-              <p>{product.description}</p>
+              <p>{product?.description}</p>
             </div>
           </div>
         </div>
-        <div className="mt-10 w-full p-2">
+        <div className="mt-10 w-full p-1">
           <div className="grid grid-cols-2 gap-2">
-            {products.map((product) => (
+            {relatedProducts?.map((product) => (
               <Link href={`/products/${product.slug}`} key={product._id}>
                 <div className="h-[15rem] w-full mb-20">
                   <img
@@ -131,23 +183,26 @@ export default function ProductScreen(props: Product) {
 }
 
 export async function getServerSideProps(
-  context: GetServerSidePropsContext<any>
+  context: GetServerSidePropsContext<{ slug: string }>
 ) {
-  const { params } = context;
-  const { slug } = params;
+  const { slug } = context.params!;
 
-  await db.connect();
-  const product: IProduct | null = await Product.findOne({ slug: slug }).lean();
-  console.log(product);
-  const products: IProduct[] | undefined = await Product.find({
+  await connect();
+  const product: IProduct | null | undefined = await Product.findOne({
+    slug: slug,
+  }).lean();
+
+  const relatedProducts: IProduct[] | null | undefined = await Product.find({
     category: product?.category,
     slug: { $ne: product?.slug },
-  }).limit(4);
-  await db.disconnect();
+  })
+    .limit(4)
+    .lean();
+
   return {
     props: {
-      product: JSON.parse(JSON.stringify(product)),
-      products: JSON.parse(JSON.stringify(products)),
+      product: product ? toJSON(product) : null,
+      relatedProducts: relatedProducts ? toJSON(relatedProducts) : null,
     },
   };
 }
