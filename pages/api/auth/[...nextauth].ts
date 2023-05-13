@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import db from "../../../lib/db";
+import {connect} from "@/lib/db";
 import User from "@/models/User";
 import { IUser } from "@/interfaces/IUser";
 import bcryptjs from "bcryptjs";
@@ -27,11 +27,10 @@ export default NextAuth({
     async session({ session, token }: { session: any; token: any }) {
       if (session?.user) {
         try {
-          await db.connect();
+          await connect();
           const user: IUser | null = (await User.findOne({
             _id: token.user.id,
           }).lean()) as IUser;
-          await db.disconnect();
           if (user) {
             return {
               ...session,
@@ -64,11 +63,10 @@ export default NextAuth({
         }
 
         try {
-          await db.connect();
+          await connect();
           const user: IUser | null = (await User.findOne({
             email: credentials.email,
           }).lean()) as IUser;
-          await db.disconnect();
           if (!user) throw new Error("User not found");
 
           if (!bcryptjs.compareSync(credentials.password, user.password)) {
