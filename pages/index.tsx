@@ -1,12 +1,10 @@
 import Hero from "@/components/hero";
 import Layout from "@/components/layouts/layout";
-import { ICart } from "@/interfaces/ICart";
 import { IProduct } from "@/interfaces/IProduct";
-import db from "@/lib/db";
-import Cart from "@/models/Cart";
+import {connect} from "@/lib/db";
+import toJSON from "@/lib/toJSON";
 import Product from "@/models/Product";
-import { GetServerSidePropsContext } from "next";
-import { getSession, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 interface HomeProps {
@@ -25,7 +23,7 @@ export default function Home(props: HomeProps) {
         <div className="md:w-[97%] mt-5 w-full bg-white p-2 shadow-lg rounded-sm">
           <h2 className="my-2 text-2xl font-bold">Nuevos productos</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {products.map((product, index) => (
+            {products?.map((product, index) => (
               <Link href={`/products/${product.slug}`} key={index}>
                 <img
                   src={product.image}
@@ -41,14 +39,24 @@ export default function Home(props: HomeProps) {
   );
 }
 
+const CACHE_DURATION = 60 * 60; // Duración en segundos de la caché
+
+async function getProducts(): Promise<IProduct[]> {
+  await connect()
+  const products = await Product.find()
+    .sort({ createdAt: -1 })
+    .limit(10)
+    .select('name price image slug'); // Solo se devuelven los campos necesarios
+  
+  return products;
+}
+
 export async function getStaticProps() {
-  await db.connect();
-  const products: IProduct[] | undefined = await Product.find().sort({ createdAt: -1 }).limit(10);
-  console.log(products);
-  await db.disconnect();
+  const products = await getProducts(); // Se obtienen los productos
   return {
     props: {
-      products: JSON.parse(JSON.stringify(products)),
+      products: toJSON(products),
     },
+    revalidate: CACHE_DURATION, // Se almacena en caché durante un tiempo determinado
   };
 }

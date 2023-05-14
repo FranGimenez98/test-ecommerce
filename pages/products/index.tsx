@@ -1,14 +1,14 @@
 import Layout from "@/components/layouts/layout";
-import db from "@/lib/db";
+import { connect } from "@/lib/db";
 import Product from "@/models/Product";
 import React from "react";
 import { IProduct } from "../../interfaces/IProduct";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
 import { FaShoppingCart } from "react-icons/fa";
 import Link from "next/link";
+import toJSON from "@/lib/toJSON";
 
 export default function ProductsScreen({ products }: any) {
-  console.log(products);
   return (
     <Layout>
       <div className="w-full max-h-full">
@@ -43,6 +43,7 @@ export default function ProductsScreen({ products }: any) {
                       className="w-[300px] h-[180px] md:h-[200px] m-auto mt-0 mb-0"
                     />
                     <div className="flex flex-col">
+
                       <span className="text-[#828282] font-semibold mt-2 md:mt-2 text-[12px] ml-2">
                         {product.name}
                       </span>
@@ -51,6 +52,7 @@ export default function ProductsScreen({ products }: any) {
                       </span>
                     </div>
                     <button className="absolute bottom-[90%] left-[85%] md:bottom-[92%] md:left-[90%]">
+
                       <BsSuitHeartFill className="text-red-500" size="1rem" />
                     </button>
                     <button className="bg-black text-[10px] text-center text-white m-auto flex items-center justify-center p-1 w-[60%] md:w-[80%] md:mb-2 mb-1 md:mt-1 mt-1">
@@ -69,12 +71,11 @@ export default function ProductsScreen({ products }: any) {
 }
 
 export async function getServerSideProps() {
-  await db.connect();
+  await connect();
   const products = await Product.find();
-  await db.disconnect();
   return {
     props: {
-      products: JSON.parse(JSON.stringify(products)),
+      products: toJSON(products),
     },
   };
 }

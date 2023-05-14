@@ -15,7 +15,6 @@ type LogInData = {
 
 export default function LoginScreen() {
   const [userError, setUserError] = useState(false);
-  console.log(userError);
 
   const schema: ZodType<LogInData> = z
     .object({
