@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../components/layouts/layout";
-import { signIn, useSession } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { z, ZodType } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FcGoogle } from "react-icons/fc";
+import { useRouter } from "next/router";
+import { NextPageContext } from "next";
 
 type LogInData = {
   email: string;
@@ -15,6 +17,16 @@ type LogInData = {
 
 export default function LoginScreen() {
   const [userError, setUserError] = useState(false);
+  // const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // useEffect(() => {
+  //   if (session?.user) {
+  //     if(router.pathname === '/login' || router.pathname === '/signup') {
+  //       router.push('/');
+  //     }
+  //   }
+  // }, [session]);
 
   const schema: ZodType<LogInData> = z
     .object({
@@ -47,8 +59,11 @@ export default function LoginScreen() {
 
     if (!user?.ok) {
       setUserError(true);
+    } else {
+      router.push("/");
     }
   };
+  
 
   return (
     <Layout>
@@ -146,3 +161,16 @@ export default function LoginScreen() {
     </Layout>
   );
 }
+
+// export async function getServerSideProps(context: NextPageContext) {
+//   const session = await getSession(context);
+//   if (session && (context.req?.headers.cookie === "/login" || context.req?.headers.cookie === "/signup")) {
+//     return {
+//       redirect: {
+//         destination: "/",
+//         permanent: false,
+//       },
+//     };
+//   }
+//   return { props: {} };
+// }
