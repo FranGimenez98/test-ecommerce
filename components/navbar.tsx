@@ -3,7 +3,7 @@ import Link from "next/link";
 import { GiClothes } from "react-icons/gi";
 import { TiArrowSortedDown, TiThMenuOutline } from "react-icons/ti";
 import { useSession } from "next-auth/react";
-import useDropdownMenu from "../lib/useToggleMenu";
+import useDropdownMenu from "../hooks/useToggleMenu";
 
 // interface MyComponentProps {
 //   session: {
@@ -44,70 +44,72 @@ export default function Navbar() {
           </div>
         </Link>
         <div className="relative flex items-center md:order-2">
-          <button
-            type="button"
-            className="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-            id="user-menu-button"
-            aria-expanded={showMenu ? "true" : "false"}
-            onClick={toggleMenu}
-          >
-            <span className="sr-only">Open user menu</span>
-            <img
-              className="w-8 h-8 rounded-full"
-              src="https://static.wikia.nocookie.net/memes-pedia/images/2/2d/A%C3%B1a%C3%B1in.jpg/revision/latest?cb=20200818162720&path-prefix=es"
-              alt="user photo"
-            />
-          </button>
-
-          <div
-            className={`${
-              showMenu ? "block" : "hidden"
-            } absolute top-full z-50 right-0 mt-2 w-48 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600`}
-            id="user-dropdown"
-          >
-            <div className="px-4 py-3">
-              <span className="block text-sm text-gray-900 dark:text-white">
-                Franco Gimenez
-              </span>
-              <span className="block text-sm  text-gray-500 truncate dark:text-gray-400">
-                franco@bazz.com
-              </span>
+          {session ? (
+            <div>
+              <button
+                type="button"
+                className="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                id="user-menu-button"
+                aria-expanded={showMenu ? "true" : "false"}
+                onClick={toggleMenu}
+              >
+                <span className="sr-only">Open user menu</span>
+                <img
+                  className="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-green-400"
+                  src="https://static.wikia.nocookie.net/memes-pedia/images/2/2d/A%C3%B1a%C3%B1in.jpg/revision/latest?cb=20200818162720&path-prefix=es"
+                  alt="user photo"
+                />
+              </button>
+              <div
+                className={`${
+                  showMenu ? "block" : "hidden"
+                } absolute top-full z-50 right-0 mt-2 w-48 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600`}
+                id="user-dropdown"
+              >
+                <div className="px-4 py-3">
+                  <span className="block text-sm text-gray-900 dark:text-white">
+                    { session.user.name }
+                  </span>
+                  <span className="block text-sm  text-gray-500 truncate dark:text-gray-400">
+                    { session.user.email }
+                  </span>
+                </div>
+                <ul className="py-2" aria-labelledby="user-menu-button">
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    >
+                      Profile
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    >
+                      Dashboard
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    >
+                      Sign out
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <ul className="py-2" aria-labelledby="user-menu-button">
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                >
-                  Profile
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                >
-                  Dashboard
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                >
-                  Earnings
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                >
-                  Sign out
-                </a>
-              </li>
-            </ul>
-          </div>
+          ) : (
+            <div className="text-white text-sm md:text-base flex justify-between mr-2 items-center">
+              <Link href="/login" className="mr-1 hover:text-green-400 font-bold">Login</Link>
+              <span className="text-sm cursor-default">or</span>
+              <Link href="/signup" className="ml-1 hover:text-green-400 font-bold">Sign Up</Link>
+            </div>
+          )}
+
           <button
             data-collapse-toggle="mobile-menu-2"
             type="button"
@@ -123,44 +125,46 @@ export default function Navbar() {
         <div
           className={`${
             showMenuMobile ? "block" : "hidden"
-          } top-full z-50 right-0 items-center justify-between hidden w-full md:flex md:w-auto md:order-1`}
+          } top-full z-50 right-0 items-center justify-between w-full md:flex md:w-auto md:order-1`}
           id="mobile-menu-2"
         >
           <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             <li>
               <a
                 href="#"
-                className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500 dark:bg-blue-600 md:dark:bg-transparent"
+                className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-green-400 dark:bg-blue-600 md:dark:bg-transparent"
                 aria-current="page"
               >
                 Home
               </a>
             </li>
-            <li>
+            <li className="relative">
               <button
                 id="dropdownNavbarLink"
                 data-dropdown-toggle="dropdownNavbar"
-                className="flex items-center justify-between w-full py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent"
+                className="flex items-center justify-between w-full py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-[#8dc572] dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent"
+                aria-expanded={showProducts ? "true" : "false"}
                 onClick={toggleProducts}
               >
-                Products{" "}
-                <TiArrowSortedDown />
+                Products <TiArrowSortedDown />
               </button>
               <div
                 id="dropdownNavbar"
-                className={`${showMenu ? "block" : "hidden"}z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600`}
+                className={`${
+                  showProducts ? "block" : "hidden"
+                } absolute z-10 font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600`}
               >
                 <ul
                   className="py-2 text-sm text-gray-700 dark:text-gray-400"
                   aria-labelledby="dropdownLargeButton"
                 >
                   <li>
-                    <a
-                      href="#"
+                    <Link
+                      href="/products"
                       className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
                       All Products
-                    </a>
+                    </Link>
                   </li>
                   <li>
                     <a
@@ -184,7 +188,7 @@ export default function Navbar() {
             <li>
               <a
                 href="#"
-                className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-[#8dc572] dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
                 Services
               </a>
@@ -192,7 +196,7 @@ export default function Navbar() {
             <li>
               <a
                 href="#"
-                className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-[#8dc572] dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
                 About
               </a>
@@ -200,7 +204,7 @@ export default function Navbar() {
             <li>
               <a
                 href="#"
-                className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-[#8dc572] dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
                 Contact
               </a>
