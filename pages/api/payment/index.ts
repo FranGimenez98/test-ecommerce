@@ -53,7 +53,7 @@ async function mercadoPagoPayment(req: NextApiRequest, res: NextApiResponse) {
         surname: surname,
         email: email,
         phone: {
-          area_code: area_code,
+          // area_code: area_code,
            number: phone_number
         },
         identification: {

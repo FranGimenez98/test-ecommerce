@@ -1,9 +1,11 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import {connect} from "@/lib/db";
+import { connect } from "@/lib/db";
 import User from "@/models/User";
 import { IUser } from "@/interfaces/IUser";
 import bcryptjs from "bcryptjs";
+import GoogleProvider from "next-auth/providers/google";
+import mongoose from "mongoose";
 
 export default NextAuth({
   session: {
@@ -12,7 +14,34 @@ export default NextAuth({
     updateAge: 60 * 5, // 5 minutes
   },
   callbacks: {
+    async signIn({ account, profile, email }) {
+      if (account?.provider === "google") {
+        console.log("account", account);
+        console.log("profile", profile);
+
+        try {
+          await connect();
+          const existingUser = await User.findOne({ email: profile?.email });
+          if (!existingUser) {
+            const newUser = new User({
+              _id: new mongoose.Types.ObjectId(),
+              email: profile?.email,
+              isAdmin: false,
+              password: profile?.at_hash,
+              lastname: profile?.family_name,
+              name: profile?.given_name,
+            });
+            console.log(newUser);
+            await newUser.save();
+          }
+        } catch (error) {
+          console.error("error", error);
+        }
+      }
+      return true;
+    },
     async jwt({ token, user }) {
+      console.log("token", token)
       if (user) {
         return {
           ...token,
@@ -29,7 +58,7 @@ export default NextAuth({
         try {
           await connect();
           const user: IUser | null = (await User.findOne({
-            _id: token.user.id,
+            email: token?.user?.email,
           }).lean()) as IUser;
           if (user) {
             return {
@@ -43,7 +72,7 @@ export default NextAuth({
             };
           }
         } catch (error) {
-          console.error(error);
+          console.error("session", error);
         }
       }
 
@@ -51,6 +80,10 @@ export default NextAuth({
     },
   },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
     CredentialsProvider({
       type: "credentials",
       credentials: {

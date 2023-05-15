@@ -1,12 +1,12 @@
 import Layout from "@/components/layouts/layout";
 import Link from "next/link";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z, ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
-import {BsFacebook} from 'react-icons/bs'
-import {FcGoogle} from 'react-icons/fc'
+import { BsFacebook } from "react-icons/bs";
+import { FcGoogle } from "react-icons/fc";
 
 type SignUpData = {
   name: string;
@@ -16,8 +16,7 @@ type SignUpData = {
 };
 
 export default function SignupScreen() {
-
-  const [userError, setUserError] = useState(false)
+  const [userError, setUserError] = useState(false);
 
   const schema: ZodType<SignUpData> = z.object({
     name: z.string().min(4).max(20),
@@ -48,7 +47,7 @@ export default function SignupScreen() {
       });
 
       if (!response.ok) {
-        setUserError(true)
+        setUserError(true);
         return;
       }
 
@@ -75,7 +74,6 @@ export default function SignupScreen() {
           <div className="w-[70%] flex flex-col mt-4 mb-3">
             <label className="font-semibold text-slate-600">Name</label>
             <input
-
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
               {...register("name")}
             />
@@ -88,7 +86,6 @@ export default function SignupScreen() {
           <div className="w-[70%] flex flex-col mb-3">
             <label className="font-semibold text-slate-600">Last name</label>
             <input
-
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
               {...register("lastname")}
             />
@@ -101,7 +98,6 @@ export default function SignupScreen() {
           <div className="w-[70%] flex flex-col mb-3">
             <label className="font-semibold text-slate-600">Email</label>
             <input
-
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
               {...register("email")}
             />
@@ -114,18 +110,17 @@ export default function SignupScreen() {
           <div className="w-[70%] flex flex-col ">
             <label className="font-semibold text-slate-600">Password</label>
             <input
-
               type="password"
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
               {...register("password")}
             />
             {errors.password && (
-            <span className="text-red-500 text-sm">
-              {errors.password.message}
-            </span>
-          )}
+              <span className="text-red-500 text-sm">
+                {errors.password.message}
+              </span>
+            )}
           </div>
-          
+
           <div className="w-[70%] flex flex-col justify-center my-4">
             <button
               className="bg-black text-white text-center py-1 w-full font-semibold"
@@ -133,35 +128,34 @@ export default function SignupScreen() {
             >
               Create account
             </button>
-            {userError && <span className="text-red-500 text-sm">Error, email is already registered, please use a new email</span>}
+            {userError && (
+              <span className="text-red-500 text-sm">
+                Error, email is already registered, please use a new email
+              </span>
+            )}
           </div>
-          <div className="w-[70%] flex items-center justify-center">
-            <h3 className="text-sm text-gray-500 font-medium">
-              Already have and account?{" "}
-              <Link href="/login">
-                <span className="text-emerald-500">Log in</span>
-              </Link>
-            </h3>
-          </div>
-          <div className="w-[70%] flex items-center justify-center gap-3 my-3">
-            <div className="bg-gray-300 w-full h-[1px]" />
-            <h3 className="text-sm text-gray-500">Or</h3>
-            <div className="bg-gray-300 w-full h-[1px]" />
-          </div>
-          <div className="w-[70%] flex flex-col items-center justify-between gap-3 mb-8">
-            <button className="bg-[#fafafa]  border-[1px] border-gray-200 flex gap-2 items-center justify-center w-full py-1 text-gray-500 font-medium">
-              <FcGoogle className="text-xl" /> Continue with Google
-            </button>
-          </div>
-          {/* <div className="w-[70%] flex items-center justify-between gap-3 mb-8">
-            <button className="bg-blue-900 flex items-center justify-center w-full py-1 text-white font-semibold">
-              Facebook
-            </button>
-            <button className="bg-red-500 flex items-center justify-center w-full py-1 text-white font-semibold">
-              Google
-            </button>
-          </div> */}
         </form>
+        <div className="w-[70%] flex items-center justify-center">
+          <h3 className="text-sm text-gray-500 font-medium">
+            Already have and account?{" "}
+            <Link href="/login">
+              <span className="text-emerald-500">Log in</span>
+            </Link>
+          </h3>
+        </div>
+        <div className="w-[70%] flex items-center justify-center gap-3 my-3">
+          <div className="bg-gray-300 w-full h-[1px]" />
+          <h3 className="text-sm text-gray-500">Or</h3>
+          <div className="bg-gray-300 w-full h-[1px]" />
+        </div>
+        <div className="w-[70%] flex flex-col items-center justify-between gap-3 mb-8">
+          <button
+            className="bg-[#fafafa]  border-[1px] border-gray-200 flex gap-2 items-center justify-center w-full py-1 text-gray-500 font-medium"
+            onClick={() => signIn("google")}
+          >
+            <FcGoogle className="text-xl" /> Continue with Google
+          </button>
+        </div>
       </div>
     </Layout>
   );

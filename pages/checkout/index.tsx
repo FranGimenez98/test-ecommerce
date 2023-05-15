@@ -17,26 +17,67 @@ export default function CheckoutScreen() {
     dni: string;
     street_name: string;
     street_number: string;
-    floor: string;
-    apartment: string;
+    floor?: string;
+    apartment?: string;
     city_name: string;
     state_name: string;
     zip_code: string;
   }
 
   const schema: ZodType<CheckOutData> = z.object({
-    name: z.string().min(5).max(20),
-    surname: z.string().min(5).max(20),
-    email: z.string().email(),
-    phone: z.string().min(5).max(11),
-    dni: z.string().max(20),
-    street_name: z.string().max(20),
-    street_number: z.string().min(4).max(20),
-    floor: z.string().min(5).max(20),
-    apartment: z.string().min(5).max(20),
-    city_name: z.string().min(5).max(20),
-    state_name: z.string().min(5).max(20),
-    zip_code: z.string().min(4),
+    name: z
+      .string()
+      .min(1, { message: "Name is required" })
+      .max(15, { message: "Name must contain at most 15 character(s)" }),
+    surname: z
+      .string()
+      .min(1, { message: "Name is required" })
+      .max(15, { message: "Name must contain at most 15 character(s)" }),
+    email: z.string().min(1, { message: "Email is required" }).email({
+      message: "Must be a valid email",
+    }),
+    phone: z
+      .string()
+      .min(1, { message: "Phone is required" })
+      .max(11)
+      .regex(/^\d+$/, { message: "Phone must contain only digits" }),
+    dni: z
+      .string()
+      .min(1, { message: "DNI is required" })
+      .max(8)
+      .regex(/^\d+$/, { message: "DNI must contain only digits" }),
+    street_name: z
+      .string()
+      .min(1, { message: "Street name is required" })
+      .max(20),
+    street_number: z
+      .string()
+      .min(1, { message: "House number is required" })
+      .max(10)
+      .regex(/^\d+$/, { message: "Street number must contain only digits" }),
+    floor: z
+      .string()
+      .min(1)
+      .max(100, { message: "Floor must contain at least 100 character(s)" })
+      .regex(/^\d+$/, { message: "Floor must contain only digits" })
+      .optional(),
+    apartment: z
+      .string()
+      .min(5)
+      .max(20, { message: "Apartment must contain at least 20 character(s)" })
+      .optional(),
+    city_name: z
+      .string()
+      .min(1, { message: "City name is required" })
+      .max(20, { message: "City name must contain at least 20 character(s)" }),
+    state_name: z
+      .string()
+      .min(1, { message: "State name is required" })
+      .max(20, { message: "State name must contain at least 20 character(s)" }),
+    zip_code: z
+      .string()
+      .min(1, { message: "Zip code is required" })
+      .max(5, { message: "Zip code must contain at least 5 character(s)" }),
   });
 
   const {
@@ -48,7 +89,6 @@ export default function CheckoutScreen() {
   });
 
   const submitData = (data: CheckOutData) => {
- 
     dispatch({
       type: "SAVE_USER_DATA",
       payload: {
@@ -56,7 +96,7 @@ export default function CheckoutScreen() {
         surname: data.surname,
         email: data.email,
         phone: {
-          area_code: "11",
+          // area_code: "11",
           number: parseInt(data.phone),
         },
         identification: {
@@ -72,7 +112,7 @@ export default function CheckoutScreen() {
         zip_code: data.zip_code,
         street_name: data.street_name,
         street_number: parseInt(data.street_number),
-        floor: parseInt(data.floor),
+        floor: data.floor && parseInt(data?.floor),
         apartment: data.apartment,
         city_name: data.city_name,
         state_name: data.state_name,
@@ -130,13 +170,13 @@ export default function CheckoutScreen() {
             )}
           </div>
           <div className="flex gap-2 justify-center items-center">
-            <div className=" flex flex-col w-[30%]">
+            {/* <div className=" flex flex-col w-[30%]">
               <label>Code</label>
               <input
                 type="text"
                 className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
               />
-            </div>
+            </div> */}
             <div className=" flex flex-col w-full">
               <label>Telofono</label>
               <input

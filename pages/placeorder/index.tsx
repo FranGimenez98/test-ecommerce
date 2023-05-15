@@ -67,12 +67,13 @@ export default function PlaceOrderScreen() {
               <div className="flex flex-col gap-1 w-[50%] lg:w-full">
                 <span className="text-lg text-gray-700">{product.name}</span>
                 <span>Size {product.size}</span>
+                <span>Quantity: {product.quantity}</span>
                 <span className="text-2xl font-bold">
                   ${product.price * product.quantity}
                 </span>
               </div>
             </div>
-            <div className="bg-gray-200 h-full flex flex-col rounded-md">
+            {/* <div className="bg-gray-200 h-full flex flex-col rounded-md">
               <button
                 className="py-1 px-2 text-xl font-bold rounded-md"
                 disabled={product.quantity >= product.stock}
@@ -88,7 +89,7 @@ export default function PlaceOrderScreen() {
               >
                 -
               </button>
-            </div>
+            </div> */}
           </div>
         ))}
         <div className="flex flex-col w-full">
