@@ -13,6 +13,7 @@ export default NextAuth({
     maxAge: 60 * 60 * 24, // 1 day
     updateAge: 60 * 5, // 5 minutes
   },
+  secret: process.env.NEXTAUTH_SECRET as string,
   callbacks: {
     async signIn({ account, profile, email }) {
       if (account?.provider === "google") {

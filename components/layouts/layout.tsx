@@ -15,7 +15,6 @@ interface LayoutProps {
 
 export default function Layout({ children, title, user }: LayoutProps) {
   const { data: session } = useSession();
-
   return (
     <>
       <div>
