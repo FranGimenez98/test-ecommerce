@@ -4,7 +4,7 @@ import { IProduct } from "@/interfaces/IProduct";
 import { connect } from "@/lib/db";
 import toJSON from "@/lib/toJSON";
 import Product from "@/models/Product";
-import { useSession } from "next-auth/react";
+import { useSession, getSession } from "next-auth/react";
 import Link from "next/link";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 
@@ -28,10 +28,10 @@ export default function Home(props: HomeProps) {
             {products?.map((product, index) => (
               <Link href={`/products/${product.slug}`} key={index}>
                 <div className="flex flex-col relative">
-                  <div className="absolute z-10 w-7 h-7 right-2 top-2 bg-white rounded-full flex items-center justify-center">
+                  {/* <div className="absolute z-10 w-7 h-7 right-2 top-2 bg-white rounded-full flex items-center justify-center">
                     <AiOutlineHeart className="text-2xl" />
-                    {/* <AiFillHeart className="text-2xl text-red-500" /> */}
-                  </div>
+                    <AiFillHeart className="text-2xl text-red-500" />
+                  </div> */}
                   <div className="h-[28rem] overflow-hidden">
                      <img
                     src={product.image}
@@ -89,6 +89,7 @@ async function getProducts(): Promise<IProduct[]> {
 }
 
 export async function getStaticProps() {
+
   const products = await getProducts(); // Se obtienen los productos
   return {
     props: {
@@ -97,3 +98,4 @@ export async function getStaticProps() {
     revalidate: CACHE_DURATION, // Se almacena en caché durante un tiempo determinado
   };
 }
+
