@@ -8,7 +8,7 @@ import { useSession, getSession } from "next-auth/react";
 import Link from "next/link";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 
-interface HomeProps {
+export interface HomeProps {
   products: IProduct[];
 }
 
