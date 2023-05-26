@@ -6,6 +6,7 @@ export interface State {
     cartItems: CartItem[];
     userData: UserData;
     userAddress: UserAddress;
+    orderId: string;
   };
 }
 
@@ -46,6 +47,7 @@ const CartContext = createContext<ContextType>({
         state_name: "",
         country_name: "",
       },
+      orderId:"",
     },
   },
   dispatch: () => {},

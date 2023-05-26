@@ -5,18 +5,65 @@ import { connect } from "@/lib/db";
 import toJSON from "@/lib/toJSON";
 import Product from "@/models/Product";
 import { useSession, getSession } from "next-auth/react";
+import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import CartContext from "@/context/CartContext";
 
 interface HomeProps {
   products: IProduct[];
 }
 
-export default function Home(props: HomeProps) {
-  const { data: session } = useSession();
-  console.log(session)
+interface NotificationType {
+  isOpen: boolean;
+  type: "approved" | "failure" | null;
+  content: string;
+}
 
+export default function Home(props: HomeProps) {
+  const { state, dispatch } = useContext(CartContext);
+  const { data: session } = useSession();
   const { products } = props;
+  const [notification, setNotification] = useState<NotificationType>({
+    isOpen: false,
+    type: null,
+    content: "",
+  });
+
+  console.log(notification);
+
+  console.log(state);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get("status");
+
+    if (status === "approved") {
+      setNotification({
+        content: "Pago aprobado!",
+        isOpen: true,
+        type: "approved",
+      });
+    } else if (status === "failure") {
+      setNotification({
+        content: "Pago fallido!",
+        isOpen: true,
+        type: "failure",
+      });
+    }
+
+    const notificationTimeout = setTimeout(() => {
+      setNotification({
+        isOpen: false,
+        type: null,
+        content: "",
+      });
+    }, 5000);
+
+    return () => {
+      clearTimeout(notificationTimeout);
+    };
+  }, []);
 
   return (
     <Layout>
@@ -33,12 +80,12 @@ export default function Home(props: HomeProps) {
                     <AiFillHeart className="text-2xl text-red-500" />
                   </div> */}
                   <div className="h-[28rem] overflow-hidden">
-                     <img
-                    src={product.image}
-                    className="h-full w-full object-cover bg-center hover:scale-110 ease-in-out transition"
-                  />
+                    <img
+                      src={product.image}
+                      className="h-full w-full object-cover bg-center hover:scale-110 ease-in-out transition"
+                    />
                   </div>
-                 
+
                   <div className="h-[4.5rem] flex flex-col px-2 py-1">
                     <h2 className="text-lg font-semibold">{product.name}</h2>
                     <div className="w-full flex justify-between">
@@ -89,7 +136,6 @@ async function getProducts(): Promise<IProduct[]> {
 }
 
 export async function getStaticProps() {
-
   const products = await getProducts(); // Se obtienen los productos
   return {
     props: {
@@ -98,4 +144,3 @@ export async function getStaticProps() {
     revalidate: CACHE_DURATION, // Se almacena en caché durante un tiempo determinado
   };
 }
-

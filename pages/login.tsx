@@ -55,6 +55,7 @@ export default function LoginScreen() {
       redirect: false,
       email: data.email,
       password: data.password,
+      callbackUrl: "/",
     });
 
     if (!user?.ok) {
@@ -63,7 +64,6 @@ export default function LoginScreen() {
       router.push("/");
     }
   };
-  
 
   return (
     <Layout>
@@ -152,7 +152,9 @@ export default function LoginScreen() {
         <div className="w-[70%] flex flex-col items-center justify-between gap-3 mb-8">
           <button
             className="bg-[#fafafa]  border-[1px] border-gray-200 flex gap-2 items-center justify-center w-full py-1 text-gray-500 font-medium"
-            onClick={() => signIn("google")}
+            onClick={() =>
+              signIn("google", { callbackUrl: "/", redirect: false })
+            }
           >
             <FcGoogle className="text-xl" /> Continue with Google
           </button>

@@ -5,6 +5,7 @@ interface State {
     cartItems: CartItem[];
     userData: UserData;
     userAddress: UserAddress;
+    orderId: string;
   };
 }
 
@@ -79,6 +80,17 @@ const reducer = (state: State, action: Action) => {
           userData: { ...action.payload },
         },
       };
+
+    case "ADD_ORDER_ID": {
+      const { orderId } = action.payload;
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          orderId: orderId,
+        },
+      };
+    }
     default:
       return state;
   }

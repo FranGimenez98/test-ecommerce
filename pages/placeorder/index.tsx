@@ -1,20 +1,32 @@
 import Layout from "@/components/layouts/layout";
 import CartContext from "@/context/CartContext";
-import { useContext, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useContext, useEffect, useState } from "react";
+
+interface NotificationType {
+  isOpen: boolean;
+  type: "approved" | "failure" | null;
+  content: string;
+}
 
 export default function PlaceOrderScreen() {
   const { state, dispatch } = useContext(CartContext);
+  const [url, setUrl] = useState<null | string>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const {data: session} = useSession()
+  console.log("url", url);
 
   const requestBody = {
-    items: state?.cart.cartItems.map((item) => {
-      return {
-        title: item.name,
-        description: "hola!",
-        picture_url: item.image,
-        unit_price: item.price,
-        quantity: item.quantity,
-      };
-    }),
+    // items: state?.cart.cartItems.map((item) => {
+    //   return {
+    //     title: item.name,
+    //     description: "hola!",
+    //     picture_url: item.image,
+    //     unit_price: item.price,
+    //     quantity: item.quantity,
+    //   };
+    // }),
+    items: state?.cart?.cartItems,
     name: state.cart.userData.name,
     surname: state.cart.userData.surname,
     email: state.cart.userData.email,
@@ -28,6 +40,8 @@ export default function PlaceOrderScreen() {
     apartment: state.cart.userAddress.apartment,
     city_name: state.cart.userAddress.city_name,
     state_name: state.cart.userAddress.state_name,
+    userId: session?.user?.id,
+    orderId: state.cart.orderId
   };
 
   useEffect(() => {
@@ -42,10 +56,12 @@ export default function PlaceOrderScreen() {
         });
 
         const data = await response.json();
-        console.log(data.url); // muestra la respuesta del servidor en la consola del navegador
+        setUrl(data.url);
+     
       } catch (error) {
         console.error(error);
       }
+      setLoading(false);
     };
 
     generateLink();
@@ -117,12 +133,21 @@ export default function PlaceOrderScreen() {
             <h2>{state?.cart?.userAddress.floor}</h2>
           </div>
         </div>
-        <button
-          className="bg-black text-white text-center py-1 w-full font-semibold"
-          type="submit"
-        >
-          PLACE ORDER
-        </button>
+        {loading ? (
+          <button
+            className="bg-black text-white text-center py-1 w-full font-semibold"
+            disabled
+          >
+            Loading
+          </button>
+        ) : (
+          <a
+            className="bg-black text-white text-center py-1 w-full font-semibold"
+            href={`${url}`}
+          >
+            PLACE ORDER
+          </a>
+        )}
       </div>
     </Layout>
   );

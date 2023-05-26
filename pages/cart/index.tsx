@@ -6,6 +6,7 @@ import { ImCross } from "react-icons/im";
 
 export default function CartScreen() {
   const { state, dispatch } = useContext(CartContext);
+  console.log(state.cart.cartItems)
   const handleRemoveFromCart = (item: any) => {
     dispatch({ type: "CART_REMOVE_ITEM", payload: item });
   };

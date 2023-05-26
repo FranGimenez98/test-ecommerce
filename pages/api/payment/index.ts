@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import mercadopago from "mercadopago";
+import Order from "@/models/Order";
 
 mercadopago.configure({
   access_token: process.env.NEXT_ACCESS_TOKEN as string,
@@ -12,6 +13,9 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function mercadoPagoPayment(req: NextApiRequest, res: NextApiResponse) {
+  const URL =
+    "https://93c7-2800-810-4fd-8662-29bc-ffc9-a548-2e55.ngrok-free.app";
+
   const {
     // title,
     // description,
@@ -32,29 +36,27 @@ async function mercadoPagoPayment(req: NextApiRequest, res: NextApiResponse) {
     apartment,
     city_name,
     state_name,
-    // country_name,
+    userId,
+    orderId,
   } = req.body;
 
   try {
     const preference: any = {
-      // items: [
-      //   {
-      //     title: title,
-      //     description: description,
-      //     picture_url: picture_url,
-      //     unit_price: unit_price,
-      //     quantity: quantity,
-      //     currency_id: "ARS",
-      //   },
-      // ],
-      items,
+      items: items.map((item: any) => ({
+        id: item._id,
+        title: item.name,
+        description: "Hola",
+        picture_url: item.image,
+        unit_price: item.price,
+        quantity: item.quantity,
+      })),
       payer: {
         name: name,
         surname: surname,
         email: email,
         phone: {
           // area_code: area_code,
-           number: phone_number
+          number: phone_number,
         },
         identification: {
           type: "DNI",
@@ -71,16 +73,29 @@ async function mercadoPagoPayment(req: NextApiRequest, res: NextApiResponse) {
           country_name: "Argentina",
         },
       },
+      metadata: {
+        order: orderId,
+        items: items.map((item: any) => ({
+          id: item._id,
+          title: item.name,
+          description: "Hola",
+          picture_url: item.image,
+          unit_price: item.price,
+          quantity: item.quantity,
+          size: item.size,
+        })),
+      },
       back_urls: {
-        success: "https://mi-sitio.com/pago-exitoso",
-        pending: "https://mi-sitio.com/pago-pendiente",
-        failure: "https://mi-sitio.com/pago-fallido",
+        success: `${URL}/success`,
+        pending: `${URL}`,
+        failure: `${URL}`,
       },
       auto_return: "approved",
-      notification_url: "https://mi-sitio.com/pago-notificado",
+      notification_url: `${URL}/api/notify`,
     };
 
     const response = await mercadopago.preferences.create(preference);
+
     res.status(200).send({ url: response.body.init_point });
   } catch (error) {
     res.status(400).json({ message: "Method not allowed", error: error });

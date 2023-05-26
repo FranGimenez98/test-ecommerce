@@ -5,28 +5,31 @@ import User from "@/models/User";
 import React, { useState } from "react";
 import { IUser } from "@/interfaces/IUser";
 import { NextApiRequest } from "next";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import toJSON from "@/lib/toJSON";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
 import Link from "next/link";
 
 interface FavoritesProps {
   favorites: any;
-  userId: string;
 }
 
 export default function FavoritesScreen(props: FavoritesProps) {
-  const { favorites, userId } = props;
+  const { favorites } = props;
+  const { data: session } = useSession();
   const [userFavs, setUserFavs] = useState(favorites);
   console.log(userFavs);
 
   const handleDeleteFav = async (productId: string) => {
-    await fetch(`/api/favorites/delete/${userId}?productId=${productId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    await fetch(
+      `/api/favorites/delete/${session?.user.id}?productId=${productId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     setUserFavs((prevFavorites: any) =>
       prevFavorites.filter((fav: any) => fav.product._id !== productId)
@@ -70,19 +73,13 @@ export default function FavoritesScreen(props: FavoritesProps) {
 
 export const getServerSideProps = async ({ req }: { req: NextApiRequest }) => {
   const session = await getSession({ req });
-  const userEmail = session?.user.email;
   await connect();
-  const user = (await User.findOne({ email: userEmail })
-    .select("_id")
-    .lean()
-    .exec()) as IUser;
-  const userId = user?._id.toString();
-  const favorites: any = await Favorite.find({ user: userId }).populate(
-    "product"
-  );
+
+  const favorites: any = await Favorite.find({
+    user: session?.user.id,
+  }).populate("product");
   return {
     props: {
-      userId: userId,
       favorites: toJSON(favorites),
     },
   };
