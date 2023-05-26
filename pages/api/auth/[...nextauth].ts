@@ -6,6 +6,7 @@ import { IUser } from "@/interfaces/IUser";
 import bcryptjs from "bcryptjs";
 import GoogleProvider from "next-auth/providers/google";
 import mongoose from "mongoose";
+import { ObjectId } from "mongoose";
 
 export default NextAuth({
   session: {
@@ -15,7 +16,7 @@ export default NextAuth({
   },
   secret: process.env.NEXTAUTH_SECRET as string,
   callbacks: {
-    async signIn({ account, profile, email }) {
+    async signIn({ account, profile, email, user }) {
       if (account?.provider === "google") {
         console.log("account", account);
         console.log("profile", profile);
@@ -34,6 +35,14 @@ export default NextAuth({
             });
             console.log(newUser);
             await newUser.save();
+
+            // Guardar el ID de MongoDB en el token
+            user.id = newUser._id.toString();
+            user.isAdmin = newUser.isAdmin;
+          } else {
+            // Guardar el ID de MongoDB existente en el token
+            user.id = existingUser._id.toString();
+            user.isAdmin = existingUser.isAdmin;
           }
         } catch (error) {
           console.error("error", error);
@@ -41,9 +50,14 @@ export default NextAuth({
       }
       return true;
     },
-    async jwt({ token, user }) {
-      console.log("token", token)
-      if (user) {
+    async jwt({
+      token,
+      user,
+    }: {
+      token: any;
+      user: { id: string; isAdmin: boolean };
+    }) {
+      if (user && user.id) {
         return {
           ...token,
           user: {
@@ -54,12 +68,21 @@ export default NextAuth({
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: any }) {
-      if (session?.user) {
+    async session({
+      session,
+      token,
+    }: {
+      session: any;
+      token: any;
+      user: any;
+      newSession: any;
+      trigger: any;
+    }) {
+      if (token?.user) {
         try {
           await connect();
-          const user: IUser | null = (await User.findOne({
-            email: token?.user?.email,
+          const user: IUser | null | undefined = (await User.findOne({
+            _id: token.user.id, // Retrieve user by ID instead of email
           }).lean()) as IUser;
           if (user) {
             return {

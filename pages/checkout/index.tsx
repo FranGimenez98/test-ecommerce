@@ -5,9 +5,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CartContext from "@/context/CartContext";
 import { useContext } from "react";
+import { useSession } from "next-auth/react";
 
 export default function CheckoutScreen() {
   const { state, dispatch } = useContext(CartContext);
+  const { data: session } = useSession();
 
   interface CheckOutData {
     name: string;
@@ -88,7 +90,7 @@ export default function CheckoutScreen() {
     resolver: zodResolver(schema),
   });
 
-  const submitData = (data: CheckOutData) => {
+  const submitData = async (data: CheckOutData) => {
     dispatch({
       type: "SAVE_USER_DATA",
       payload: {
@@ -119,6 +121,27 @@ export default function CheckoutScreen() {
         country_name: "Argentina",
       },
     });
+
+    const response = await fetch("/api/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user: session?.user.id,
+        orderItems: state.cart.cartItems.map((item) => ({
+          product: item._id, // Assuming there's a productId field in the item
+          size: item.size,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        totalPrice: 10,
+      }),
+    });
+    const order = await response.json();
+    dispatch({ type: "ADD_ORDER_ID", payload: { orderId: order._id } });
+    console.log(order._id);
+
   };
 
   return (

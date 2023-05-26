@@ -3,7 +3,7 @@ import { connect } from "@/lib/db";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "PUT") {
+  if (req.method === "POST") {
     return createColor(req, res);
   }
 }

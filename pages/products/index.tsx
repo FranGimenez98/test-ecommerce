@@ -1,8 +1,10 @@
 import Layout from "@/components/layouts/layout";
 import { connect } from "@/lib/db";
 import Product from "@/models/Product";
-import React, { use, useState } from "react";
+import React, { Suspense, use, useState } from "react";
 import { IProduct } from "../../interfaces/IProduct";
+import { ICategory } from "../../interfaces/ICategory";
+import { IColor } from "../../interfaces/IColor";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 import { FaShoppingCart } from "react-icons/fa";
@@ -15,15 +17,17 @@ import { getSession, useSession } from "next-auth/react";
 import User from "@/models/User";
 import Favorite from "@/models/Favorite";
 import { IUser } from "@/interfaces/IUser";
+import Category from "@/models/Category";
+import Color from "@/models/Color";
+import { IndexKind } from "typescript";
 
 interface SearchProps {
   products: IProduct[];
   countProducts: number;
-  categories: string[];
+  categories: ICategory[];
   pages: number;
-  colors: string[];
+  colors: IColor[];
   favorites: any;
-  userId: string;
 }
 
 // const PAGE_SIZE = 2;
@@ -43,6 +47,8 @@ const prices = [
   },
 ];
 
+const sexCategories = ["Men", "Women"];
+
 const ratings = [1, 2, 3, 4, 5];
 
 const ProductsScreen: React.FC<SearchProps> = (props) => {
@@ -53,13 +59,13 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
     pages,
     colors,
     favorites,
-    userId,
   } = props;
   const router = useRouter();
   const [userFavs, setUserFavs] = useState(favorites.map((fav: any) => fav));
   const { data: session } = useSession();
-  console.log(userFavs);
+  console.log(session);
 
+  console.log(categories);
   const {
     query = "all",
     category = "all",
@@ -68,6 +74,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
     rating = "all",
     sort = "featured",
     page = "1",
+    sex = "all",
   } = router.query;
 
   const filterSearch = ({
@@ -80,6 +87,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
     searchQuery,
     price,
     rating,
+    sex,
   }: {
     page?: string;
     category?: string;
@@ -90,6 +98,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
     searchQuery?: string;
     price?: string;
     rating?: string;
+    sex?: string;
   }) => {
     const query = { ...router.query };
 
@@ -99,6 +108,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
     if (category) query.category = category;
     if (color) query.color = color;
     if (price) query.price = price;
+    if (sex) query.sex = sex;
     if (rating) query.rating = rating;
     if (min) query.min = query.min ? query.min : query.min === "0" ? "0" : min;
     if (max) query.max = query.max ? query.max : query.max === "0" ? "0" : max;
@@ -128,6 +138,10 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
     filterSearch({ price: e.target.value });
   };
 
+  const sexHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    filterSearch({ sex: e.target.value });
+  };
+
   const ratingHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
     filterSearch({ rating: e.target.value });
   };
@@ -137,13 +151,15 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
 
     if (isFavorite) {
       try {
-        
-        await fetch(`/api/favorites/delete/${userId}?productId=${productId}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        await fetch(
+          `/api/favorites/delete/${session?.user.id}?productId=${productId}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         setUserFavs((prevFavorites: any) =>
           prevFavorites.filter((fav: any) => fav !== productId)
         );
@@ -157,7 +173,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ userId: userId, productId }),
+          body: JSON.stringify({ userId: session?.user.id, productId }),
         });
         setUserFavs((prevFavorites: any) => [...prevFavorites, productId]);
       } catch (error) {
@@ -179,8 +195,8 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
               <option value="all">All</option>
               {categories &&
                 categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
+                  <option key={category?._id} value={category?.name}>
+                    {category?.name}
                   </option>
                 ))}
             </select>
@@ -202,6 +218,23 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
                 ))}
             </select>
           </div>
+
+          <div className="mb-3">
+            <h2>Sex</h2>
+            <select
+              className="w-full  bg-black text-white"
+              value={sex}
+              onChange={sexHandler}
+            >
+              <option value="all">All</option>
+              {sexCategories &&
+                sexCategories.map((value, index) => (
+                  <option key={index} value={value}>
+                    {value}
+                  </option>
+                ))}
+            </select>
+          </div>
           <div className="mb-3">
             <h2>Color</h2>
             <select
@@ -212,8 +245,8 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
               <option value="all">All</option>
               {colors &&
                 colors.map((color) => (
-                  <option key={color} value={color}>
-                    {color}
+                  <option key={color._id} value={color.name}>
+                    {color.name}
                   </option>
                 ))}
             </select>
@@ -414,68 +447,72 @@ export async function getServerSideProps({
   query: NextApiRequest["query"];
   req: NextApiRequest;
 }) {
-  const page = parseInt(query.page as string) || 1;
+  const page = parseInt(query.page as string, 10) || 1;
   const pageSize = 16;
   const skip = (page - 1) * pageSize;
   const filters: any = {};
   const searchQuery = (query.query as string) || "";
   const category = (query.category as string) || "";
   const color = (query.color as string) || "";
+  const sex = (query.sex as string) || "";
   const price = (query.price as string) || "";
   const rating = (query.rating as string) || "";
   const sort = (query.sort as string) || "";
 
   const session = await getSession({ req });
-  const userEmail = session?.user.email;
+  console.log("session:", session);
+  const userEmail = session?.user?.email || "";
 
   if (searchQuery && searchQuery !== "all") {
-    filters.name = {
-      $regex: searchQuery,
-      $options: "i",
-    };
+    filters.name = { $regex: searchQuery, $options: "i" };
   }
   if (category && category !== "all") {
-    filters.category = category;
+    const categoryObj = (await Category.findOne({ name: category })
+      .lean()
+      .exec()) as ICategory;
+    if (categoryObj) {
+      filters.category = categoryObj._id;
+    }
   }
   if (color && color !== "all") {
-    filters.color = color;
+    const colorObj = (await Color.findOne({ name: color })
+      .lean()
+      .exec()) as IColor;
+    if (colorObj) {
+      filters.color = colorObj._id;
+    }
   }
   if (rating && rating !== "all") {
-    filters.rating = {
-      $gte: Number(rating),
-    };
+    filters.rating = { $gte: Number(rating) };
   }
   if (price && price !== "all") {
     const [minPrice, maxPrice] = price.split("-");
-    filters.price = {
-      $gte: Number(minPrice),
-      $lte: Number(maxPrice),
-    };
+    filters.price = { $gte: Number(minPrice), $lte: Number(maxPrice) };
+  }
+  if (sex && sex !== "all") {
+    filters.sex = sex;
   }
 
   await connect(); // Connect to your MongoDB database
 
-  const user = (await User.findOne({ email: userEmail })
-    .select("_id")
-    .lean()
-    .exec()) as IUser;
-  const userId = user?._id.toString();
 
   const [favorites, categories, colors, totalProductsCount, products] =
     await Promise.all([
-      Favorite.find({ user: userId })
+      Favorite.find({ user: session?.user?.id })
         .populate("product", "-reviews")
         .select("product")
-        .select("_id")
         .lean()
         .exec(),
-      Product.distinct("category").lean().exec(),
-      Product.distinct("color").lean().exec(),
+      Category.find().select("name").lean(),
+      Color.find().select("name").lean(),
       Product.countDocuments(filters)
         .lean()
         .exec()
-        .then((count) => Number(count)), // Convert to number
+        .then((count) => Number(count)),
       Product.find(filters, "-reviews")
+        .populate("category", "name")
+        .populate("color", "name")
+        .select("name")
         .sort(
           sort === "featured"
             ? { isFeatured: -1 }
@@ -495,19 +532,19 @@ export async function getServerSideProps({
         .exec(),
     ]);
 
+  const favoriteProductIds = favorites?.map(
+    (favorite: any) => favorite?.product?._id
+  );
 
-    const favoriteProductIds = favorites.map((favorite) => favorite.product._id);
-  // const favorites = await Favorite.find({ user: user?.id }).populate('product', '-reviews').select('product').lean().exec()
-  console.log(favorites);
+  console.log("category", categories);
   return {
     props: {
       products: toJSON(products as IProduct[]),
       currentPage: page,
       pages: Math.ceil(totalProductsCount / pageSize),
-      categories,
-      colors,
+      categories: toJSON(categories as any),
+      colors: toJSON(colors as any),
       favorites: toJSON(favoriteProductIds),
-      userId,
     },
   };
 }

@@ -54,5 +54,6 @@ export interface IInitialState {
     cartItems: CartItem[];
     userData: UserData;
     userAddress: UserAddress;
+    orderId: string;
   };
 }
