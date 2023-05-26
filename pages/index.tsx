@@ -10,7 +10,7 @@ import Link from "next/link";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import CartContext from "@/context/CartContext";
 
-interface HomeProps {
+export interface HomeProps {
   products: IProduct[];
 }
 
