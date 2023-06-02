@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { GiClothes } from "react-icons/gi";
 import { TiArrowSortedDown, TiThMenuOutline } from "react-icons/ti";
+import { BsFillCartFill } from "react-icons/bs";
 import { useSession } from "next-auth/react";
 import useDropdownMenu from "../hooks/useToggleMenu";
 
@@ -17,7 +18,11 @@ import useDropdownMenu from "../hooks/useToggleMenu";
 //   };
 // }
 
-export default function Navbar() {
+interface NavbarProps {
+  setIsOpenCart: (bool: boolean) => void;
+}
+
+export default function Navbar({ setIsOpenCart }: NavbarProps) {
   const { data: session, status } = useSession();
 
   const {
@@ -31,17 +36,24 @@ export default function Navbar() {
   } = useDropdownMenu<HTMLDivElement>(false);
 
   return (
-    <nav className="bg-white border-gray-200 dark:bg-gray-900" ref={ref}>
+    <nav
+      className="bg-white top-0 sticky z-20 border-[1px] border-b-slate-200"
+      ref={ref}
+    >
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link
           href="/"
           className="flex flex-row text-[#8dc572] items-center ml-2"
         >
-          <GiClothes size="2rem" className="mr-1" />
+          <div className="flex flex-col items-center justify-center">
+            <h1 className="text-3xl font-bold text-black">Bazz</h1>
+          </div>
+
+          {/* <GiClothes size="2rem" className="mr-1" />
           <div className="flex flex-col leading-3">
             <span className="text-sm">E-Commerce</span>
             <span className="text-base">Clothes Shop</span>
-          </div>
+          </div> */}
         </Link>
         <div className="relative flex items-center md:order-2">
           {session ? (
@@ -68,10 +80,10 @@ export default function Navbar() {
               >
                 <div className="px-4 py-3">
                   <span className="block text-sm text-gray-900 dark:text-white">
-                    { session.user.name }
+                    {session.user.name}
                   </span>
                   <span className="block text-sm  text-gray-500 truncate dark:text-gray-400">
-                    { session.user.email }
+                    {session.user.email}
                   </span>
                 </div>
                 <ul className="py-2" aria-labelledby="user-menu-button">
@@ -99,14 +111,30 @@ export default function Navbar() {
                       Sign out
                     </a>
                   </li>
+                  <li>
+                    <BsFillCartFill
+                      className="text-2xl text-black"
+                      onClick={() => setIsOpenCart(true)}
+                    />
+                  </li>
                 </ul>
               </div>
             </div>
           ) : (
             <div className="text-white text-sm md:text-base flex justify-between mr-2 items-center">
-              <Link href="/login" className="mr-1 hover:text-green-400 font-bold">Login</Link>
+              <Link
+                href="/login"
+                className="mr-1 hover:text-green-400 font-bold"
+              >
+                Login
+              </Link>
               <span className="text-sm cursor-default">or</span>
-              <Link href="/signup" className="ml-1 hover:text-green-400 font-bold">Sign Up</Link>
+              <Link
+                href="/signup"
+                className="ml-1 hover:text-green-400 font-bold"
+              >
+                Sign Up
+              </Link>
             </div>
           )}
 
@@ -128,7 +156,7 @@ export default function Navbar() {
           } top-full z-50 right-0 items-center justify-between w-full md:flex md:w-auto md:order-1`}
           id="mobile-menu-2"
         >
-          <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+          <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white ">
             <li>
               <a
                 href="#"

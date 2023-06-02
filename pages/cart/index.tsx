@@ -33,7 +33,7 @@ export default function CartScreen() {
         {state?.cart?.cartItems?.map((product, index) => (
           <div
             key={index}
-            className="flex gap-2 items-center justify-between w-full h-full bg-white rounded-md p-2 shadow-lg relative"
+            className="flex gap-2 items-center justify-between w-full md:w- h-full bg-white rounded-md p-2 shadow-lg relative"
           >
             <button
               className="bg-black h-6 w-6  rounded-full absolute top-1 left-1 text-white font-bold flex items-center justify-center"

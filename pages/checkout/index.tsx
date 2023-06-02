@@ -33,8 +33,8 @@ export default function CheckoutScreen() {
       .max(15, { message: "Name must contain at most 15 character(s)" }),
     surname: z
       .string()
-      .min(1, { message: "Name is required" })
-      .max(15, { message: "Name must contain at most 15 character(s)" }),
+      .min(1, { message: "Surname is required" })
+      .max(15, { message: "Surname must contain at most 15 character(s)" }),
     email: z.string().min(1, { message: "Email is required" }).email({
       message: "Must be a valid email",
     }),
@@ -141,44 +141,51 @@ export default function CheckoutScreen() {
     const order = await response.json();
     dispatch({ type: "ADD_ORDER_ID", payload: { orderId: order._id } });
     console.log(order._id);
-
   };
 
   return (
     <Layout>
-      <div className="w-[90%] mt-5">
+      <div className="w-[97%] md:w-[50%] mt-10">
+        <h2 className="text-2xl font-semibold uppercase mb-4">Checkout</h2>
         <form
           className="w-full  flex flex-col items-center justify-center"
           onSubmit={handleSubmit(submitData)}
         >
-          <div className="flex gap-2 justify-center items-center">
-            <div className=" flex flex-col w-full">
+          <div className="flex gap-2 justify-center items-center w-full">
+            <div className=" flex flex-col w-full justify-center">
               <label>Nombre</label>
               <input
                 type="text"
                 className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
                 {...register("name")}
               />
-              {errors.name && (
-                <span className="text-red-500 text-sm">
-                  {errors.name?.message}
-                </span>
-              )}
+              <div className="h-[2.5rem] md:h-[2rem]">
+                {errors.name && (
+                  <span className="text-red-500 text-sm">
+                    {errors.name?.message}
+                  </span>
+                )}
+              </div>
             </div>
-            <div className=" flex flex-col w-full">
+
+            <div className=" flex flex-col w-full justify-center">
               <label>Apellido</label>
               <input
                 type="text"
                 className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
                 {...register("surname")}
               />
+
+              <div className="h-[2.5rem] md:h-[2rem]">
+                {errors.surname && (
+                  <span className="text-red-500 text-sm">
+                    {errors.surname?.message}
+                  </span>
+                )}
+              </div>
             </div>
-            {errors.surname && (
-              <span className="text-red-500 text-sm">
-                {errors.surname?.message}
-              </span>
-            )}
           </div>
+
           <div className=" flex flex-col w-full">
             <label>Email</label>
             <input
@@ -186,47 +193,51 @@ export default function CheckoutScreen() {
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
               {...register("email")}
             />
-            {errors.email && (
-              <span className="text-red-500 text-sm">
-                {errors.email.message}
-              </span>
-            )}
+            <div className="h-[2.5rem] md:h-[2rem]">
+              {errors.email && (
+                <span className="text-red-500 text-sm">
+                  {errors.email.message}
+                </span>
+              )}
+            </div>
           </div>
-          <div className="flex gap-2 justify-center items-center">
-            {/* <div className=" flex flex-col w-[30%]">
-              <label>Code</label>
-              <input
-                type="text"
-                className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
-              />
-            </div> */}
-            <div className=" flex flex-col w-full">
+          <div className="flex gap-2 justify-center items-center w-full">
+            <div className=" flex flex-col w-full justify-center">
               <label>Telofono</label>
               <input
                 type="text"
                 className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
                 {...register("phone")}
               />
+
+              <div className="h-[2.5rem] md:h-[2rem]">
+                {errors.phone && (
+                  <span className="text-red-500 text-sm">
+                    {errors.phone.message}
+                  </span>
+                )}
+              </div>
             </div>
-            {errors.phone && (
-              <span className="text-red-500 text-sm">
-                {errors.phone.message}
-              </span>
-            )}
+            <div className=" flex flex-col w-full justify-center">
+              <label>DNI</label>
+              <input
+                type="text"
+                className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
+                {...register("dni")}
+              />
+              <div className="h-[2.5rem] md:h-[2rem]">
+                {errors.dni && (
+                  <span className="text-red-500 text-sm">
+                    {errors.dni.message}
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
 
-          <div className=" flex flex-col w-full">
-            <label>DNI</label>
-            <input
-              type="text"
-              className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
-              {...register("dni")}
-            />
-          </div>
-          {errors.dni && (
-            <span className="text-red-500 text-sm">{errors.dni.message}</span>
-          )}
-          <div className="flex gap-2 justify-center items-center">
+          <div className=" flex flex-col w-full"></div>
+
+          <div className="flex gap-2 justify-center items-center w-full">
             <div className=" flex flex-col w-full">
               <label>Calle</label>
               <input
@@ -234,12 +245,15 @@ export default function CheckoutScreen() {
                 className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
                 {...register("street_name")}
               />
+              <div className="h-[2.5rem] md:h-[2rem]">
+                {errors.street_name && (
+                  <span className="text-red-500 text-sm">
+                    {errors.street_name.message}
+                  </span>
+                )}
+              </div>
             </div>
-            {errors.street_name && (
-              <span className="text-red-500 text-sm">
-                {errors.street_name.message}
-              </span>
-            )}
+
             <div className=" flex flex-col w-full">
               <label>Numero</label>
               <input
@@ -247,40 +261,49 @@ export default function CheckoutScreen() {
                 className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
                 {...register("street_number")}
               />
+              <div className="h-[2.5rem] md:h-[2rem]">
+                {errors.street_number && (
+                  <span className="text-red-500 text-sm">
+                    {errors.street_number.message}
+                  </span>
+                )}
+              </div>
             </div>
-            {errors.street_number && (
-              <span className="text-red-500 text-sm">
-                {errors.street_number.message}
-              </span>
-            )}
           </div>
           <div className="w-full flex gap-2 justify-center items-center">
-            <div className="w-full flex flex-col justify-center">
+            <div className="w-full flex flex-col justify-center h-full">
               <label>{`Apartamento, habitación, etc.`}</label>
               <input
                 type="text"
                 className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
                 {...register("apartment")}
               />
+              <div className="h-[2.5rem] md:h-[2rem]">
+                {errors.apartment && (
+                  <span className="text-red-500 text-sm">
+                    {errors.apartment.message}
+                  </span>
+                )}
+              </div>
             </div>
-            {errors.apartment && (
-              <span className="text-red-500 text-sm">
-                {errors.apartment.message}
-              </span>
-            )}
-            <div className=" flex flex-col w-[30%] items-center justify-center">
-              <label>Piso</label>
-              <input
-                type="text"
-                className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
-                {...register("floor")}
-              />
+
+            <div className="flex flex-col w-[50%] items-center justify-center h-full">
+              <div className="w-full flex flex-col justify-center">
+                <label>Piso</label>
+                <input
+                  type="text"
+                  className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
+                  {...register("floor")}
+                />
+                <div className="h-[2.5rem] md:h-[2rem]">
+                  {errors.floor && (
+                    <span className="text-red-500 text-sm">
+                      {errors.floor.message}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
-            {errors.floor && (
-              <span className="text-red-500 text-sm">
-                {errors.floor.message}
-              </span>
-            )}
           </div>
 
           <div className=" flex flex-col w-full">
@@ -290,12 +313,14 @@ export default function CheckoutScreen() {
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
               {...register("city_name")}
             />
+            <div className="h-[2.5rem] md:h-[2rem]">
+              {errors.city_name && (
+                <span className="text-red-500 text-sm">
+                  {errors.city_name.message}
+                </span>
+              )}
+            </div>
           </div>
-          {errors.city_name && (
-            <span className="text-red-500 text-sm">
-              {errors.city_name.message}
-            </span>
-          )}
           <div className=" flex flex-col w-full">
             <label>Provincia</label>
             <input
@@ -303,12 +328,15 @@ export default function CheckoutScreen() {
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
               {...register("state_name")}
             />
+            <div className="h-[2.5rem] md:h-[2rem]">
+              {errors.state_name && (
+                <span className="text-red-500 text-sm">
+                  {errors.state_name.message}
+                </span>
+              )}
+            </div>
           </div>
-          {errors.state_name && (
-            <span className="text-red-500 text-sm">
-              {errors.state_name.message}
-            </span>
-          )}
+
           <div className=" flex flex-col w-full">
             <label>Codigo postal</label>
             <input
@@ -316,27 +344,22 @@ export default function CheckoutScreen() {
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
               {...register("zip_code")}
             />
+            <div className="h-[2.5rem] md:h-[2rem]">
+              {errors.zip_code && (
+                <span className="text-red-500 text-sm">
+                  {errors.zip_code.message}
+                </span>
+              )}
+            </div>
           </div>
-          {errors.zip_code && (
-            <span className="text-red-500 text-sm">
-              {errors.zip_code.message}
-            </span>
-          )}
-          <div className=" flex flex-col w-full my-4">
+
+          <div className=" flex flex-col w-full my-8">
             <button
-              className="bg-black text-white text-center py-1 w-full font-semibold"
+              className="bg-black text-white text-center py-1 w-full font-semibold text-xl uppercase"
               type="submit"
             >
-              Confirmar
+              Confirm
             </button>
-            {/* <Link href="/placeorder" className="w-full">
-              <button
-                className="bg-black text-white text-center py-1 w-full font-semibold"
-                type="submit"
-              >
-                Confirmar
-              </button>
-            </Link> */}
           </div>
         </form>
       </div>

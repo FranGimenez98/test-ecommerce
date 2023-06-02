@@ -1,3 +1,9 @@
+export interface Sizes {
+  size: string;
+  quantity: number;
+  _id: string;
+}
+
 export interface CartItem {
   _id: string;
   slug: string;
@@ -7,6 +13,7 @@ export interface CartItem {
   price: number;
   size: string;
   stock: number;
+  sizes: Sizes[];
 }
 
 // export interface ShippingAddress {
