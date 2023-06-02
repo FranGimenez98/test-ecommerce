@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {Bar} from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -19,7 +19,11 @@ ChartJS.register(
   Legend
 );
 
-export default function ChartGeneral() {
+export default function ChartGeneral({
+  ordersByMonth,
+}: {
+  ordersByMonth: any;
+}) {
   const [chartData, setChartData] = useState<{
     labels: string[];
     datasets: {
@@ -29,33 +33,70 @@ export default function ChartGeneral() {
       backgroundColor: string;
     }[];
   }>({
-    labels: [],
+    labels: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
     datasets: [],
   });
 
   const [chartOptions, setChartOptions] = useState({});
 
   useEffect(() => {
+  
+    const sortedOrders = Object.keys(ordersByMonth).sort((a, b) => {
+      const [yearA, monthA] = a.split('-').map((value) => parseInt(value));
+      const [yearB, monthB] = b.split('-').map((value) => parseInt(value));
+      return yearB - yearA || monthB - monthA;
+    });
+  
+    const labels = sortedOrders.map((key) => ordersByMonth[key].month).reverse();
+    const pendingData = sortedOrders.map((key) => ordersByMonth[key].pending).reverse();
+    const approvedData = sortedOrders.map((key) => ordersByMonth[key].approved).reverse();
+  
+
+    const allMonths = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    console.log(sortedOrders);
+    console.log(ordersByMonth);
+
     setChartData({
-      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      labels,
       datasets: [
         {
-          label: "Products",
-          data: [89, 78, 878, 789, 77, 88, 99, 232, 44 ,342, 2324, 24],
+          label: "Pending",
+          data: pendingData,
           borderColor: "#1d4ed8",
           backgroundColor: "#1d4ed8",
         },
         {
-          label: "Users",
-          data: [90, 78, 67, 65, 23, 45, 765, 234, 343, 364, 464, 643],
+          label: "Approved",
+          data: approvedData,
           borderColor: "#15803d",
           backgroundColor: "#15803d",
-        },
-        {
-          label: "Purchases",
-          data: [45, 75, 566, 77, 87, 67, 89, 345, 453, 463, 363, 86, 869],
-          borderColor: "#fde68a",
-          backgroundColor: "#fde68a",
         },
       ],
     });
@@ -67,16 +108,21 @@ export default function ChartGeneral() {
         },
         title: {
           display: true,
-          text: "STOCK",
+          text: "Orders by Month",
+          font: {
+            size: 16,
+            weight: "bold",
+            family: "Arial, sans-serif",
+          },
         },
       },
       maintainAspectRatio: false,
-      reponsive: true,
+      responsive: true,
     });
-  }, []);
+  }, [ordersByMonth]);
 
   return (
-    <div className="w-[95%] h-[95%]">
+    <div className="md:w-[95%] h-[200px] md:h-[100%]">
       <Bar data={chartData} options={chartOptions} />
     </div>
   );
