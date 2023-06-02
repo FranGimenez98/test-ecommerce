@@ -46,7 +46,7 @@ export default function ChartProducts({
       femaleProducts !== null
     ) {
       const data = {
-        labels: ["Male Products", "Female Products"],
+        labels: ["Male", "Female"],
         datasets: [
           {
             data: [maleProducts, femaleProducts],
@@ -85,7 +85,10 @@ export default function ChartProducts({
     }
   }, [totalProducts, maleProducts, femaleProducts]);
 
-  return chartData ? <Doughnut data={chartData} options={chartOptions}/> : null;
+  return chartData ? 
+  <div className="md:w-[95%] h-[280px] md:h-[100%]">
+    <Doughnut data={chartData} options={chartOptions}/> 
+  </div> : null;
 }
 
 export async function getServerSideProps() {
