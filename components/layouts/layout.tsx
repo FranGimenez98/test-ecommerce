@@ -1,20 +1,32 @@
 import Head from "next/head";
-import React from "react";
+import React, {useState} from "react";
 import Navbar from "../navbar";
 import Footer from "../footer";
 import { useSession } from "next-auth/react";
 import { ICart } from "@/interfaces/ICart";
 import { FaWhatsapp } from "react-icons/fa";
+import FiltersMobile from "../filtersMobile";
+import { ILayoutProps } from "@/interfaces/ILayout";
+import Cart from "../cart";
 
-interface LayoutProps {
-  children?: React.ReactNode;
-  title?: string;
-  user?: void;
-  cart?: ICart | undefined;
-}
-
-export default function Layout({ children, title, user }: LayoutProps) {
+export default function Layout({
+  children,
+  title,
+  user,
+  categories,
+  colors,
+  showFilters,
+  setShowFilters,
+  categoryHandler,
+  priceHandler,
+  sexHandler,
+  ratingHandler,
+  colorHandler,
+  
+}: ILayoutProps) {
   const { data: session } = useSession();
+  const [isOpenCart, setIsOpenCart] = useState(false)
+
   return (
     <>
       <div>
@@ -23,8 +35,24 @@ export default function Layout({ children, title, user }: LayoutProps) {
             {title ? title + " - Test Ecommerce" : "Test Ecommerce"}
           </title>
         </Head>
-        <div className="min-h-screen bg-[#ebebeb]">
-          <Navbar />
+        <div className="min-h-screen bg-white relative">
+          {/* <div className="min-h-screen bg-[#ebebeb]"> */}
+          <Navbar setIsOpenCart={setIsOpenCart} />
+          {showFilters && (
+            <FiltersMobile
+              showFilters={showFilters}
+              setShowFilters={setShowFilters}
+              colors={colors}
+              categories={categories}
+              categoryHandler={categoryHandler}
+              priceHandler={priceHandler}
+              sexHandler={sexHandler}
+              ratingHandler={ratingHandler}
+              colorHandler={colorHandler}
+            />
+          )}
+          {isOpenCart && <Cart setIsOpenCart={setIsOpenCart} />}
+
           {/* <Cart cart={cart} /> */}
           <main className="w-[100%] m-auto flex flex-col items-center">
             {children}

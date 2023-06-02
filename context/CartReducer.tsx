@@ -45,6 +45,11 @@ const reducer = (state: State, action: Action) => {
       );
       return { ...state, cart: { ...state.cart, cartItems } };
     }
+    case "CART_UPDATE_ITEM_QUANTITY2": {
+      const { cartItems } = action.payload;
+  localStorage.setItem("cart", JSON.stringify({ ...state.cart, cartItems }));
+  return { ...state, cart: { ...state.cart, cartItems } };
+    }
     case "CART_REMOVE_ITEM": {
       const cartItems = state.cart.cartItems.filter(
         (item) =>

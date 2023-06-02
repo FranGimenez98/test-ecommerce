@@ -13,7 +13,7 @@ export default function PlaceOrderScreen() {
   const { state, dispatch } = useContext(CartContext);
   const [url, setUrl] = useState<null | string>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const {data: session} = useSession()
+  const { data: session } = useSession();
   console.log("url", url);
 
   const requestBody = {
@@ -41,7 +41,7 @@ export default function PlaceOrderScreen() {
     city_name: state.cart.userAddress.city_name,
     state_name: state.cart.userAddress.state_name,
     userId: session?.user?.id,
-    orderId: state.cart.orderId
+    orderId: state.cart.orderId,
   };
 
   useEffect(() => {
@@ -57,7 +57,6 @@ export default function PlaceOrderScreen() {
 
         const data = await response.json();
         setUrl(data.url);
-     
       } catch (error) {
         console.error(error);
       }
@@ -69,7 +68,7 @@ export default function PlaceOrderScreen() {
 
   return (
     <Layout>
-      <div className="w-[95%] lg:w-[50%] mt-5 flex flex-col gap-3">
+      <div className="w-[95%] lg:w-[50%] mt-5 flex flex-col gap-3 min-h-[calc(100vh-4rem)]">
         {state?.cart?.cartItems?.map((product, index) => (
           <div
             key={index}
@@ -108,31 +107,89 @@ export default function PlaceOrderScreen() {
             </div> */}
           </div>
         ))}
-        <div className="flex flex-col w-full">
-          <div className="flex gap-2">
-            <h2>{state?.cart?.userData.name}</h2>
-            <h2>{state?.cart?.userData.surname}</h2>
+        <div className="w-full mt-7">
+          <div className="flex flex-col w-full">
+            <div className="flex flex-col">
+              <div className="flex gap-3">
+                <div className="flex flex-col">
+                  <h2 className="uppercase font-semibold">NAME</h2>
+                  <p>{state?.cart?.userData.name}</p>
+                </div>
+                <div className="flex flex-col">
+                  <h2 className="uppercase font-semibold">SURNAME</h2>
+                  <p>{state?.cart?.userData.surname}</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <h2>{state?.cart?.userData.identification.number}</h2>
-            <h2>{state?.cart?.userData.phone.number}</h2>
+
+          <div className="flex flex-col w-full">
+            <div className="flex flex-col">
+              <div className="flex gap-3">
+                <div className="flex flex-col">
+                  <h2 className="uppercase font-semibold">DNI</h2>
+                  <p>{state?.cart?.userData.identification.number}</p>
+                </div>
+                <div className="flex flex-col">
+                  <h2 className="uppercase font-semibold">PHONE NUMBER</h2>
+                  <p>{state?.cart?.userData.phone.number}</p>
+                </div>
+              </div>
+            </div>
           </div>
+
+          <div className="flex flex-col w-full">
+            <div className="flex flex-col">
+              <div className="flex gap-3">
+                <div className="flex flex-col">
+                  <h2 className="uppercase font-semibold">STATE</h2>
+                  <p>{state?.cart?.userAddress.state_name}</p>
+                </div>
+                <div className="flex flex-col">
+                  <h2 className="uppercase font-semibold">CITY</h2>
+                  <p>{state?.cart?.userAddress.city_name}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col w-full">
+            <div className="flex flex-col">
+              <div className="flex gap-3">
+                <div className="flex flex-col">
+                  <h2 className="uppercase font-semibold">Address</h2>
+                  <p>{state?.cart?.userAddress.street_number}</p>
+                </div>
+                <div className="flex flex-col">
+                  <h2 className="uppercase font-semibold">Number</h2>
+                  <p>{state?.cart?.userAddress.street_name}</p>
+                </div>
+                <div className="flex flex-col">
+                  <h2 className="uppercase font-semibold">zip code</h2>
+                  <p>{state?.cart?.userAddress.zip_code}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col w-full">
+            <div className="flex flex-col">
+              <div className="flex gap-3">
+                <div className="flex flex-col">
+                  <h2 className="uppercase font-semibold">apartment</h2>
+                  <p>{state?.cart?.userAddress.apartment}</p>
+                </div>
+                <div className="flex flex-col">
+                  <h2 className="uppercase font-semibold">floor</h2>
+                  <p>{state?.cart?.userAddress.floor}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
         </div>
-        <div className="flex flex-col w-full">
-          <div className="flex gap-2">
-            <h2>{state?.cart?.userAddress.state_name}</h2>
-            <h2>{state?.cart?.userAddress.city_name}</h2>
-          </div>
-          <div className="flex gap-2">
-            <h2>{state?.cart?.userAddress.street_name}</h2>
-            <h2>{state?.cart?.userAddress.street_number}</h2>
-            <h2>{state?.cart?.userAddress.zip_code}</h2>
-          </div>
-          <div className="flex gap-2">
-            <h2>{state?.cart?.userAddress.apartment}</h2>
-            <h2>{state?.cart?.userAddress.floor}</h2>
-          </div>
-        </div>
+
         {loading ? (
           <button
             className="bg-black text-white text-center py-1 w-full font-semibold"

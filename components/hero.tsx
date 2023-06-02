@@ -3,7 +3,8 @@ import React from "react";
 
 export default function Hero() {
   return (
-    <div className="bg-black w-full md:h-[25rem] h-[16rem] bg-[url('https://stylecaster.com/wp-content/uploads/2022/12/mensfashiontrends.png')] bg-cover bg-no-repeat bg-center bg-origin-padding">
+    <div className="bg-black w-full md:h-[31rem] h-[16rem] bg-gray-400 bg-cover bg-no-repeat bg-center bg-origin-padding">
+    {/* <div className="bg-black w-full md:h-[31rem] h-[16rem] bg-[url('https://stylecaster.com/wp-content/uploads/2022/12/mensfashiontrends.png')] bg-cover bg-no-repeat bg-center bg-origin-padding"> */}
       <div className="md:w-[235px] w-[235px] m-auto">
         <div className="flex flex-row md:justify-between justify-between items-center md:w-[100%] md:mt-[280px] mt-[150px]">
           <Link href="/products">

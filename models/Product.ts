@@ -25,6 +25,11 @@ const productSchema = new mongoose.Schema(
     },
     sex: { type: String, enum: ["Men", "Women"], required: true },
     stock: { type: Number, required: true },
+    rating: { type: Number, min: 0, max: 5, default: 0 },
+    discount: {
+      isActive: { type: Boolean, default: false },
+      value: { type: Number, default: 0 },
+    },
   },
   { timestamps: true }
 );
