@@ -44,7 +44,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         aria-label="Sidebar"
         ref={ref}
       >
-        <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+        <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-black">
           <ul className="space-y-2 font-medium">
             <li>
               <Link
@@ -57,7 +57,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </li>
             <li>
               <Link
-                href="/admin/AdminProducts"
+                href="/admin/product"
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <HiShoppingBag />
@@ -66,7 +66,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </li>
             <li>
               <Link
-                href="/admin/adminOrders"
+                href="/admin/orders"
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <FaShoppingCart />

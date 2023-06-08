@@ -17,7 +17,7 @@ export default function ModalEditProduct({ product }: ModalEditProductProps) {
   const closeModal = () => {
     setIsOpen(false);
   };
-  console.log(product);
+  // console.log(product);
 
   return (
     <div className="relative">
