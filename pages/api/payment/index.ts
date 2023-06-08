@@ -14,7 +14,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
 
 async function mercadoPagoPayment(req: NextApiRequest, res: NextApiResponse) {
   const URL =
-    "https://93c7-2800-810-4fd-8662-29bc-ffc9-a548-2e55.ngrok-free.app";
+    "https://3868-2800-810-4fd-8662-c468-5228-b449-9d5e.ngrok-free.app";
 
   const {
     // title,
@@ -86,9 +86,9 @@ async function mercadoPagoPayment(req: NextApiRequest, res: NextApiResponse) {
         })),
       },
       back_urls: {
-        success: `${URL}/success`,
+        success: `${URL}/payment/success`,
         pending: `${URL}`,
-        failure: `${URL}`,
+        failure: `${URL}/payment/failure`,
       },
       auto_return: "approved",
       notification_url: `${URL}/api/notify`,

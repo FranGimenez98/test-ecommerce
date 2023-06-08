@@ -45,23 +45,29 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages }) => {
   };
 
   return (
-    <div className="pagination flex items-center justify-center">
+    <div className="pagination flex items-center justify-center h-[2rem]">
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="default-button m-2 px-1 py-1 bg-black text-white cursor-pointer"
+        className={`default-button m-1 px-2 h-full ${
+          currentPage === 1 ? "bg-gray-300" : "bg-black text-white"
+        }`}
       >
-        <FiChevronLeft className="text-xl" />
+        <FiChevronLeft
+          className={`text-xl ${
+            currentPage === 1 ? "text-gray-400" : "text-white"
+          }`}
+        />
       </button>
-      <div className="page-numbers">
+      <div className="page-numbers h-full">
         {pageNumbers.map((item, index) => (
           <button
             key={index}
             onClick={() => handlePageChange(item as number)}
             className={
               item === currentPage
-                ? "px-3 py-1 font-semibold bg-black text-white"
-                : "px-3 py-1 font-semibold bg-white"
+                ? "px-[0.90rem] py-1 font-semibold bg-black text-white"
+                : "px-[0.90rem] py-1 font-semibold bg-white"
             }
           >
             {item}
@@ -71,7 +77,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages }) => {
       <button
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={`default-button m-1 px-1 py-1 ${
+        className={`default-button m-1 px-2 h-full ${
           currentPage === totalPages ? "bg-gray-300" : "bg-black text-white"
         }`}
       >

@@ -6,10 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import CartContext from "@/context/CartContext";
 import { useContext } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from 'next/router';
 
 export default function CheckoutScreen() {
   const { state, dispatch } = useContext(CartContext);
   const { data: session } = useSession();
+  const router = useRouter()
 
   interface CheckOutData {
     name: string;
@@ -19,8 +21,8 @@ export default function CheckoutScreen() {
     dni: string;
     street_name: string;
     street_number: string;
-    floor?: string;
-    apartment?: string;
+    floor?: string | null;
+    apartment?: string | null;
     city_name: string;
     state_name: string;
     zip_code: string;
@@ -59,27 +61,26 @@ export default function CheckoutScreen() {
       .regex(/^\d+$/, { message: "Street number must contain only digits" }),
     floor: z
       .string()
-      .min(1)
-      .max(100, { message: "Floor must contain at least 100 character(s)" })
-      .regex(/^\d+$/, { message: "Floor must contain only digits" })
-      .optional(),
+      .max(100, { message: "Floor must contain at most 100 character(s)" })
+      .regex(/^\d*$/, { message: "Floor must contain only digits" })
+      .optional()
+      .nullable(),
     apartment: z
       .string()
-      .min(5)
-      .max(20, { message: "Apartment must contain at least 20 character(s)" })
-      .optional(),
+      .max(20, { message: "Apartment must contain at most 20 character(s)" })
+      .nullish(),
     city_name: z
       .string()
       .min(1, { message: "City name is required" })
-      .max(20, { message: "City name must contain at least 20 character(s)" }),
+      .max(20, { message: "City name must contain at most 20 character(s)" }),
     state_name: z
       .string()
       .min(1, { message: "State name is required" })
-      .max(20, { message: "State name must contain at least 20 character(s)" }),
+      .max(20, { message: "State name must contain at most 20 character(s)" }),
     zip_code: z
       .string()
       .min(1, { message: "Zip code is required" })
-      .max(5, { message: "Zip code must contain at least 5 character(s)" }),
+      .max(5, { message: "Zip code must contain at most 5 character(s)" }),
   });
 
   const {
@@ -131,6 +132,8 @@ export default function CheckoutScreen() {
         user: session?.user.id,
         orderItems: state.cart.cartItems.map((item) => ({
           product: item._id, // Assuming there's a productId field in the item
+          name: item.name,
+          image: item.image,
           size: item.size,
           quantity: item.quantity,
           price: item.price,
@@ -140,13 +143,15 @@ export default function CheckoutScreen() {
     });
     const order = await response.json();
     dispatch({ type: "ADD_ORDER_ID", payload: { orderId: order._id } });
-    console.log(order._id);
+    router.push("/placeorder")
   };
 
   return (
     <Layout>
-      <div className="w-[97%] md:w-[50%] mt-10">
-        <h2 className="text-2xl font-semibold uppercase mb-4">Checkout</h2>
+      <div className="w-[97%] md:w-[50%] mt-4">
+        <h2 className="mt-12 mb-2 text-2xl font-semibold uppercase">
+          Checkout
+        </h2>
         <form
           className="w-full  flex flex-col items-center justify-center"
           onSubmit={handleSubmit(submitData)}
