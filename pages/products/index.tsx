@@ -1,16 +1,13 @@
 import Layout from "@/components/layouts/layout";
 import { connect } from "@/lib/db";
 import Product from "@/models/Product";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { IProduct } from "../../interfaces/IProduct";
 import { ICategory } from "../../interfaces/ICategory";
 import { IColor } from "../../interfaces/IColor";
-import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
-import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 import { ImCross } from "react-icons/im";
-import Link from "next/link";
 import toJSON from "@/lib/toJSON";
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import { useRouter } from "next/router";
 import { getSession, useSession } from "next-auth/react";
 import Favorite from "@/models/Favorite";
@@ -19,8 +16,19 @@ import Color from "@/models/Color";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { TbArrowsSort } from "react-icons/tb";
 import CartContext from "@/context/CartContext";
-import { ProductCard } from "@/components/productCard";
-import Pagination from "@/components/paginate";
+// import { ProductCard } from "@/components/productCard";
+import dynamic from "next/dynamic";
+import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-hot-toast";
+
+const ProductCard = dynamic(
+  () => import("@/components/productCard").then((ctx) => ctx.default),
+  { ssr: true, loading: () => <p>Loading...</p> }
+);
+
+const Pagination = dynamic(() =>
+  import("@/components/paginate").then((ctx) => ctx.default)
+);
 
 interface CartState {
   cartItems: any[]; // Ajusta el tipo según la estructura de tu estado del carrito
@@ -46,10 +54,15 @@ interface SearchProps {
   product: IProduct;
   userFavs: string[];
   toggleFavorite: (productId: string) => void;
-  handleAddToCart: (product: IProduct, size: string, quantity: number) => void;
-  showSizes: boolean[];
-  setShowSizes: React.Dispatch<React.SetStateAction<boolean[]>>;
+  handleAddToCart?: (
+    product: IProduct,
+    size: string,
+    quantity: number
+  ) => void | undefined;
+  showSizes?: boolean[] | [];
+  setShowSizes?: React.Dispatch<React.SetStateAction<boolean[]>>;
   index: number;
+  setIsOpenWishlistMessage?: (bool: boolean) => void | undefined;
 }
 
 // const PAGE_SIZE = 2;
@@ -71,7 +84,7 @@ const prices = [
 
 const sexCategories = ["Men", "Women"];
 
-const ratings = [1, 2, 3, 4, 5];
+// const ratings = [1, 2, 3, 4, 5];
 
 const ProductsScreen: React.FC<SearchProps> = (props) => {
   const {
@@ -101,6 +114,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
   // );
   const [showFilters, setShowFilters] = useState(false);
   const [showSort, setShowSort] = useState(false);
+  const [isOpenWishlistMessage, setIsOpenWishlistMessage] = useState(false);
   const { state, dispatch } = useContext(CartContext);
 
   const {
@@ -110,7 +124,6 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
     color = "all",
     rating = "all",
     // sort = "featured",
-    page = "1",
     sex = "all",
   } = router.query;
 
@@ -170,10 +183,6 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
     filterSearch({ category: category });
   };
 
-  const pageHandler = (page: number) => {
-    filterSearch({ page: page.toString() });
-  };
-
   const sortHandler = (sort: string) => {
     filterSearch({ sort });
     setFilter(sort);
@@ -209,7 +218,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
     filterSearch({ color });
   };
 
-  const toggleFavorite = async (productId: string) => {
+  const toggleFavorite = async (productId: string, productName: string) => {
     const isFavorite = userFavs.includes(productId);
 
     if (isFavorite) {
@@ -239,6 +248,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
           body: JSON.stringify({ userId: session?.user.id, productId }),
         });
         setUserFavs((prevFavorites: any) => [...prevFavorites, productId]);
+        toast.success(`${productName} added to wishlist`);
       } catch (error) {
         console.error("Error adding favorite:", error);
       }
@@ -270,22 +280,26 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
           quantity: updatedQuantity,
         },
       });
+      toast.success(`${product.name} added to cart`);
     } else {
       if (selectedSize.quantity < quantity) {
         return console.log("No hay suficiente stock para agregar al carrito");
       }
 
-      const newItem = { ...product, quantity, size };
+      let price = product.price;
+      if (product.discount.isActive) {
+        const discountValue = product.discount.value;
+        const discountedPrice = price - (price * discountValue) / 100;
+        price = discountedPrice;
+      }
+
+      const newItem = { ...product, quantity, size, price };
       dispatch({ type: "CART_ADD_ITEM", payload: newItem });
+      toast.success(`${product.name} added to cart`);
     }
   };
 
-  const handlePageChange = (page: any) => {
-    router.push({
-      pathname: router.pathname,
-      query: { ...router.query, page: page.toString() },
-    });
-  };
+  console.log("productos", products);
 
   return (
     <Layout
@@ -299,8 +313,10 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
       sexHandler={sexHandler}
       ratingHandler={ratingHandler}
       colorHandler={colorHandler}
+      isOpenWishlistMessage={isOpenWishlistMessage}
+      setIsOpenWishlistMessage={setIsOpenWishlistMessage}
     >
-      <div className="grid md:grid-cols-4 md:gap-5 mt-[2.5rem] w-[97%] md:w-[91%] min-h-[calc(100vh-4rem)] ">
+      <div className="grid md:grid-cols-4 md:gap-5 mt-[2.5rem] w-[97%] md:w-[91%] min-h-[calc(100vh-4rem)] verflow-x-hidden">
         {/* mobile */}
 
         <div className="w-full md:hidden flex justify-between h-[2.5rem] mb-5 relative">
@@ -346,7 +362,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
                   className="w-full text-start"
                   onClick={() => sortHandler("toprated")}
                 >
-                  Customer Reviews
+                  popular
                 </button>
                 <button
                   className="w-full text-start"
@@ -363,91 +379,111 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
         <div className="bg-white hidden md:flex flex-col px-2 max-h-[20rem] mt-[1.7rem]">
           <div className="my-3">
             <div className="w-full border-[1px] border-slate-200 px-1 py-1">
-              <div className="w-full flex justify-between items-center">
-                <h2 className="uppercase font-semibold">Categories</h2>
+              <button
+                className="w-full flex justify-between items-center"
+                onClick={() => {
+                  openCategories
+                    ? setOpenCategories(false)
+                    : setOpenCategories(true);
+                }}
+              >
+                <span className="uppercase font-semibold pl-1">Categories</span>
                 {openCategories ? (
-                  <button
-                    className="text-black text-xl font-semibold cursor-pointer"
-                    onClick={() => setOpenCategories(false)}
-                  >
+                  <span className="text-black text-xl font-semibold cursor-pointer">
+                    {" "}
                     <IoIosArrowForward />
-                  </button>
+                  </span>
                 ) : (
-                  <button
-                    className="text-black text-xl font-semibold cursor-pointer"
-                    onClick={() => setOpenCategories(true)}
-                  >
+                  <span className="text-black text-xl font-semibold cursor-pointer">
                     <IoIosArrowDown />
-                  </button>
+                  </span>
                 )}
-              </div>
-              {openCategories && (
-                <div className="py-1 flex flex-col items-start">
-                  <button
-                    value="all"
-                    onClick={() => categoryHandler("all")}
-                    className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
+              </button>
+              <AnimatePresence>
+                {openCategories && (
+                  <motion.div
+                    className="py-1 flex flex-col items-start"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.1 }}
+                    style={{ overflow: "hidden" }}
+                    key="categories"
                   >
-                    All
-                  </button>
-                  {categories &&
-                    categories.map((category) => (
-                      <button
-                        key={category._id}
-                        className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
-                        onClick={() => categoryHandler(category.name)}
-                      >
-                        {category.name}
-                      </button>
-                    ))}
-                </div>
-              )}
+                    <button
+                      value="all"
+                      onClick={() => categoryHandler("all")}
+                      className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
+                    >
+                      All
+                    </button>
+                    {categories &&
+                      categories.map((category) => (
+                        <button
+                          key={category._id}
+                          className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
+                          onClick={() => categoryHandler(category.name)}
+                        >
+                          {category.name}
+                        </button>
+                      ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 
           {/* menu */}
           <div className="mb-3">
             <div className="w-full border-[1px] border-slate-200 px-1 py-1">
-              <div className="w-full flex justify-between items-center">
-                <h2 className="uppercase font-semibold">Prices</h2>
+              <button
+                className="w-full flex justify-between items-center"
+                onClick={() => {
+                  openPrices ? setOpenPrices(false) : setOpenPrices(true);
+                }}
+              >
+                <span className="uppercase font-semibold pl-1">Prices</span>
                 {openPrices ? (
-                  <button
-                    className="text-black text-xl font-semibold cursor-pointer"
-                    onClick={() => setOpenPrices(false)}
-                  >
+                  <span className="text-black text-xl font-semibold cursor-pointer">
                     <IoIosArrowForward />
-                  </button>
+                  </span>
                 ) : (
-                  <button
-                    className="text-black text-xl font-semibold cursor-pointer"
-                    onClick={() => setOpenPrices(true)}
-                  >
+                  <span className="text-black text-xl font-semibold cursor-pointer">
                     <IoIosArrowDown />
-                  </button>
+                  </span>
                 )}
-              </div>
-
-              {openPrices && (
-                <div className="py-1 flex flex-col items-start">
-                  <button
-                    value="all"
-                    onClick={() => priceHandler("all")}
-                    className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
+              </button>
+              <AnimatePresence>
+                {openPrices && (
+                  <motion.div
+                    className="py-1 flex flex-col items-start"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.1 }}
+                    style={{ overflow: "hidden" }}
+                    key="categories"
                   >
-                    All
-                  </button>
-                  {prices &&
-                    prices.map((price) => (
-                      <button
-                        key={price.value}
-                        className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
-                        onClick={() => priceHandler(price.value)}
-                      >
-                        {price.name}
-                      </button>
-                    ))}
-                </div>
-              )}
+                    <button
+                      value="all"
+                      onClick={() => priceHandler("all")}
+                      className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
+                    >
+                      All
+                    </button>
+                    {prices &&
+                      prices.map((price) => (
+                        <button
+                          key={price.value}
+                          className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
+                          onClick={() => priceHandler(price.value)}
+                        >
+                          {price.name}
+                        </button>
+                      ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 
@@ -554,165 +590,119 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
               )}
             </div>
 
-            <div className="bg-black relative shadow-md w-[14rem] hidden md:flex">
-              <div className="w-full flex justify-between">
-                <button className="w-full text-white px-2 py-1 flex items-center gap-2 uppercase">
+            <button
+              className="bg-black relative shadow-md w-[14rem] hidden md:flex"
+              onClick={() => {
+                openFilter ? setOpenFilter(false) : setOpenFilter(true);
+              }}
+            >
+              <div className="w-full flex justify-between items-center">
+                <span className="w-full text-white px-2 py-1 flex items-center gap-2 uppercase">
                   <TbArrowsSort className="text-xl" />
                   Sort by {filter === "newest" ? "Newest" : filter}
-                </button>
+                </span>
+
                 {openFilter ? (
-                  <button
-                    className="text-white text-xl font-semibold cursor-pointer px-2"
-                    onClick={() => setOpenFilter(false)}
-                  >
+                  <span className="text-white text-xl font-semibold cursor-pointer px-2">
                     <IoIosArrowForward className="text-white" />
-                  </button>
+                  </span>
                 ) : (
-                  <button
-                    className="text-white text-xl font-semibold cursor-pointer px-2"
-                    onClick={() => setOpenFilter(true)}
-                  >
+                  <span className="text-white text-xl font-semibold cursor-pointer px-2">
                     <IoIosArrowDown className="text-white" />
-                  </button>
+                  </span>
                 )}
               </div>
-              {openFilter && (
-                <div className="flex flex-col text-white absolute bg-black z-20 w-full px-2 py-2 shadow-md top-8">
-                  <button
-                    className="w-full text-start"
-                    onClick={() => sortHandler("featured")}
+              <AnimatePresence>
+                {openFilter && (
+                  <motion.div
+                    className="flex flex-col text-white absolute bg-black z-[15] w-full px-2 py-2 shadow-md top-8"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.1 }}
+                    style={{ overflow: "hidden" }}
+                    key="categories"
                   >
-                    Featured
-                  </button>
-                  <button
-                    className="w-full text-start"
-                    onClick={() => sortHandler("lowest")}
-                  >
-                    Price: Low to High
-                  </button>
-                  <button
-                    className="w-full text-start"
-                    onClick={() => sortHandler("highest")}
-                  >
-                    Price: High to Low
-                  </button>
-                  <button
-                    className="w-full text-start"
-                    onClick={() => sortHandler("toprated")}
-                  >
-                    Customer Reviews
-                  </button>
-                  <button
-                    className="w-full text-start"
-                    onClick={() => sortHandler("newest")}
-                  >
-                    Newest Arrivals
-                  </button>
-                </div>
-              )}
-            </div>
+                    <button
+                      className="w-full text-start"
+                      onClick={() => sortHandler("newest")}
+                    >
+                      Newest Arrivals
+                    </button>
+                    <button
+                      className="w-full text-start"
+                      onClick={() => sortHandler("featured")}
+                    >
+                      Featured
+                    </button>
+                    <button
+                      className="w-full text-start"
+                      onClick={() => sortHandler("toprated")}
+                    >
+                      Top Rated
+                    </button>
+                    <button
+                      className="w-full text-start"
+                      onClick={() => sortHandler("lowest")}
+                    >
+                      Price: Low to High
+                    </button>
+                    <button
+                      className="w-full text-start"
+                      onClick={() => sortHandler("highest")}
+                    >
+                      Price: High to Low
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
           </div>
           <div>
-            <div className="grid grid-cols-2 md:grid md:grid-cols-4 w-[100%] gap-2 md:gap-4 md:m-auto">
+            <motion.div
+              className="grid grid-cols-2 md:grid md:grid-cols-4 w-[100%] gap-2 md:gap-4 md:m-auto"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.1, // Adjust the stagger delay as needed
+                  },
+                },
+              }}
+              initial="hidden"
+              animate="visible"
+              transition={{ duration: 1, delay: 0.5 }}
+            >
               {products?.map((product: IProduct, index: number) => (
-                <ProductCard
+                <motion.div
                   key={product._id}
-                  product={product}
-                  userFavs={userFavs}
-                  toggleFavorite={toggleFavorite}
-                  handleAddToCart={handleAddToCart}
-                  showSizes={showSizes}
-                  setShowSizes={setShowSizes}
-                  index={index}
-                />
-              ))}
-            </div>
-
-            <Pagination currentPage={currentPage} totalPages={pages} />
-
-            {/* <ul className="flex items-center justify-center">
-              <li>
-                <button
-                  className="default-button m-2 px-1 py-1 bg-black text-white cursor-pointer"
-                  onClick={() => pageHandler(+page - 1)}
-                  disabled={+page === 1}
+                  variants={{
+                    hidden: { opacity: 0, y: 75 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                  transition={{ duration: 1, delay: index * 0.1 }} // Adjust the delay for each card
                 >
-                  <FiChevronLeft className="text-2xl" />
-                </button>
-              </li>
-              {products.length > 0 && (
-                <>
-                  {Array.from(Array(pages).keys()).map((pageNumber) => {
-                    if (pageNumber < 5 || pageNumber === pages - 1) {
-                      return (
-                        <li key={pageNumber}>
-                          <button
-                            className={`default-button m-2 ${
-                              +page === pageNumber + 1
-                                ? "bg-gray-300 px-3 py-1 font-semibold"
-                                : "px-3 py-1 font-semibold"
-                            } `}
-                            onClick={() => pageHandler(pageNumber + 1)}
-                          >
-                            {pageNumber + 1}
-                          </button>
-                        </li>
-                      );
-                    } else if (pageNumber === 5) {
-                      return (
-                        <li key={pageNumber}>
-                          <span className="m-2">...</span>
-                        </li>
-                      );
+                  <ProductCard
+                    product={product}
+                    userFavs={userFavs}
+                    toggleFavorite={toggleFavorite}
+                    handleAddToCart={handleAddToCart || (() => {})}
+                    showSizes={showSizes || []}
+                    setShowSizes={setShowSizes || (() => {})}
+                    setIsOpenWishlistMessage={
+                      setIsOpenWishlistMessage || undefined
                     }
-                  })}
-                </>
-              )}
-              <li>
-                <button
-                  className="default-button m-2 px-1 py-1 bg-black text-white cursor-pointer"
-                  onClick={() => pageHandler(+page + 1)}
-                  disabled={+page === pages}
-                >
-                  <FiChevronRight className="text-2xl " />
-                </button>
-              </li>
-            </ul> */}
-
-            {/* codigo providional */}
-            {/* <ul className="flex">
-              <li>
-                <button
-                  className="default-button m-2"
-                  onClick={() => pageHandler(+page - 1)}
-                  disabled={+page === 1}
-                >
-                  <p>ñ</p>
-                </button>
-              </li>
-              {products.length > 0 &&
-                Array.from(Array(pages).keys()).map((pageNumber) => (
-                  <li key={pageNumber}>
-                    <button
-                      className={`default-button m-2 ${
-                        +page === pageNumber + 1 ? "font-bold" : ""
-                      } `}
-                      onClick={() => pageHandler(pageNumber + 1)}
-                    >
-                      {pageNumber + 1}
-                    </button>
-                  </li>
-                ))}
-              <li>
-                <button
-                  className="default-button m-2"
-                  onClick={() => pageHandler(+page + 1)}
-                  disabled={+page === pages}
-                >
-                 <p>k</p>
-                </button>
-              </li>
-            </ul> */}
+                    index={index}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+            {products.length ? (
+              <Pagination currentPage={currentPage} totalPages={pages} />
+            ) : (
+              <div className="hidden" />
+            )}
           </div>
         </div>
       </div>
@@ -725,12 +715,15 @@ export default ProductsScreen;
 export async function getServerSideProps({
   query,
   req,
+  res,
 }: {
   query: NextApiRequest["query"];
   req: NextApiRequest;
+  res: NextApiResponse;
 }) {
+  res.setHeader("Cache-Control", `s-maxage=60, stale-while-revalidate`);
   const page = parseInt(query.page as string, 10) || 1;
-  const pageSize = 16;
+  const pageSize = 12;
   const skip = (page - 1) * pageSize;
   const filters: any = {};
   const searchQuery = (query.query as string) || "";

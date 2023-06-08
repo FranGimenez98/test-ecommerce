@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* html,
+body {
+  scroll-behavior: smooth;
+}
+
+body {
+  contain: paint;
+} */
+
+
+/* html,
+body {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+body{
+  
+    position: relative;
+} */
