@@ -15,7 +15,10 @@ const addFavorite = async (req: NextApiRequest, res: NextApiResponse) => {
   const { userId, productId } = req.body;
   try {
     await connect();
-    const hasFavorite = await Favorite.findOne({ product: productId });
+    const hasFavorite = await Favorite.findOne({
+      user: userId,
+      product: productId,
+    });
     if (hasFavorite) {
       return res.status(404).send({ message: "Favorite already exists" });
     }

@@ -13,6 +13,8 @@ import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
 import Favorite from "@/models/Favorite";
 import { getSession, useSession } from "next-auth/react";
+import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 interface Product {
   product: IProduct;
@@ -31,13 +33,18 @@ export default function ProductScreen({
   const [sizeSelected, setSizeSelected] = useState("");
   const [counter, setCounter] = useState(0);
   const [userFavs, setUserFavs] = useState(favorites.map((fav: any) => fav));
+  const [isOpenWishlistMessage, setIsOpenWishlistMessage] = useState(false);
   console.log("product", userFavs);
   const { error, errorMessage, showError, hideError } = useError();
 
   const handleSizeSelected = (size: string) => {
-    setSizeSelected(size);
-    setCounter(0);
-    hideError();
+    if (sizeSelected === size) {
+      setSizeSelected("");
+    } else {
+      setSizeSelected(size);
+      setCounter(0);
+      hideError();
+    }
   };
 
   const handleCounter = ({
@@ -52,6 +59,10 @@ export default function ProductScreen({
       hideError();
     } else {
       showError(`El talle ${size} no cuenta con mas stock`);
+    }
+
+    if (counter >= 0 && sizeSelected === "") {
+      showError("Por favor seleccione un talle");
     }
   };
 
@@ -83,6 +94,7 @@ export default function ProductScreen({
       );
 
       dispatch({ type: "CART_UPDATE_ITEM", payload: updatedCartItems });
+      toast.success(`${product.name} added to cart`);
     } else {
       // Agregar un nuevo producto al carrito
       const size = product.sizes.find((item) => item.size === sizeSelected);
@@ -93,6 +105,7 @@ export default function ProductScreen({
 
       const newItem = { ...product, quantity: counter, size: sizeSelected };
       dispatch({ type: "CART_ADD_ITEM", payload: newItem });
+      toast.success(`${product.name} added to cart`);
     }
   };
 
@@ -126,6 +139,7 @@ export default function ProductScreen({
           body: JSON.stringify({ userId: session?.user.id, productId }),
         });
         setUserFavs((prevFavorites: any) => [...prevFavorites, productId]);
+        toast.success(`${product.name} added to wishlist`);
       } catch (error) {
         console.error("Error adding favorite:", error);
         // Realiza alguna acción en caso de error al agregar a favoritos
@@ -134,7 +148,10 @@ export default function ProductScreen({
   };
 
   return (
-    <Layout>
+    <Layout
+      isOpenWishlistMessage={isOpenWishlistMessage}
+      setIsOpenWishlistMessage={setIsOpenWishlistMessage}
+    >
       <section className="md:w-[91%] w-[99%] min-h-[calc(100vh-4rem)] bg-white mt-9">
         <div className="w-full h-full flex flex-col md:flex-row p-2 gap-2 md:gap-10">
           <div className="w-full flex flex-col-reverse md:flex-row md:gap-2 h-full">
@@ -154,16 +171,33 @@ export default function ProductScreen({
                   SALE!
                 </div>
               )}
-              <button
-                className="absolute z-10 w-9 h-9 md:w-7 md:h-7 right-2 top-2 bg-white rounded-full flex items-center justify-center shadow-md"
-                onClick={() => toggleFavorite(product._id)}
-              >
-                {userFavs.includes(product._id) ? (
-                  <BsSuitHeartFill className="text-red-500 text-[1.5rem] md:text-[1rem]" />
-                ) : (
-                  <BsSuitHeart className="md:text-[1rem] text-[1.5rem]" />
-                )}
-              </button>
+              {session ? (
+                <motion.button
+                  className="absolute z-10 w-9 h-9 md:w-7 md:h-7 right-2 top-2 bg-white rounded-full flex items-center justify-center shadow-md"
+                  onClick={() => {
+                    toggleFavorite(product._id);
+                  }}
+                  whileHover={{ scale: 1 }}
+                  whileTap={{ scale: 0.5 }}
+                >
+                  {userFavs.includes(product._id) ? (
+                    <BsSuitHeartFill className="text-red-500 text-[1.5rem] md:text-[1rem]" />
+                  ) : (
+                    <BsSuitHeart className="md:text-[1rem] text-[1.5rem]" />
+                  )}
+                </motion.button>
+              ) : (
+                <motion.button
+                  className="absolute z-10 w-9 h-9 md:w-7 md:h-7 right-2 top-2 bg-white rounded-full flex items-center justify-center shadow-md"
+                  onClick={() => {
+                    if (setIsOpenWishlistMessage) {
+                      setIsOpenWishlistMessage(true);
+                    }
+                  }}
+                >
+                  <BsSuitHeart className="md:text-[1rem] text-[1.5rem] " />
+                </motion.button>
+              )}
             </div>
           </div>
           <div className="flex flex-col w-full gap-1">
@@ -204,11 +238,13 @@ export default function ProductScreen({
               <span className="text-gray-500 text-sm">
                 Availability{" "}
                 {product.stock > 0 ? (
-                  <span className="text-black font-semibold uppercase text-sm">
+                  <span className="text-green-500 font-semibold uppercase text-sm">
                     In Stock
                   </span>
                 ) : (
-                  <span>No Stock</span>
+                  <span className="text-red-500 font-semibold uppercase text-sm">
+                    No Stock
+                  </span>
                 )}
               </span>
             </div>
@@ -278,9 +314,9 @@ export default function ProductScreen({
                     src={product.image}
                     className="h-full w-full object-cover bg-center"
                   />
-                  <div className="flex flex-col items-center mt-1">
-                    <p className="text-center">{product?.name}</p>
-                    <span>${product?.price}</span>
+                  <div className="flex flex-col justify-center mt-1">
+                    <p className="font-semibold">{product?.name}</p>
+                    <span className="font-semibold">${product?.price}</span>
                   </div>
                 </div>
               </Link>
@@ -314,7 +350,9 @@ export async function getServerSideProps(
     .populate("product")
     .select("_id")
     .lean();
-  const favoriteProductIds = favorites.map((favorite) => favorite?.product?._id);
+  const favoriteProductIds = favorites.map(
+    (favorite) => favorite?.product?._id
+  );
 
   return {
     props: {

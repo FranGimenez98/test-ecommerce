@@ -16,13 +16,13 @@ export default function Footer() {
   }, []);
 
   return (
-    <div className="bg-black h-[270px]  md:h-[275px] mt-3">
+    <footer className="bg-white h-[270px]  md:h-[275px] border-t-[1px] border-b-slate-200 mt-[5rem]">
       <div className="w-[100%] h-[100%] p-6">
         <div className="flex flex-row justify-between mb-4">
           <div className="flex flex-col">
             <Link
               href="/"
-              className="flex flex-row text-[#8dc572] items-center h-[35px]"
+              className="flex flex-row text-black items-center h-[35px]"
             >
               <GiClothes size="2rem" className="mr-1" />
               <div className="flex flex-col leading-3">
@@ -30,7 +30,7 @@ export default function Footer() {
                 <span className="text-base">Clothes Shop</span>
               </div>
             </Link>
-            <div className="flex flex-col text-white mt-2 text-[12px]">
+            <div className="flex flex-col text-black mt-2 text-[12px]">
               <h4>Contactanos</h4>
               <div className="flex items-center">
                 <MdLocationOn className="mr-1"/>
@@ -51,7 +51,7 @@ export default function Footer() {
             </div>
           </div>
           <div className="w-[140px]">
-            <div className="text-white flex flex-col text-right text-[12px] md:text-[15px]">
+            <div className="text-black flex flex-col text-right text-[12px] md:text-[15px]">
               <Link href="/products" className="hover:text-[#8dc572]">
                 <span>Products</span>
               </Link>
@@ -66,32 +66,32 @@ export default function Footer() {
           <a
             href="https://www.instagram.com"
             target="_blank"
-            className="border-2 border-[#8dc572] rounded-full text-[#8dc572] p-2 w-[36px] md:w-[36px] h-[36px] md:h-[36px] ml-2 mr-2 hover:border-[#fff] hover:text-white"
+            className="border-2 border-[#8dc572] rounded-full text-[#8dc572] p-2 w-[36px] md:w-[36px] h-[36px] md:h-[36px] ml-2 mr-2 hover:border-[#fff] hover:text-black"
           >
             <BsInstagram />
           </a>
           <a
             href="https://facebook.com"
             target="_blank"
-            className="border-2 border-[#8dc572] rounded-full text-[#8dc572] p-2 w-[36px] md:w-[36px] h-[36px] md:h-[36px] ml-2 mr-2 hover:border-[#fff] hover:text-white"
+            className="border-2 border-[#8dc572] rounded-full text-[#8dc572] p-2 w-[36px] md:w-[36px] h-[36px] md:h-[36px] ml-2 mr-2 hover:border-[#fff] hover:text-black"
           >
             <FaFacebookF />
           </a>
           <a
             href="https://twitter.com"
             target="_blank"
-            className="border-2 border-[#8dc572] rounded-full text-[#8dc572] p-2 w-[36px] md:w-[36px] h-[36px] md:h-[36px] ml-2 mr-2 hover:border-[#fff] hover:text-white"
+            className="border-2 border-[#8dc572] rounded-full text-[#8dc572] p-2 w-[36px] md:w-[36px] h-[36px] md:h-[36px] ml-2 mr-2 hover:border-[#fff] hover:text-black"
           >
             <BsTwitter />
           </a>
         </div>
         <div className="m-auto text-center mt-2">
-          <span className="text-white text-[12px]">
+          <span className="text-black text-[12px]">
             Copyright © <span id="actual-year"></span>. Project developed by
             Bazz
           </span>
         </div>
       </div>
-    </div>
+    </footer>
   );
 }

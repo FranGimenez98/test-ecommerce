@@ -6,12 +6,12 @@ import { ImCross } from "react-icons/im";
 
 interface FilterProps {
   showFilters: boolean;
-  setShowFilters: (bool: boolean) => void;
-  categoryHandler: (category: string) => void;
-  priceHandler: (price: string) => void;
-  sexHandler: (sex: string) => void;
-  ratingHandler: (rating: number) => void;
-  colorHandler: (color: string) => void;
+  setShowFilters: (bool: boolean) => void | undefined;
+  categoryHandler: (category: string) => void | undefined;
+  priceHandler: (price: string) => void | undefined;
+  sexHandler: (sex: string) => void | undefined;
+  ratingHandler: (rating: number) => void | undefined;
+  colorHandler: (color: string) => void | undefined;
   colors: IColor[];
   categories: ICategory[];
 }

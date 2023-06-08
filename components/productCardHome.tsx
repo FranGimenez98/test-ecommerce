@@ -4,15 +4,18 @@ import { IoFilter } from "react-icons/io5";
 import Link from "next/link";
 import { IProduct } from "@/interfaces/IProduct";
 import CartContext from "@/context/CartContext";
+import { useSession } from "next-auth/react";
+import { motion } from "framer-motion";
 
 interface ProductCardProps {
   product: IProduct;
   userFavs: string[];
-  toggleFavorite: (productId: string) => void;
+  toggleFavorite: (productId: string, productName: string) => void;
   handleAddToCart: (product: IProduct, size: string, quantity: number) => void;
   showSizes: boolean[];
   setShowSizes: React.Dispatch<React.SetStateAction<boolean[]>>;
   index: number;
+  setIsOpenWishlistMessage?: (bool: boolean) => void | undefined;
 }
 
 export const ProductCardHome = ({
@@ -23,7 +26,9 @@ export const ProductCardHome = ({
   showSizes,
   setShowSizes,
   index,
+  setIsOpenWishlistMessage,
 }: ProductCardProps) => {
+  const { data: session } = useSession();
   const { state, dispatch } = useContext(CartContext);
   const [openSizeSelector, setOpenSizeSelector] = useState(false);
 
@@ -42,7 +47,7 @@ export const ProductCardHome = ({
   return (
     <div
       key={product._id}
-      className="bg-white w-[100%] md:w-[100%] h-[262px] md:h-[100%] m-auto text-left relative md:mb-5 mb-20"
+      className="bg-white w-[11.7rem] md:w-[100%] h-[262px] md:h-[100%] m-auto text-left relative md:mb-5 mb-20"
     >
       <div
         onMouseEnter={onMouseEnter}
@@ -53,7 +58,7 @@ export const ProductCardHome = ({
           <img
             src={product.image}
             alt="products"
-            className="w-[300px] h-[15rem] md:h-[28rem] m-auto mt-0 mb-0 object-cover bg-center"
+            className="w-[11.7rem] md:w-[300px] h-[18rem] md:h-[25rem] m-auto mt-0 mb-0 object-cover bg-center"
           />
         </Link>
 
@@ -67,7 +72,7 @@ export const ProductCardHome = ({
               {product.sizes.map((size) => (
                 <button
                   key={size.size}
-                  disabled={ size.quantity === 0}
+                  disabled={size.quantity === 0}
                   className={`border-[1px] border-slate-200 ${
                     size.quantity === 0 && "bg-gray-200 text-gray-400"
                   } ${
@@ -94,7 +99,7 @@ export const ProductCardHome = ({
               {product.sizes.map((size) => (
                 <button
                   key={size.size}
-                  disabled={ size.quantity === 0}
+                  disabled={size.quantity === 0}
                   className={`border-[1px] border-slate-200 ${
                     size.quantity === 0 && "bg-gray-200 text-gray-400"
                   } ${
@@ -129,20 +134,43 @@ export const ProductCardHome = ({
           <span className="font-semibold text-lg">${product.price} </span>
         )}
       </div>
-      {userFavs.includes(product._id) ? (
-        <div className="absolute z-10 w-7 h-7 right-2 top-2 bg-white rounded-full flex items-center justify-center shadow-md">
-          <button
-            className="bottom-[90%] left-[85%] md:bottom-[92%] md:left-[90%]"
-            onClick={() => toggleFavorite(product._id)}
+      {session ? (
+        userFavs.includes(product._id) ? (
+          <motion.div
+            className="absolute z-10 w-7 h-7 right-2 top-2 bg-white rounded-full flex items-center justify-center shadow-md"
+            whileHover={{ scale: 1 }}
+            whileTap={{ scale: 0.5 }}
           >
-            <BsSuitHeartFill className="text-red-500" size="1rem" />
-          </button>
-        </div>
+            <button
+              className="bottom-[90%] left-[85%] md:bottom-[92%] md:left-[90%] w-full h-full flex items-center justify-center rounded-full"
+              onClick={() => toggleFavorite(product._id, product.name)}
+            >
+              <BsSuitHeartFill className="text-red-500" size="1rem" />
+            </button>
+          </motion.div>
+        ) : (
+          <motion.div
+            className="absolute z-10 w-7 h-7 right-2 top-2 bg-white rounded-full flex items-center justify-center shadow-md"
+            whileHover={{ scale: 1 }}
+            whileTap={{ scale: 0.5 }}
+          >
+            <button
+              className=" bottom-[90%] left-[85%] md:bottom-[92%] md:left-[90%] w-full h-full flex items-center justify-center rounded-full"
+              onClick={() => toggleFavorite(product._id, product.name)}
+            >
+              <BsSuitHeart className="text-black" size="1rem" />
+            </button>
+          </motion.div>
+        )
       ) : (
         <div className="absolute z-10 w-7 h-7 right-2 top-2 bg-white rounded-full flex items-center justify-center shadow-md">
           <button
             className=" bottom-[90%] left-[85%] md:bottom-[92%] md:left-[90%]"
-            onClick={() => toggleFavorite(product._id)}
+            onClick={() => {
+              if (setIsOpenWishlistMessage) {
+                setIsOpenWishlistMessage(true);
+              }
+            }}
           >
             <BsSuitHeart className="text-black" size="1rem" />
           </button>
@@ -151,10 +179,17 @@ export const ProductCardHome = ({
 
       <div className="md:hidden absolute z-10 w-7 h-7 left-2 top-2 bg-white rounded-full flex items-center justify-center shadow-md">
         <button
-          className={`bottom-[90%] left-[85%] md:bottom-[92%] md:left-[90%] w-full h-full rounded-full flex items-center justify-center ${openSizeSelector ? ("bg-black text-white") : ("bg-white text-black")}`}
+          className={`bottom-[90%] left-[85%] md:bottom-[92%] md:left-[90%] w-full h-full rounded-full flex items-center justify-center ${
+            openSizeSelector ? "bg-black text-white" : "bg-white text-black"
+          }`}
           onClick={() => setOpenSizeSelector(!openSizeSelector)}
         >
-          <IoFilter className={`${openSizeSelector ? ("bg-black text-white") : ("bg-white text-black")}`} size="1rem" />
+          <IoFilter
+            className={`${
+              openSizeSelector ? "bg-black text-white" : "bg-white text-black"
+            }`}
+            size="1rem"
+          />
         </button>
       </div>
     </div>

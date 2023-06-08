@@ -5,26 +5,26 @@ import { connect } from "@/lib/db";
 import toJSON from "@/lib/toJSON";
 import Product from "@/models/Product";
 import { useSession, getSession } from "next-auth/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import CartContext from "@/context/CartContext";
 import { NextApiRequest } from "next";
 import Favorite from "@/models/Favorite";
-import ProductCard from "@/components/productCard";
 import { ProductCardHome } from "@/components/productCardHome";
+import "@splidejs/react-splide/css";
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+import dynamic from "next/dynamic";
+import { motion, useInView, useAnimation } from "framer-motion";
+// import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 export interface HomeProps {
   products: IProduct[];
   favorites: string[];
   populars: IProduct[];
   onSale: IProduct[];
-}
-
-interface NotificationType {
-  isOpen: boolean;
-  type: "approved" | "failure" | null;
-  content: string;
+  isOpenWishlistMessage?: boolean | undefined;
+  setIsOpenWishlistMessage?: (bool: boolean) => void | undefined;
 }
 
 export default function Home({
@@ -46,44 +46,10 @@ export default function Home({
   );
   const [openCategories, setOpenCategories] = useState(false);
   const { data: session } = useSession();
-  const [notification, setNotification] = useState<NotificationType>({
-    isOpen: false,
-    type: null,
-    content: "",
-  });
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const status = urlParams.get("status");
+  const [isOpenWishlistMessage, setIsOpenWishlistMessage] = useState(false);
 
-    if (status === "approved") {
-      setNotification({
-        content: "Pago aprobado!",
-        isOpen: true,
-        type: "approved",
-      });
-    } else if (status === "failure") {
-      setNotification({
-        content: "Pago fallido!",
-        isOpen: true,
-        type: "failure",
-      });
-    }
-
-    const notificationTimeout = setTimeout(() => {
-      setNotification({
-        isOpen: false,
-        type: null,
-        content: "",
-      });
-    }, 5000);
-
-    return () => {
-      clearTimeout(notificationTimeout);
-    };
-  }, []);
-
-  const toggleFavorite = async (productId: string) => {
+  const toggleFavorite = async (productId: string, productName: string) => {
     const isFavorite = userFavs.includes(productId);
 
     if (isFavorite) {
@@ -113,6 +79,7 @@ export default function Home({
           body: JSON.stringify({ userId: session?.user.id, productId }),
         });
         setUserFavs((prevFavorites: any) => [...prevFavorites, productId]);
+        toast.success(`${productName} added to wishlist`);
       } catch (error) {
         console.error("Error adding favorite:", error);
       }
@@ -144,161 +111,541 @@ export default function Home({
           quantity: updatedQuantity,
         },
       });
+      toast.success(`${product.name} added to cart`);
     } else {
       if (selectedSize.quantity < quantity) {
         return console.log("No hay suficiente stock para agregar al carrito");
       }
 
-      const newItem = { ...product, quantity, size };
+      let price = product.price;
+      if (product.discount.isActive) {
+        const discountValue = product.discount.value;
+        const discountedPrice = price - (price * discountValue) / 100;
+        price = discountedPrice;
+      }
+
+      const newItem = { ...product, quantity, size, price };
       dispatch({ type: "CART_ADD_ITEM", payload: newItem });
+      toast.success(`${product.name} added to cart`);
     }
   };
 
+  //animations
+  //cards refs
+  const popularsRef = useRef(null);
+  const salesRef = useRef(null);
+  const newArrivalsRef = useRef(null);
+
+  //mobile refs
+  const mobilePopularRef = useRef(null);
+  const mobileSalesRef = useRef(null);
+  const mobileNewArrivalsRef = useRef(null);
+
+  //view all refs
+  const popularsViewAll = useRef(null);
+  const salesViewAll = useRef(null);
+  const newArrivalsViewAll = useRef(null);
+
+  //cards useInView
+  const isInViewPopulars = useInView(popularsRef, { once: true });
+  const isInViewSales = useInView(salesRef, { once: true });
+  const isInViewArrivals = useInView(newArrivalsRef, { once: true });
+
+  const isInViewMobilePopularRef = useInView(mobilePopularRef, { once: true });
+  const isInViewMobileSalesRef = useInView(mobileSalesRef, { once: true });
+  const isInViewMobileNewArrivalsRef = useInView(mobileNewArrivalsRef, {
+    once: true,
+  });
+
+  //view all useInView
+  const isInViewPopularsViewAll = useInView(popularsViewAll, { once: true });
+  const isInViewSalesViewAll = useInView(salesViewAll, { once: true });
+  const isInViewArrivalsViewAll = useInView(newArrivalsViewAll, { once: true });
+
+  //cards
+  const cardControls = useAnimation();
+  const salesControls = useAnimation();
+  const newArrivalsControls = useAnimation();
+
+  //mobile
+  const mobileCardControls = useAnimation();
+  const mobileSalesControls = useAnimation();
+  const mobileNewArrivalsControls = useAnimation();
+
+  //view all
+  const popularsViewAllControls = useAnimation();
+  const salesViewAllControls = useAnimation();
+  const newArrivalsViewAllControls = useAnimation();
+
+  useEffect(() => {
+    if (isInViewPopulars) cardControls.start("visible");
+    if (isInViewSales) salesControls.start("visible");
+    if (isInViewArrivals) newArrivalsControls.start("visible");
+
+    if (isInViewMobilePopularRef) mobileCardControls.start("visible");
+    if (isInViewMobileSalesRef) mobileSalesControls.start("visible");
+    if (isInViewMobileNewArrivalsRef)
+      mobileNewArrivalsControls.start("visible");
+
+    if (isInViewPopularsViewAll) popularsViewAllControls.start("visible");
+    if (isInViewSalesViewAll) salesViewAllControls.start("visible");
+    if (isInViewArrivalsViewAll) newArrivalsViewAllControls.start("visible");
+  }, [
+    isInViewPopulars,
+    isInViewSales,
+    isInViewArrivals,
+    isInViewPopularsViewAll,
+    isInViewSalesViewAll,
+    isInViewArrivalsViewAll,
+    isInViewMobilePopularRef,
+    isInViewMobileSalesRef,
+    isInViewMobileNewArrivalsRef,
+  ]);
+
+  console.log(showSizes);
   return (
-    <Layout>
-      <section className="min-h-screen w-full flex flex-col items-center">
+    <Layout
+      isOpenWishlistMessage={isOpenWishlistMessage}
+      setIsOpenWishlistMessage={setIsOpenWishlistMessage}
+    >
+      <section
+        className="min-h-screen w-full flex flex-col items-center"
+        // initial={{ width: 0 }}
+        // animate={{ width: "100%" }}
+        // exit={{ x: window.innerWidth, transition: { duration: 0.5 } }}
+      >
         <Hero />
         {populars.length ? (
-          <div className="md:w-[91%] mt-5 w-full">
-            <div className="w-full flex justify-between items-end">
-              <h2 className="my-2 text-2xl font-bold uppercase">POPULARS</h2>
-              <Link href="/products?rating=5" className="font-bold underline">
-                View All
-              </Link>
+          <motion.div
+            className="md:w-[91%] w-[97%] md:h-[calc(100vh-4rem)] mt-[2rem] md:mt-0 md:flex items-center justify-center flex-col"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <div className="w-full flex justify-between items-end mt-[6rem]">
+              <motion.h2
+                className="mt-12 mb-2 text-2xl font-semibold uppercase"
+                initial={{ opacity: 0, x: 100 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ type: "easeIn", duration: 0.8 }}
+                viewport={{ once: true }}
+              >
+                POPULARS
+              </motion.h2>
+              <motion.div
+                ref={popularsViewAll}
+                initial={{ opacity: 0, y: 100 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ type: "easeIn", duration: 0.8 }}
+                viewport={{ once: true }}
+                animate={popularsViewAllControls}
+                className="mb-2 md:mb-1"
+              >
+                <Link
+                  href="/products?rating=5"
+                  className="font-semibold underline text-sm"
+                >
+                  View All
+                </Link>
+              </motion.div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+            {/* mobile */}
+            <motion.div
+              ref={mobilePopularRef}
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.1, // Adjust the stagger delay as needed
+                  },
+                },
+              }}
+              initial="hidden"
+              animate={mobileCardControls}
+              transition={{ duration: 1, delay: 0.5 }}
+            >
+              <Splide
+                options={{
+                  arrows: false,
+                  pagination: false,
+                  drag: "free",
+                  autoplay: true,
+                  rewind: true,
+                  interval: 4000,
+                  breakpoints: {
+                    640: {
+                      perPage: 2,
+                      gap: "10px",
+                    },
+                  },
+                }}
+                className="md:hidden"
+              >
+                {populars?.map((product, index) => (
+                  <SplideSlide key={product._id}>
+                    <motion.div
+                      variants={{
+                        hidden: { opacity: 0, y: 75 },
+                        visible: { opacity: 1, y: 0 },
+                      }}
+                      transition={{ duration: 0.8, delay: index * 0.2 }}
+                    >
+                      <ProductCardHome
+                        product={product}
+                        userFavs={userFavs}
+                        toggleFavorite={toggleFavorite}
+                        handleAddToCart={handleAddToCart}
+                        showSizes={showSizesPopulars}
+                        setShowSizes={setShowSizesPopulars}
+                        setIsOpenWishlistMessage={
+                          setIsOpenWishlistMessage || undefined
+                        }
+                        index={index}
+                      />
+                    </motion.div>
+                  </SplideSlide>
+                ))}
+              </Splide>
+            </motion.div>
+
+            <motion.div
+              ref={popularsRef}
+              className="hidden md:grid grid-cols-5 gap-4"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.1, // Adjust the stagger delay as needed
+                  },
+                },
+              }}
+              initial="hidden"
+              animate={cardControls}
+              transition={{ duration: 1, delay: 0.5 }} // Adjust the duration and delay values
+            >
               {populars?.map((product, index) => (
-                <ProductCardHome
+                <motion.div
                   key={product._id}
-                  product={product}
-                  userFavs={userFavs}
-                  toggleFavorite={toggleFavorite}
-                  handleAddToCart={handleAddToCart}
-                  showSizes={showSizesPopulars}
-                  setShowSizes={setShowSizesPopulars}
-                  index={index}
-                />
+                  variants={{
+                    hidden: { opacity: 0, y: 75 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                  transition={{ duration: 0.8, delay: index * 0.3 }} // Adjust the delay for each card
+                >
+                  <ProductCardHome
+                    product={product}
+                    userFavs={userFavs}
+                    toggleFavorite={toggleFavorite}
+                    handleAddToCart={handleAddToCart}
+                    showSizes={showSizesPopulars}
+                    setShowSizes={setShowSizesPopulars}
+                    setIsOpenWishlistMessage={
+                      setIsOpenWishlistMessage || undefined
+                    }
+                    index={index}
+                  />
+                </motion.div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         ) : (
           <div></div>
         )}
 
-        <div className="md:w-[91%] mt-5 w-full">
+        <motion.div
+          className="md:w-[91%] w-[97%] md:h-[calc(100vh-4rem)] mt-[5rem] md:flex items-center justify-center flex-col"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           <div className="w-full flex justify-between items-end">
-            <h2 className="my-2 text-2xl font-bold uppercase">Sale</h2>
-            <Link href="/products?sort=newest" className="font-bold underline">
-              View All
-            </Link>
+            <motion.h2
+              className="mt-12 mb-2 text-2xl font-semibold uppercase"
+              initial={{ opacity: 0, x: 100 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ type: "easeIn", duration: 0.8 }}
+              viewport={{ once: true }}
+            >
+              Sale
+            </motion.h2>
+            <motion.div
+              ref={salesViewAll}
+              initial={{ opacity: 0, y: 100 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ type: "easeIn", duration: 0.8 }}
+              viewport={{ once: true }}
+              animate={salesViewAllControls}
+              className="mb-2 md:mb-1"
+            >
+              <Link
+                href="/products?sort=newest"
+                className="font-semibold underline text-sm"
+              >
+                View All
+              </Link>
+            </motion.div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+          <motion.div
+            ref={mobileSalesRef}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.1, // Adjust the stagger delay as needed
+                },
+              },
+            }}
+            initial="hidden"
+            animate={mobileSalesControls}
+            transition={{ duration: 1, delay: 0.5 }}
+          >
+            <Splide
+              options={{
+                arrows: false,
+                pagination: false,
+                drag: "free",
+                autoplay: true,
+                rewind: true,
+                interval: 4000,
+                breakpoints: {
+                  640: {
+                    perPage: 2,
+                    gap: "10px",
+                  },
+                },
+              }}
+              className="md:hidden"
+            >
+              {onSale?.map((product, index) => (
+                <SplideSlide key={product._id}>
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0, y: 75 },
+                      visible: { opacity: 1, y: 0 },
+                    }}
+                    transition={{ duration: 0.8, delay: index * 0.2 }}
+                  >
+                    <ProductCardHome
+                      product={product}
+                      userFavs={userFavs}
+                      toggleFavorite={toggleFavorite}
+                      handleAddToCart={handleAddToCart}
+                      showSizes={showSizesOnSale}
+                      setShowSizes={setShowSizesOnSale}
+                      setIsOpenWishlistMessage={
+                        setIsOpenWishlistMessage || undefined
+                      }
+                      index={index}
+                    />
+                  </motion.div>
+                </SplideSlide>
+              ))}
+            </Splide>
+          </motion.div>
+
+          <motion.div
+            ref={salesRef}
+            className="hidden md:grid grid-cols-5 gap-4"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.1, // Adjust the stagger delay as needed
+                },
+              },
+            }}
+            initial="hidden"
+            animate={salesControls}
+            transition={{ duration: 1, delay: 0.5 }} // Adjust the duration and delay values
+          >
             {onSale?.map((product, index) => (
-              <ProductCardHome
+              <motion.div
                 key={product._id}
-                product={product}
-                userFavs={userFavs}
-                toggleFavorite={toggleFavorite}
-                handleAddToCart={handleAddToCart}
-                showSizes={showSizesOnSale}
-                setShowSizes={setShowSizesOnSale}
-                index={index}
-              />
+                variants={{
+                  hidden: { opacity: 0, y: 75 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                transition={{ duration: 0.8, delay: index * 0.2 }} // Adjust the delay for each card
+              >
+                <ProductCardHome
+                  product={product}
+                  userFavs={userFavs}
+                  toggleFavorite={toggleFavorite}
+                  handleAddToCart={handleAddToCart}
+                  showSizes={showSizesOnSale}
+                  setShowSizes={setShowSizesOnSale}
+                  setIsOpenWishlistMessage={
+                    setIsOpenWishlistMessage || undefined
+                  }
+                  index={index}
+                />
+              </motion.div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        <div className="md:w-[91%] mt-5 w-full">
+        <motion.div
+          className="md:w-[91%] w-[97%] md:h-[calc(100vh-4rem)] mt-[5rem] md:mt-0 md:flex items-center justify-center flex-col"
+          initial={{ opacity: 0, x: -100 }} // Animación desde la izquierda
+          animate={{ opacity: 1, x: 0 }} // Posición final y opacidad 1
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
           <div className="w-full flex justify-between items-end">
-            <h2 className="my-2 text-2xl font-bold uppercase">New arrivals</h2>
-            <Link href="/products?sort=newest" className="font-bold underline">
-              View All
-            </Link>
+            <motion.h2
+              className="mt-12 mb-2 text-2xl font-semibold uppercase"
+              initial={{ opacity: 0, x: 100 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ type: "easeIn", duration: 0.8 }}
+              viewport={{ once: true }}
+            >
+              New arrivals
+            </motion.h2>
+            <motion.div
+              ref={newArrivalsViewAll}
+              initial={{ opacity: 0, y: 100 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ type: "easeIn", duration: 0.8 }}
+              viewport={{ once: true }}
+              animate={newArrivalsViewAllControls}
+              className="mb-2 md:mb-1"
+            >
+              <Link
+                href="/products?sort=newest"
+                className="font-semibold underline text-sm"
+              >
+                View All
+              </Link>
+            </motion.div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {products?.map((product, index) => (
-              <ProductCardHome
-                key={product._id}
-                product={product}
-                userFavs={userFavs}
-                toggleFavorite={toggleFavorite}
-                handleAddToCart={handleAddToCart}
-                showSizes={showSizes}
-                setShowSizes={setShowSizes}
-                index={index}
-              />
-              // <Link href={`/products/${product.slug}`} key={index}>
-              //   <div className="flex flex-col relative">
-              //     <div className="absolute z-10 w-7 h-7 right-2 top-2 bg-white rounded-full flex items-center justify-center shadow-md">
-              //       <AiOutlineHeart className="text-xl" />
-              //       {/* <AiFillHeart className="text-xl text-red-500" /> */}
-              //     </div>
-              //     <div className="h-[23rem] overflow-hidden">
-              //       <img
-              //         src={product.image}
-              //         className="h-full w-full object-cover bg-center hover:scale-110 ease-in-out transition"
-              //       />
-              //     </div>
 
-              //     <div className="h-[4.5rem] flex flex-col px-2 py-1 bg-white">
-              //       <h2 className="text-base font-semibold uppercase text-gray-700">
-              //         {product.name}
-              //       </h2>
-              //       <div className="w-full flex justify-between">
-              //         <span className="font-semibold text-lg">
-              //           ${product.price}
-              //         </span>
-              //         {/* <button className="bg-black text-white py-1 px-2">Add to cart</button> */}
-              //       </div>
-              //     </div>
-              //   </div>
-              // </Link>
+          {/* mobile */}
+          <motion.div
+            ref={mobileNewArrivalsRef}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.1, // Adjust the stagger delay as needed
+                },
+              },
+            }}
+            initial="hidden"
+            animate={mobileNewArrivalsControls}
+            transition={{ duration: 1, delay: 0.5 }}
+          >
+            <Splide
+              options={{
+                arrows: false,
+                pagination: false,
+                drag: "free",
+                autoplay: true,
+                rewind: true,
+                interval: 4000,
+                breakpoints: {
+                  640: {
+                    perPage: 2,
+                    gap: "10px",
+                  },
+                },
+              }}
+              className="md:hidden"
+            >
+              {products?.map((product, index) => (
+                <SplideSlide key={product._id}>
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0, y: 75 },
+                      visible: { opacity: 1, y: 0 },
+                    }}
+                    transition={{ duration: 0.8, delay: index * 0.2 }}
+                  >
+                    <ProductCardHome
+                      product={product}
+                      userFavs={userFavs}
+                      toggleFavorite={toggleFavorite}
+                      handleAddToCart={handleAddToCart}
+                      showSizes={showSizes}
+                      setShowSizes={setShowSizes}
+                      setIsOpenWishlistMessage={
+                        setIsOpenWishlistMessage || undefined
+                      }
+                      index={index}
+                    />
+                  </motion.div>
+                </SplideSlide>
+              ))}
+            </Splide>
+          </motion.div>
+
+          <motion.div
+            ref={newArrivalsRef}
+            className="hidden md:grid grid-cols-5 gap-4"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.1, // Adjust the stagger delay as needed
+                },
+              },
+            }}
+            initial="hidden"
+            animate={newArrivalsControls}
+            transition={{ duration: 1, delay: 0.5 }} // Adjust the duration and delay values
+          >
+            {products?.map((product, index) => (
+              <motion.div
+                key={product._id}
+                variants={{
+                  hidden: { opacity: 0, y: 75 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                transition={{ duration: 0.8, delay: index * 0.2 }} // Adjust the delay for each card
+              >
+                <ProductCardHome
+                  product={product}
+                  userFavs={userFavs}
+                  toggleFavorite={toggleFavorite}
+                  handleAddToCart={handleAddToCart}
+                  showSizes={showSizes}
+                  setShowSizes={setShowSizes}
+                  setIsOpenWishlistMessage={
+                    setIsOpenWishlistMessage || undefined
+                  }
+                  index={index}
+                />
+              </motion.div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
     </Layout>
   );
 }
 
-// const CACHE_DURATION = 60 * 60; // Duración en segundos de la caché
-
-// async function getProducts(): Promise<IProduct[]> {
-//   await connect();
-//   const products = await Product.find()
-//     .sort({ createdAt: -1 })
-//     .limit(4)
-//     .select("name price image slug"); // Solo se devuelven los campos necesarios
-
-//   return products;
-// }
-
-// export async function getStaticProps() {
-//   const products = await getProducts(); // Se obtienen los productos
-//   return {
-//     props: {
-//       products: toJSON(products),
-//     },
-//     revalidate: CACHE_DURATION, // Se almacena en caché durante un tiempo determinado
-//   };
-// }
-
 export async function getServerSideProps({ req }: { req: NextApiRequest }) {
   const session = await getSession({ req });
   await connect();
   const [relatedProducts, favorites, populars, onSale] = await Promise.all([
-    Product.find().sort({ createdAt: -1 }).limit(4),
+    Product.find().sort({ createdAt: -1 }).limit(5),
     Favorite.find({ user: session?.user?.id })
       .populate("product", "-reviews")
       .select("product")
       .lean()
       .exec(),
-    Product.find({ rating: 5 }).sort({ createdAt: -1 }).limit(4),
+    Product.find({ rating: 5 }).sort({ createdAt: -1 }).limit(5),
     Product.find({
       "discount.isActive": true,
     })
       .sort({ createdAt: -1 })
-      .limit(4),
+      .limit(5),
   ]);
 
   console.log("pop", populars);
