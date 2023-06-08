@@ -3,15 +3,20 @@ export interface IProduct {
   name: string;
   slug: string;
   price: number;
-  category: string;
+  category: {
+    name: string,
+  };
   sizes: { size: string; quantity: number }[];
   image: string;
   description?: string;
   stock: number;
-  color: string;
+  color: {
+    name: string,
+  };
   rating: number; // Nuevo campo de rating
   discount: {
     isActive: boolean;
     value: number;
   };
+  sex: string;
 }

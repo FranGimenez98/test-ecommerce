@@ -26,6 +26,7 @@
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-chartjs-2": "^5.2.0",
+    "react-color": "^2.19.3",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.9",
     "react-icons": "^4.8.0",
@@ -39,6 +40,7 @@
     "@types/js-cookie": "^3.0.3",
     "@types/mercadopago": "^1.5.8",
     "@types/mongoose": "^5.11.97",
+    "@types/react-color": "^3.0.6",
     "eslint": "^8.40.0",
     "eslint-plugin-next": "^0.0.0"
   }
