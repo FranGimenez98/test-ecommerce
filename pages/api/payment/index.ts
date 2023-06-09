@@ -14,7 +14,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
 
 async function mercadoPagoPayment(req: NextApiRequest, res: NextApiResponse) {
   const URL =
-    "https://3868-2800-810-4fd-8662-c468-5228-b449-9d5e.ngrok-free.app";
+    "https://45c6-2800-810-4fd-2b31-488e-8bbd-a7ee-4b42.ngrok-free.app";
 
   const {
     // title,

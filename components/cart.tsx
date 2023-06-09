@@ -3,6 +3,7 @@ import Link from "next/link";
 import React, { useContext, useEffect } from "react";
 import { ImCross } from "react-icons/im";
 import { AnimatePresence, motion } from "framer-motion";
+import { useSession } from "next-auth/react";
 
 interface CartProps {
   setIsOpenCart: (bool: boolean) => void;
@@ -11,6 +12,7 @@ interface CartProps {
 
 const Cart = ({ setIsOpenCart, isOpenCart }: CartProps) => {
   const { state, dispatch } = useContext(CartContext);
+  const { data: session } = useSession();
   const handleRemoveFromCart = (item: any) => {
     dispatch({ type: "CART_REMOVE_ITEM", payload: item });
   };
@@ -41,7 +43,6 @@ const Cart = ({ setIsOpenCart, isOpenCart }: CartProps) => {
 
   return (
     <AnimatePresence>
-      
       <div className="w-full h-screen bg-black/30 fixed top-0 right-0 z-30">
         <div
           className="w-full h-full bg-black/30"
@@ -153,21 +154,27 @@ const Cart = ({ setIsOpenCart, isOpenCart }: CartProps) => {
             <span className="text-2xl font-bold">Total: </span>
             <span className="text-2xl font-bold">${totalCartPrice}</span>
           </div>
-
-          {state?.cart?.cartItems.length ? (
-            <Link href="/checkout" className="w-full">
+          {session?.user ? (
+            <Link
+              href={state?.cart?.cartItems.length ? "/checkout" : "#"}
+              className="w-full"
+            >
               <button className="bg-black text-white text-2xl w-full py-2">
                 Order Now
               </button>
             </Link>
           ) : (
-            <button
-              className="bg-black text-white text-2xl w-full py-2"
-              disabled={true}
+            <Link
+              href={"/login"}
+              className="w-full"
             >
-              Order Now
-            </button>
+              <button className="bg-black text-white text-2xl w-full py-2">
+                Order Now
+              </button>
+            </Link>
           )}
+
+          
         </motion.div>
       </div>
     </AnimatePresence>

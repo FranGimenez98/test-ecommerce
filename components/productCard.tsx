@@ -9,13 +9,13 @@ import { motion } from "framer-motion";
 
 interface ProductCardProps {
   product: IProduct;
-  userFavs: string[];
-  toggleFavorite: (productId: string, productName: string) => void;
+  userFavs?: string[];
+  toggleFavorite?: (productId: string, productName: string) => void;
   handleAddToCart?: (product: IProduct, size: string, quantity: number) => void;
   showSizes?: boolean[];
   setShowSizes?: React.Dispatch<React.SetStateAction<boolean[]>>;
   setIsOpenWishlistMessage?: (bool: boolean) => void | undefined;
-  index: number;
+  index?: number;
 }
 
 export const ProductCard = ({
@@ -35,16 +35,20 @@ export const ProductCard = ({
   const onMouseEnter = () => {
     if (showSizes && setShowSizes) {
       const updatedShowSizes = [...showSizes];
-      updatedShowSizes[index] = true;
-      setShowSizes(updatedShowSizes);
+      if (index) {
+        updatedShowSizes[index] = true;
+        setShowSizes(updatedShowSizes);
+      }
     }
   };
 
   const onMouseLeave = () => {
     if (showSizes && setShowSizes) {
       const updatedShowSizes = [...showSizes];
-      updatedShowSizes[index] = false;
-      setShowSizes(updatedShowSizes);
+      if (index) {
+        updatedShowSizes[index] = false;
+        setShowSizes(updatedShowSizes);
+      }
     }
   };
 
@@ -97,8 +101,8 @@ export const ProductCard = ({
             </div>
           </div>
         )}
-
-        {showSizes && showSizes[index] && (
+        
+        {showSizes && index !== undefined && showSizes[index] && (
           <div className="hidden md:flex md:flex-col absolute bottom-0 left-0 right-0 p-2 bg-white text-gray-700 m-1.5 opacity-90">
             <h3 className="font-semibold text-center uppercase text-sm mb-1">
               Quick Cart
@@ -147,11 +151,15 @@ export const ProductCard = ({
         )}
       </div>
       {session ? (
-        userFavs.includes(product._id) ? (
+        userFavs?.includes(product._id) ? (
           <div className="absolute z-10 w-7 h-7 right-2 top-2 bg-white rounded-full flex items-center justify-center shadow-md">
             <motion.button
               className="bottom-[90%] left-[85%] md:bottom-[92%] md:left-[90%]"
-              onClick={() => toggleFavorite(product._id, product.name)}
+              onClick={() => {
+                if (toggleFavorite) {
+                  toggleFavorite(product._id, product.name);
+                }
+              }}
               whileHover={{ scale: 1 }}
               whileTap={{ scale: 0.5 }}
             >
@@ -162,7 +170,11 @@ export const ProductCard = ({
           <div className="absolute z-10 w-7 h-7 right-2 top-2 bg-white rounded-full flex items-center justify-center shadow-md">
             <motion.button
               className=" bottom-[90%] left-[85%] md:bottom-[92%] md:left-[90%]"
-              onClick={() => toggleFavorite(product._id, product.name)}
+              onClick={() => {
+                if (toggleFavorite) {
+                  toggleFavorite(product._id, product.name);
+                }
+              }}
               whileHover={{ scale: 1 }}
               whileTap={{ scale: 0.5 }}
             >

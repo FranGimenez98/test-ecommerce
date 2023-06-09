@@ -72,7 +72,7 @@ const FavoritesScreen = (props: FavoritesProps) => {
           <RenderNoSessionMessage />
         ) : (
           <div className="w-full">
-            <h2 className="mt-5 md:mt-12 mb-2 text-2xl font-semibold uppercase">
+            <h2 className="font-semibold text-xl uppercase mb-1 mt-5">
               Your Wishlist
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">

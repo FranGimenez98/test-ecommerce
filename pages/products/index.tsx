@@ -1,25 +1,32 @@
-import Layout from "@/components/layouts/layout";
-import { connect } from "@/lib/db";
-import Product from "@/models/Product";
 import React, { useContext, useState } from "react";
-import { IProduct } from "../../interfaces/IProduct";
-import { ICategory } from "../../interfaces/ICategory";
-import { IColor } from "../../interfaces/IColor";
-import { ImCross } from "react-icons/im";
-import toJSON from "@/lib/toJSON";
 import { NextApiRequest, NextApiResponse } from "next";
-import { useRouter } from "next/router";
 import { getSession, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
+
+import CartContext from "@/context/CartContext";
+
+import Layout from "@/components/layouts/layout";
+
+import { connect } from "@/lib/db";
+
+import Product from "@/models/Product";
 import Favorite from "@/models/Favorite";
 import Category from "@/models/Category";
 import Color from "@/models/Color";
-import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
-import { TbArrowsSort } from "react-icons/tb";
-import CartContext from "@/context/CartContext";
-// import { ProductCard } from "@/components/productCard";
-import dynamic from "next/dynamic";
+
+import { IProduct } from "../../interfaces/IProduct";
+import { IColor } from "../../interfaces/IColor";
+import { ICategory } from "../../interfaces/ICategory";
+
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "react-hot-toast";
+
+import toJSON from "@/lib/toJSON";
+
+import { ImCross } from "react-icons/im";
+import { TbArrowsSort } from "react-icons/tb";
+import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 
 const ProductCard = dynamic(
   () => import("@/components/productCard").then((ctx) => ctx.default),
@@ -316,12 +323,12 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
       isOpenWishlistMessage={isOpenWishlistMessage}
       setIsOpenWishlistMessage={setIsOpenWishlistMessage}
     >
-      <div className="grid md:grid-cols-4 md:gap-5 mt-[2.5rem] w-[97%] md:w-[91%] min-h-[calc(100vh-4rem)] verflow-x-hidden">
+      <div className="flex flex-col md:grid md:grid-cols-4 md:gap-5 mt-[2.5rem] w-full md:w-[91%] min-h-[calc(100vh-4rem)] verflow-x-hidden">
         {/* mobile */}
 
-        <div className="w-full md:hidden flex justify-between h-[2.5rem] mb-5 relative">
+        <div className="w-full md:hidden flex justify-between h-[2.5rem] mb-1 relative">
           <button
-            className="w-full h-full px-2 font-semibold text-xl bg-gray-300"
+            className="w-full h-full px-2 font-semibold  bg-gray-200"
             onClick={() => {
               setShowFilters(!showFilters), setShowSort(false);
             }}
@@ -329,7 +336,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
             FILTERS
           </button>
           <button
-            className="w-full h-full px-2 font-semibold text-xl bg-gray-300 uppercase"
+            className="w-full h-full px-2 font-semibold  bg-gray-200 uppercase"
             onClick={() => {
               setShowSort(!showSort), setShowFilters(false);
             }}
@@ -338,38 +345,39 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
           </button>
 
           {showSort && (
-            <div className="w-full bg-gray-300 min-h-[10rem] absolute z-20 top-[2.45rem] shadow-md">
-              <div className="flex flex-col text-white absolute w-full px-2 py-2">
+            <div className="w-full bg-gray-200 min-h-[9rem] absolute z-20 top-[2.45rem] shadow-md">
+              <div className="flex flex-col text-black absolute w-full pl-3 py-2">
                 <button
-                  className="w-full text-start"
+                  className="w-full text-start uppercase"
+                  onClick={() => sortHandler("newest")}
+                >
+                  Newest Arrivals
+                </button>
+                <button
+                  className="w-full text-start uppercase"
                   onClick={() => sortHandler("featured")}
                 >
                   Featured
                 </button>
                 <button
-                  className="w-full text-start"
+                  className="w-full text-start uppercase"
                   onClick={() => sortHandler("lowest")}
                 >
                   Price: Low to High
                 </button>
                 <button
-                  className="w-full text-start"
+                  className="w-full text-start uppercase"
                   onClick={() => sortHandler("highest")}
                 >
                   Price: High to Low
                 </button>
                 <button
-                  className="w-full text-start"
+                  className="w-full text-start uppercase"
                   onClick={() => sortHandler("toprated")}
                 >
                   popular
                 </button>
-                <button
-                  className="w-full text-start"
-                  onClick={() => sortHandler("newest")}
-                >
-                  Newest Arrivals
-                </button>
+                
               </div>
             </div>
           )}
@@ -489,7 +497,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
 
           <div className="mb-3">
             <h2 className="uppercase font-semibold">Colors</h2>
-            <div className="w-full flex gap-2">
+            <div className="w-[60%] grid grid-cols-8 gap-1">
               <button
                 className="h-4 w-4 border-[1px] border-slate-200 cursor-pointer text-center text-red"
                 onClick={() => colorHandler("all")}
@@ -559,7 +567,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
           </div>
         </div>
         <div className="md:col-span-3">
-          <div className="mb-2 flex items-center justify-between">
+          <div className="flex items-center justify-between ml-1 mt-2 mb-2 md:ml-0 md:mt-0">
             <div>
               {((query !== "all" && query !== "") ||
                 category !== "all" ||
@@ -577,7 +585,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
                   {rating !== "all" && "  Rating " + rating}
                   &nbsp;
                   <button
-                    className="bg-black w-4 h-4 flex items-center justify-center rounded-full text-center"
+                    className="bg-black w-4 h-4 flex items-center justify-center rounded-full text-center "
                     onClick={() => {
                       router.push("/products"),
                         setRatingStar(null),
@@ -658,7 +666,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
               </AnimatePresence>
             </button>
           </div>
-          <div>
+          <div className="w-[97%] m-auto md:w-full md:m-0">
             <motion.div
               className="grid grid-cols-2 md:grid md:grid-cols-4 w-[100%] gap-2 md:gap-4 md:m-auto"
               variants={{

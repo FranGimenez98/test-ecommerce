@@ -1,7 +1,8 @@
 import Layout from "@/components/layouts/layout";
+import CartContext from "@/context/CartContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BsCheckLg } from "react-icons/bs";
 
 interface NotificationType {
@@ -11,6 +12,7 @@ interface NotificationType {
 }
 
 export default function SuccessPaymentScreen() {
+  const { state, dispatch } = useContext(CartContext);
   const router = useRouter();
   const [notification, setNotification] = useState<NotificationType>({
     isOpen: false,
@@ -21,15 +23,17 @@ export default function SuccessPaymentScreen() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get("status");
+    console.log(status);
 
     if (status === "approved") {
+      dispatch({
+        type: "CART_RESET",
+      });
       setNotification({
         content: "Pago aprobado!",
         isOpen: true,
         type: "approved",
       });
-
-      localStorage.removeItem("cart");
     } else if (status === "failure") {
       setNotification({
         content: "Pago fallido!",
@@ -45,7 +49,7 @@ export default function SuccessPaymentScreen() {
         content: "",
       });
       router.push("/");
-    }, 5000);
+    }, 6000);
 
     return () => {
       clearTimeout(notificationTimeout);
@@ -76,13 +80,6 @@ export default function SuccessPaymentScreen() {
       </section>
     </Layout>
   );
-}
-
-{
-  /* <p className="text-center">
-          You will be redirected to the home page shortly or click here to
-          return to home page
-        </p> */
 }
 
 export async function getServerSideProps(context: any) {

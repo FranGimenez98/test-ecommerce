@@ -47,8 +47,11 @@ const reducer = (state: State, action: Action) => {
     }
     case "CART_UPDATE_ITEM_QUANTITY2": {
       const { cartItems } = action.payload;
-  localStorage.setItem("cart", JSON.stringify({ ...state.cart, cartItems }));
-  return { ...state, cart: { ...state.cart, cartItems } };
+      localStorage.setItem(
+        "cart",
+        JSON.stringify({ ...state.cart, cartItems })
+      );
+      return { ...state, cart: { ...state.cart, cartItems } };
     }
     case "CART_REMOVE_ITEM": {
       const cartItems = state.cart.cartItems.filter(
@@ -57,15 +60,17 @@ const reducer = (state: State, action: Action) => {
       );
       return { ...state, cart: { ...state.cart, cartItems } };
     }
-    // case "CART_RESET": {
-    //   return {
-    //     ...state,
-    //     cart: {
-    //       cartItems: [],
-    //       shippingAddress: { location: {} },
-    //     },
-    //   };
-    // }
+    case "CART_RESET": {
+      return {
+        ...state,
+        cart: {
+          cartItems: [],
+          userData: {},
+          userAddress: {},
+          orderId: "",
+        },
+      };
+    }
     case "SAVE_SHIPPING_ADRESS": {
       return {
         ...state,

@@ -15,6 +15,7 @@ import Favorite from "@/models/Favorite";
 import { getSession, useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import ProductCard from "@/components/productCard";
 
 interface Product {
   product: IProduct;
@@ -303,11 +304,12 @@ export default function ProductScreen({
           </div>
         </div>
         <div className="mt-32 w-full p-1">
-          <h1 className="text-xl font-semibold mb-1 md:mb-4">
+          <h1 className="uppercase font-semibold mb-1">
             You might be interested in
           </h1>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
             {relatedProducts?.map((product) => (
+              // <ProductCard product={product} key={product._id} />
               <Link href={`/products/${product.slug}`} key={product._id}>
                 <div className="h-[20rem] md:h-[25rem] w-full mb-20">
                   <img
@@ -316,7 +318,18 @@ export default function ProductScreen({
                   />
                   <div className="flex flex-col justify-center mt-1">
                     <p className="font-semibold">{product?.name}</p>
-                    <span className="font-semibold">${product?.price}</span>
+                    {product?.discount?.isActive ? (
+                      <span className="font-semibold">
+                        ${product?.price * (1 - product?.discount.value / 100)}{" "}
+                        <span className="text-red-500 line-through">
+                          ${product?.price}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="font-semibold">
+                        ${product?.price}{" "}
+                      </span>
+                    )}
                   </div>
                 </div>
               </Link>

@@ -1,8 +1,9 @@
 import { ICategory } from "@/interfaces/ICategory";
 import { IColor } from "@/interfaces/IColor";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { ImCross } from "react-icons/im";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface FilterProps {
   showFilters: boolean;
@@ -64,6 +65,16 @@ const FiltersMobile = ({
     }
   };
 
+  useEffect(() => {
+    // Ocultar la barra de desplazamiento y deshabilitar el scroll al montar el componente
+    document.body.style.overflow = "hidden";
+
+    // Restaurar el scroll y mostrar la barra de desplazamiento al desmontar el componente
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   return (
     <div className="fixed top-0 w-full h-screen bg-black/30 z-30 md:hidden transition-opacity duration-500">
       <div
@@ -71,120 +82,139 @@ const FiltersMobile = ({
         onClick={() => setShowFilters(false)}
       />
 
-      <div className="absolute w-[90%] h-full bg-white top-0 right-0 z-50 shadow-2xl transition-transform duration-500">
+      <motion.div
+        className="absolute w-[90%] h-full bg-white top-0 right-0 z-50 shadow-2xl transition-transform duration-500"
+        initial={{ transform: "translateX(100%)" }}
+        animate={{ transform: "translateX(0%)" }}
+        exit={{ transform: "translateX(100%)" }}
+        transition={{ duration: 0.3 }}
+      >
         <button
-          className="absolute bg-black w-8 h-8 top-3 left-3 z-50 rounded-full flex items-center justify-center shadow-md"
+          className="absolute  w-8 h-8 top-3 left-3 z-50 rounded-full flex items-center justify-center"
           onClick={() => setShowFilters(false)}
         >
-          <ImCross className="text-xl text-white" />
+          <ImCross className="text-xl text-black" />
         </button>
 
         <div
-          className="flex flex-col px-4 max-h-[20rem] mt-[3rem]"
+          className="flex flex-col px-4 max-h-[20rem] mt-[4rem]"
           onClick={() => setShowFilters(true)}
         >
           <div className="my-3">
-            <div className="w-full border-[1px] border-slate-200 px-2 py-1">
-              <div className="w-full flex justify-between items-center">
-                <h2 className="uppercase font-semibold text-xl">Categories</h2>
+            <div className="w-full border-[1px] border-slate-200 px-1 py-1">
+              <button
+                className="w-full flex justify-between items-center"
+                onClick={() => {
+                  openCategories
+                    ? setOpenCategories(false)
+                    : setOpenCategories(true);
+                }}
+              >
+                <span className="uppercase font-semibold pl-1">Categories</span>
                 {openCategories ? (
-                  <button
-                    className="text-black text-xl font-semibold cursor-pointer"
-                    onClick={() => setOpenCategories(false)}
-                  >
+                  <span className="text-black text-xl font-semibold cursor-pointer">
+                    {" "}
                     <IoIosArrowForward />
-                  </button>
+                  </span>
                 ) : (
-                  <button
-                    className="text-black text-xl font-semibold cursor-pointer"
-                    onClick={() => setOpenCategories(true)}
-                  >
+                  <span className="text-black text-xl font-semibold cursor-pointer">
                     <IoIosArrowDown />
-                  </button>
+                  </span>
                 )}
-              </div>
-              {openCategories && (
-                <div className="py-1 flex flex-col items-start">
-                  <button
-                    value="all"
-                    onClick={() => {
-                      categoryHandler("all");
-                      //   categoryHandler("all"), setShowFilters(!showFilters);
-                    }}
-                    className="uppercase pl-1 text-lg w-full text-start hover:bg-slate-100"
+              </button>
+              <AnimatePresence>
+                {openCategories && (
+                  <motion.div
+                    className="py-1 flex flex-col items-start"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.1 }}
+                    style={{ overflow: "hidden" }}
+                    key="categories"
                   >
-                    All
-                  </button>
-                  {categories &&
-                    categories.map((category) => (
-                      <button
-                        key={category._id}
-                        className="uppercase pl-1 text-lg w-full text-start hover:bg-slate-100"
-                        onClick={() => {
-                          categoryHandler(category.name);
-                        }}
-                      >
-                        {category.name}
-                      </button>
-                    ))}
-                </div>
-              )}
+                    <button
+                      value="all"
+                      onClick={() => categoryHandler("all")}
+                      className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
+                    >
+                      All
+                    </button>
+                    {categories &&
+                      categories.map((category) => (
+                        <button
+                          key={category._id}
+                          className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
+                          onClick={() => categoryHandler(category.name)}
+                        >
+                          {category.name}
+                        </button>
+                      ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 
           {/* menu */}
           <div className="mb-3">
-            <div className="w-full border-[1px] border-slate-200 px-2 py-1">
-              <div className="w-full flex justify-between items-center">
-                <h2 className="uppercase font-semibold text-xl">Prices</h2>
+          <div className="mb-3">
+            <div className="w-full border-[1px] border-slate-200 px-1 py-1">
+              <button
+                className="w-full flex justify-between items-center"
+                onClick={() => {
+                  openPrices ? setOpenPrices(false) : setOpenPrices(true);
+                }}
+              >
+                <span className="uppercase font-semibold pl-1">Prices</span>
                 {openPrices ? (
-                  <button
-                    className="text-black text-xl font-semibold cursor-pointer"
-                    onClick={() => setOpenPrices(false)}
-                  >
+                  <span className="text-black text-xl font-semibold cursor-pointer">
                     <IoIosArrowForward />
-                  </button>
+                  </span>
                 ) : (
-                  <button
-                    className="text-black text-xl font-semibold cursor-pointer"
-                    onClick={() => setOpenPrices(true)}
-                  >
+                  <span className="text-black text-xl font-semibold cursor-pointer">
                     <IoIosArrowDown />
-                  </button>
+                  </span>
                 )}
-              </div>
-
-              {openPrices && (
-                <div className="py-1 flex flex-col items-start">
-                  <button
-                    value="all"
-                    onClick={() => {
-                      priceHandler("all");
-                    }}
-                    className="uppercase pl-1 text-lg w-full text-start hover:bg-slate-100"
+              </button>
+              <AnimatePresence>
+                {openPrices && (
+                  <motion.div
+                    className="py-1 flex flex-col items-start"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.1 }}
+                    style={{ overflow: "hidden" }}
+                    key="categories"
                   >
-                    All
-                  </button>
-                  {prices &&
-                    prices.map((price) => (
-                      <button
-                        key={price.value}
-                        className="uppercase pl-1 text-lg w-full text-start hover:bg-slate-100"
-                        onClick={() => {
-                          priceHandler(price.value);
-                        }}
-                      >
-                        {price.name}
-                      </button>
-                    ))}
-                </div>
-              )}
+                    <button
+                      value="all"
+                      onClick={() => priceHandler("all")}
+                      className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
+                    >
+                      All
+                    </button>
+                    {prices &&
+                      prices.map((price) => (
+                        <button
+                          key={price.value}
+                          className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
+                          onClick={() => priceHandler(price.value)}
+                        >
+                          {price.name}
+                        </button>
+                      ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
+          </div>
           </div>
 
           <div className="mb-3">
             <h2 className="uppercase font-semibold text-xl">Colors</h2>
-            <div className="w-full flex gap-2">
+            <div className="grid grid-cols-7 w-[80%] gap-1">
               <button
                 className="h-7 w-7 border-[1px] border-slate-200 cursor-pointer text-center text-red"
                 onClick={() => {
@@ -263,7 +293,7 @@ const FiltersMobile = ({
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
