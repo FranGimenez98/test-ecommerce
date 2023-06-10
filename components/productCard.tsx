@@ -12,10 +12,10 @@ interface ProductCardProps {
   userFavs?: string[];
   toggleFavorite?: (productId: string, productName: string) => void;
   handleAddToCart?: (product: IProduct, size: string, quantity: number) => void;
-  showSizes?: boolean[];
-  setShowSizes?: React.Dispatch<React.SetStateAction<boolean[]>>;
+  showSizes: boolean[];
+  setShowSizes: React.Dispatch<React.SetStateAction<boolean[]>>;
+  index: number;
   setIsOpenWishlistMessage?: (bool: boolean) => void | undefined;
-  index?: number;
 }
 
 export const ProductCard = ({
@@ -33,23 +33,15 @@ export const ProductCard = ({
   const [openSizeSelector, setOpenSizeSelector] = useState(false);
 
   const onMouseEnter = () => {
-    if (showSizes && setShowSizes) {
-      const updatedShowSizes = [...showSizes];
-      if (index) {
-        updatedShowSizes[index] = true;
-        setShowSizes(updatedShowSizes);
-      }
-    }
+    const updatedShowSizes = [...showSizes];
+    updatedShowSizes[index] = true;
+    setShowSizes(updatedShowSizes);
   };
 
   const onMouseLeave = () => {
-    if (showSizes && setShowSizes) {
-      const updatedShowSizes = [...showSizes];
-      if (index) {
-        updatedShowSizes[index] = false;
-        setShowSizes(updatedShowSizes);
-      }
-    }
+    const updatedShowSizes = [...showSizes];
+    updatedShowSizes[index] = false;
+    setShowSizes(updatedShowSizes);
   };
 
   return (
@@ -101,8 +93,7 @@ export const ProductCard = ({
             </div>
           </div>
         )}
-        
-        {showSizes && index !== undefined && showSizes[index] && (
+        {showSizes[index] && (
           <div className="hidden md:flex md:flex-col absolute bottom-0 left-0 right-0 p-2 bg-white text-gray-700 m-1.5 opacity-90">
             <h3 className="font-semibold text-center uppercase text-sm mb-1">
               Quick Cart
@@ -196,25 +187,6 @@ export const ProductCard = ({
           </button>
         </div>
       )}
-      {/* {userFavs.includes(product?._id) ? (
-        <div className="absolute z-10 w-7 h-7 right-2 top-2 bg-white rounded-full flex items-center justify-center shadow-md">
-          <button
-            className="bottom-[90%] left-[85%] md:bottom-[92%] md:left-[90%]"
-            onClick={() => toggleFavorite(product?._id)}
-          >
-            <BsSuitHeartFill className="text-red-500" size="1rem" />
-          </button>
-        </div>
-      ) : (
-        <div className="absolute z-10 w-7 h-7 right-2 top-2 bg-white rounded-full flex items-center justify-center shadow-md">
-          <button
-            className=" bottom-[90%] left-[85%] md:bottom-[92%] md:left-[90%]"
-            onClick={() => toggleFavorite(product?._id)}
-          >
-            <BsSuitHeart className="text-black" size="1rem" />
-          </button>
-        </div>
-      )} */}
 
       <div className="md:hidden absolute z-10 w-7 h-7 left-2 top-2 bg-white rounded-full flex items-center justify-center shadow-md">
         <button

@@ -648,7 +648,6 @@ export async function getServerSideProps({ req }: { req: NextApiRequest }) {
       .limit(5),
   ]);
 
-  console.log("pop", populars);
   const favoriteProductIds = favorites?.map(
     (favorite: any) => favorite?.product?._id
   );

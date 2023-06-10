@@ -66,8 +66,8 @@ interface SearchProps {
     size: string,
     quantity: number
   ) => void | undefined;
-  showSizes?: boolean[] | [];
-  setShowSizes?: React.Dispatch<React.SetStateAction<boolean[]>>;
+  showSizes: boolean[];
+  setShowSizes: React.Dispatch<React.SetStateAction<boolean[]>>;
   index: number;
   setIsOpenWishlistMessage?: (bool: boolean) => void | undefined;
 }
@@ -696,8 +696,8 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
                     userFavs={userFavs}
                     toggleFavorite={toggleFavorite}
                     handleAddToCart={handleAddToCart || (() => {})}
-                    showSizes={showSizes || []}
-                    setShowSizes={setShowSizes || (() => {})}
+                    showSizes={showSizes}
+                    setShowSizes={setShowSizes}
                     setIsOpenWishlistMessage={
                       setIsOpenWishlistMessage || undefined
                     }
