@@ -209,7 +209,7 @@ export default function Home({
       setIsOpenWishlistMessage={setIsOpenWishlistMessage}
     >
       <section
-        className="min-h-screen w-full flex flex-col items-center"
+        className="min-h-screen w-full flex flex-col items-center mb-[4rem]"
         // initial={{ width: 0 }}
         // animate={{ width: "100%" }}
         // exit={{ x: window.innerWidth, transition: { duration: 0.5 } }}
@@ -217,7 +217,7 @@ export default function Home({
         <Hero />
         {populars.length ? (
           <motion.div
-            className="md:w-[91%] w-[97%] md:h-[calc(100vh-4rem)] mt-[2rem] md:mt-0 md:flex items-center justify-center flex-col"
+            className="md:w-[91%] w-[97%] md:h-[calc(100vh-4rem)] md:mt-0 md:flex items-center justify-center flex-col"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
@@ -271,14 +271,10 @@ export default function Home({
                   arrows: false,
                   pagination: false,
                   drag: "free",
-                  autoplay: true,
                   rewind: true,
                   interval: 4000,
                   breakpoints: {
-                    640: {
-                      perPage: 2,
-                      gap: "10px",
-                    },
+                    640: { fixedWidth: "16rem", gap: "1rem" },
                   },
                 }}
                 className="md:hidden"
@@ -409,14 +405,10 @@ export default function Home({
                 arrows: false,
                 pagination: false,
                 drag: "free",
-                autoplay: true,
                 rewind: true,
                 interval: 4000,
                 breakpoints: {
-                  640: {
-                    perPage: 2,
-                    gap: "10px",
-                  },
+                  640: { fixedWidth: "16rem", gap: "1rem" },
                 },
               }}
               className="md:hidden"
@@ -545,14 +537,10 @@ export default function Home({
                 arrows: false,
                 pagination: false,
                 drag: "free",
-                autoplay: true,
                 rewind: true,
                 interval: 4000,
                 breakpoints: {
-                  640: {
-                    perPage: 2,
-                    gap: "10px",
-                  },
+                  640: { fixedWidth: "16rem", gap: "1rem" },
                 },
               }}
               className="md:hidden"

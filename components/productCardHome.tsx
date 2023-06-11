@@ -47,7 +47,7 @@ export const ProductCardHome = ({
   return (
     <div
       key={product._id}
-      className="bg-white w-[11rem] md:w-[100%] h-[262px] md:h-[100%] m-auto text-left relative md:mb-5 mb-20"
+      className="bg-white w-[16rem] md:w-[100%] h-[20rem] md:h-[100%] m-auto text-left relative md:mb-5 mb-20"
     >
       <div
         onMouseEnter={onMouseEnter}
@@ -58,7 +58,7 @@ export const ProductCardHome = ({
           <img
             src={product.image}
             alt="products"
-            className="w-[11rem] md:w-[300px] h-[18rem] md:h-[25rem] m-auto mt-0 mb-0 object-cover bg-center"
+            className="w-[16rem] md:w-[300px] h-[22rem] md:h-[25rem] m-auto mt-0 mb-0 object-cover bg-center"
           />
         </Link>
 

@@ -326,15 +326,16 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
       <div className="flex flex-col md:grid md:grid-cols-4 md:gap-5 mt-[2.5rem] w-full md:w-[91%] min-h-[calc(100vh-4rem)] verflow-x-hidden">
         {/* mobile */}
 
-        <div className="w-full md:hidden flex justify-between h-[2.5rem] mb-1 relative">
+        <div className="w-full md:hidden flex justify-between items-center h-[2.5rem] mb-1 relative bg-gray-200">
           <button
-            className="w-full h-full px-2 font-semibold  bg-gray-200"
+            className="w-full h-full px-2 font-semibold  "
             onClick={() => {
               setShowFilters(!showFilters), setShowSort(false);
             }}
           >
             FILTERS
           </button>
+          <div className="w-[2.2px] bg-gray-400 h-[70%]" />
           <button
             className="w-full h-full px-2 font-semibold  bg-gray-200 uppercase"
             onClick={() => {
