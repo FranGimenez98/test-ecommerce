@@ -1,9 +1,12 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import db from "../../../lib/db";
+import { connect } from "@/lib/db";
 import User from "@/models/User";
 import { IUser } from "@/interfaces/IUser";
 import bcryptjs from "bcryptjs";
+import GoogleProvider from "next-auth/providers/google";
+import mongoose from "mongoose";
+import { ObjectId } from "mongoose";
 
 export default NextAuth({
   session: {
@@ -11,9 +14,46 @@ export default NextAuth({
     maxAge: 60 * 60 * 24, // 1 day
     updateAge: 60 * 5, // 5 minutes
   },
+  secret: process.env.NEXTAUTH_SECRET as string,
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
+    async signIn({ account, profile, email, user }) {
+      if (account?.provider === "google") {
+        try {
+          await connect();
+          const existingUser = await User.findOne({ email: profile?.email });
+          if (!existingUser) {
+            const newUser = new User({
+              _id: new mongoose.Types.ObjectId(),
+              email: profile?.email,
+              isAdmin: false,
+              password: profile?.at_hash,
+              lastname: profile?.family_name,
+              name: profile?.given_name,
+            });
+            await newUser.save();
+
+            // Guardar el ID de MongoDB en el token
+            user.id = newUser._id.toString();
+            user.isAdmin = newUser.isAdmin;
+          } else {
+            // Guardar el ID de MongoDB existente en el token
+            user.id = existingUser._id.toString();
+            user.isAdmin = existingUser.isAdmin;
+          }
+        } catch (error) {
+          console.error("error", error);
+        }
+      }
+      return true;
+    },
+    async jwt({
+      token,
+      user,
+    }: {
+      token: any;
+      user: { id: string; isAdmin: boolean };
+    }) {
+      if (user && user.id) {
         return {
           ...token,
           user: {
@@ -24,14 +64,22 @@ export default NextAuth({
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: any }) {
-      if (session?.user) {
+    async session({
+      session,
+      token,
+    }: {
+      session: any;
+      token: any;
+      user: any;
+      newSession: any;
+      trigger: any;
+    }) {
+      if (token?.user) {
         try {
-          await db.connect();
-          const user: IUser | null = (await User.findOne({
-            _id: token.user.id,
+          await connect();
+          const user: IUser | null | undefined = (await User.findOne({
+            _id: token.user.id, // Retrieve user by ID instead of email
           }).lean()) as IUser;
-          await db.disconnect();
           if (user) {
             return {
               ...session,
@@ -44,7 +92,7 @@ export default NextAuth({
             };
           }
         } catch (error) {
-          console.error(error);
+          console.error("session", error);
         }
       }
 
@@ -52,6 +100,10 @@ export default NextAuth({
     },
   },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
     CredentialsProvider({
       type: "credentials",
       credentials: {
@@ -64,11 +116,10 @@ export default NextAuth({
         }
 
         try {
-          await db.connect();
+          await connect();
           const user: IUser | null = (await User.findOne({
             email: credentials.email,
           }).lean()) as IUser;
-          await db.disconnect();
           if (!user) throw new Error("User not found");
 
           if (!bcryptjs.compareSync(credentials.password, user.password)) {

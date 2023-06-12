@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import bcryptjs from "bcryptjs";
-import db from "@/lib/db";
+import { connect } from "@/lib/db";
 import User from "@/models/User";
 
 function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -13,7 +13,7 @@ const signUp = async (req: NextApiRequest, res: NextApiResponse) => {
   const { name, lastname, email, password } = req.body;
   if (
     !name ||
-    !lastname ||   
+    !lastname ||
     !email ||
     !email.includes("@") ||
     !password ||
@@ -25,11 +25,10 @@ const signUp = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
   try {
-    await db.connect();
+    await connect();
     const userExists = await User.findOne({ email: email });
     if (userExists) {
       res.status(422).json({ message: "User already exists" });
-      await db.disconnect();
       return;
     }
 
@@ -41,7 +40,6 @@ const signUp = async (req: NextApiRequest, res: NextApiResponse) => {
       isAdmin: false,
     });
     const user = await newUser.save();
-    await db.disconnect();
     res.status(201).json({
       message: "User created successfully",
       _id: user._id,
@@ -55,4 +53,4 @@ const signUp = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default handler
+export default handler;

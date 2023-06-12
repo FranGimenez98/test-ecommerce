@@ -1,5 +1,5 @@
 import Product from "@/models/Product";
-import db from "@/lib/db";
+import { connect } from "@/lib/db";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -12,11 +12,10 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
 }
 
 const postProduct = async (req: NextApiRequest, res: NextApiResponse) => {
-  await db.connect();
+  await connect();
 
   try {
     const product = await Product.create(req.body);
-    await db.disconnect();
     res.status(200).json(product);
   } catch (error) {
     return console.log("error", error);
@@ -24,11 +23,10 @@ const postProduct = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const getProducts = async (req: NextApiRequest, res: NextApiResponse) => {
-  await db.connect();
+  await connect();
 
   try {
     const products = await Product.find();
-    await db.disconnect();
     res.status(200).json(products);
   } catch (error) {
     return console.log("error", error);

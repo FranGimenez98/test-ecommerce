@@ -8,9 +8,18 @@ declare module "next-auth" {
       id: string;
       isAdmin: boolean;
       name: string;
-    } & DefaultSession["user"]
+    } & DefaultSession["user"];
   }
-//   interface User extends DefaultUser {
-//     isAdmin: boolean;
-//   }
+  interface User extends DefaultUser {
+    isAdmin: boolean;
+  }
+  interface AdapterUser extends User {
+    isAdmin: boolean;
+  }
+
+  interface Profile {
+    at_hash: string;
+    family_name: string;
+    given_name: string;
+  }
 }

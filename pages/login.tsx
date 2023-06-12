@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Layout from "../components/layouts/layout";
-import { signIn, useSession } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import Link from "next/link";
 import { z, ZodType } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FcGoogle } from "react-icons/fc";
+import { useRouter } from "next/router";
+import { NextPageContext } from "next";
 
 type LogInData = {
   email: string;
@@ -15,12 +17,24 @@ type LogInData = {
 
 export default function LoginScreen() {
   const [userError, setUserError] = useState(false);
-  console.log(userError);
+  // const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // useEffect(() => {
+  //   if (session?.user) {
+  //     if(router.pathname === '/login' || router.pathname === '/signup') {
+  //       router.push('/');
+  //     }
+  //   }
+  // }, [session]);
 
   const schema: ZodType<LogInData> = z
     .object({
       email: z.string().email(),
-      password: z.string().min(6).max(20),
+      password: z
+        .string()
+        .min(6, { message: "Password must contain at least 6 character(s)" })
+        .max(20),
       repeatPassword: z.string().min(6).max(20),
     })
     .refine((data) => data.password === data.repeatPassword, {
@@ -41,10 +55,13 @@ export default function LoginScreen() {
       redirect: false,
       email: data.email,
       password: data.password,
+      callbackUrl: "/",
     });
 
     if (!user?.ok) {
       setUserError(true);
+    } else {
+      router.push("/");
     }
   };
 
@@ -70,7 +87,6 @@ export default function LoginScreen() {
           <div className="w-[70%] flex flex-col mb-3">
             <label className="font-semibold text-slate-600">Password</label>
             <input
-            
               type="password"
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
               {...register("password")}
@@ -86,7 +102,6 @@ export default function LoginScreen() {
               Repeat password
             </label>
             <input
-            
               type="password"
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
               {...register("repeatPassword")}
@@ -97,7 +112,7 @@ export default function LoginScreen() {
               </span>
             )}
           </div>
-          
+
           <div className="w-[70%] flex flex-col justify-center my-4">
             <button
               className="bg-black text-white text-center py-1 w-full font-semibold"
@@ -111,24 +126,7 @@ export default function LoginScreen() {
               </span>
             )}
           </div>
-          <div className="w-[70%] flex items-center justify-center">
-            <h3 className="text-sm text-gray-500 font-semibold">
-              New to our platform?{" "}
-              <Link href="/signup">
-                <span className="text-emerald-500">Sign Up</span>
-              </Link>
-            </h3>
-          </div>
-          <div className="w-[70%] flex items-center justify-center gap-3 my-3">
-            <div className="bg-gray-300 w-full h-[1px]" />
-            <h3 className="text-sm text-gray-500">Or</h3>
-            <div className="bg-gray-300 w-full h-[1px]" />
-          </div>
-          <div className="w-[70%] flex flex-col items-center justify-between gap-3 mb-8">
-            <button className="bg-[#fafafa]  border-[1px] border-gray-200 flex gap-2 items-center justify-center w-full py-1 text-gray-500 font-medium">
-              <FcGoogle className="text-xl" /> Continue with Google
-            </button>
-          </div>
+
           {/* <div className="w-[70%] flex items-center justify-between gap-3 mb-8">
             <button className="bg-blue-900 flex items-center justify-center w-full py-1 text-white font-semibold">
               Facebook
@@ -138,7 +136,47 @@ export default function LoginScreen() {
             </button>
           </div> */}
         </form>
+        <div className="w-[70%] flex items-center justify-center">
+          <h3 className="text-sm text-gray-500 font-semibold">
+            New to our platform?{" "}
+            <Link href="/signup">
+              <span className="text-emerald-500">Sign Up</span>
+            </Link>
+          </h3>
+        </div>
+        <div className="w-[70%] flex items-center justify-center gap-3 my-3">
+          <div className="bg-gray-300 w-full h-[1px]" />
+          <h3 className="text-sm text-gray-500">Or</h3>
+          <div className="bg-gray-300 w-full h-[1px]" />
+        </div>
+        <div className="w-[70%] flex flex-col items-center justify-between gap-3 mb-8">
+          <button
+            className="bg-[#fafafa]  border-[1px] border-gray-200 flex gap-2 items-center justify-center w-full py-1 text-gray-500 font-medium"
+            onClick={() =>
+              signIn("google", { callbackUrl: "/", redirect: false })
+            }
+          >
+            <FcGoogle className="text-xl" /> Continue with Google
+          </button>
+        </div>
       </div>
     </Layout>
   );
+}
+
+export async function getServerSideProps(context: NextPageContext) {
+  const session = await getSession(context);
+
+  if (session?.user) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 }
