@@ -6,9 +6,13 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "PUT") {
     return editColor(req, res);
   }
+  const { id } = req.query;
+
   if (req.method === "DELETE") {
-    return deleteColor(req, res);
+    return deleteColor(req, res, id as string);
   }
+
+
 }
 
 const editColor = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -31,8 +35,8 @@ const editColor = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-const deleteColor = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { id } = req.query;
+const deleteColor = async (req: NextApiRequest, res: NextApiResponse, id: string) => {
+  // const { id } = req.query;
   try {
     await connect();
 
