@@ -1,5 +1,5 @@
 import Product from "@/models/Product";
-import {connect} from "@/lib/db";
+import { connect } from "@/lib/db";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 function handler(req: NextApiRequest, res: NextApiResponse) {

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Layout from "../components/layouts/layout";
-import { getSession, signIn, useSession } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import Link from "next/link";
 import { z, ZodType } from "zod";
 import { useForm } from "react-hook-form";
@@ -164,15 +164,19 @@ export default function LoginScreen() {
   );
 }
 
-// export async function getServerSideProps(context: NextPageContext) {
-//   const session = await getSession(context);
-//   if (session && (context.req?.headers.cookie === "/login" || context.req?.headers.cookie === "/signup")) {
-//     return {
-//       redirect: {
-//         destination: "/",
-//         permanent: false,
-//       },
-//     };
-//   }
-//   return { props: {} };
-// }
+export async function getServerSideProps(context: NextPageContext) {
+  const session = await getSession(context);
+
+  if (session?.user) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

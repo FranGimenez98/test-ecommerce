@@ -42,7 +42,9 @@ export default function Admin({
                   <h2 className="text-[25px] md:text-[40px]">
                     {totalProducts}
                   </h2>
-                  <span className="text-[10px] md:text-[12px]">Total Products</span>
+                  <span className="text-[10px] md:text-[12px]">
+                    Total Products
+                  </span>
                 </div>
                 <div className="bg-white rounded-full h-[32px] md:h-[40px] w-[38px] md:w-[40px] relative md:mr-3">
                   <FaShoppingBag className="text-blue-500 absolute right-[16%] md:right-[7px] bottom-[19%] md:bottom-2 h-[22px] md:h-[25px] w-[22px] md:w-[25px]" />
@@ -51,7 +53,9 @@ export default function Admin({
               <div className="flex items-center justify-between p-2 md:p-0 h-24 rounded bg-gray-50 dark:bg-amber-500 text-white bg-[url('../assets/cool-background.png')] bg-center bg-cover cursor-default">
                 <div className="flex flex-col md:p-1 md:ml-3 text-center">
                   <h2 className="text-[25px] md:text-[40px]">{totalUsers}</h2>
-                  <span className="text-[10px] md:text-[12px]">Total Clients</span>
+                  <span className="text-[10px] md:text-[12px]">
+                    Total Clients
+                  </span>
                 </div>
                 <div className="bg-white rounded-full h-[32px] md:h-[40px] w-[38px] md:w-[40px] relative md:mr-3">
                   <FiUsers className="text-green-800 absolute right-[19%] md:right-[7px] bottom-[19%] md:bottom-2 h-[22px] md:h-[25px] w-[22px] md:w-[25px]" />
@@ -124,7 +128,9 @@ export default function Admin({
                             {order.userName}
                           </span>
                         </th>
-                        <td className="px-2 md:px-6 md:py-4">{order.userEmail}</td>
+                        <td className="px-2 md:px-6 md:py-4">
+                          {order.userEmail}
+                        </td>
                         <td className="px-6 md:px-6 py-4 md:py-4 items-center flex flex-row">
                           {order.productImg ? (
                             <img
@@ -133,12 +139,19 @@ export default function Admin({
                               className="w-[40px] h-[40px] m-0"
                             />
                           ) : (
-                            <MdOutlineHideImage size="2rem" className="justify-center" />
+                            <MdOutlineHideImage
+                              size="2rem"
+                              className="justify-center"
+                            />
                           )}
                           <span className="ml-2">{order.productName}</span>
                         </td>
-                        <td className="px-6 md:px-6 md:py-4">{order.productSize}</td>
-                        <td className="px-2 md:px-6 md:py-4">{order.dateOrder}</td>
+                        <td className="px-6 md:px-6 md:py-4">
+                          {order.productSize}
+                        </td>
+                        <td className="px-2 md:px-6 md:py-4">
+                          {order.dateOrder}
+                        </td>
                         <td
                           className="px-2 md:px-6 md:py-4"
                           style={{
@@ -150,7 +163,9 @@ export default function Admin({
                         >
                           {order.orderStatus}
                         </td>
-                        <td className="md:px-6 md:py-4">{order.productPrice}$</td>
+                        <td className="md:px-6 md:py-4">
+                          {order.productPrice}$
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -196,9 +211,9 @@ export async function getServerSideProps() {
         .toUpperCase()}${order.user.lastname.slice(1).toLowerCase()}`,
       userEmail: order.user.email,
       productImg: order.orderItems[0]?.product?.image || "",
-      productName: order.orderItems[0]?.product?.name || '',
-      productPrice: order.orderItems[0]?.product?.price || '',
-      productSize: order.orderItems[0]?.size || '',
+      productName: order.orderItems[0]?.product?.name || "",
+      productPrice: order.orderItems[0]?.product?.price || "",
+      productSize: order.orderItems[0]?.size || "",
       orderStatus: order.status,
       dateOrder: `${order.createdAt.getDate()}/${
         order.createdAt.getMonth() + 1

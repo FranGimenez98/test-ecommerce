@@ -7,7 +7,6 @@ interface Props {
 }
 
 const NoSessionWishlist = ({ setIsOpenWishlistMessage }: Props) => {
-  
   useEffect(() => {
     // Ocultar la barra de desplazamiento y deshabilitar el scroll al montar el componente
     document.body.style.overflow = "hidden";
@@ -36,7 +35,7 @@ const NoSessionWishlist = ({ setIsOpenWishlistMessage }: Props) => {
           <h2 className="font-semibold mb-2">🔒 SAVE TO WISHLIST</h2>
           <div className="w-[80%] text-center">
             <p className="text-gray-600 text-sm">
-              Login or create an account to view to your wishlist. We'll drop
+              Login or create an account to view to your wishlist. We&apos;ll drop
               you back at your wishlist after you have entered your details.
             </p>
           </div>

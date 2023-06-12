@@ -3,7 +3,7 @@ import { connect } from "@/lib/db";
 import toJSON from "@/lib/toJSON";
 import Order from "@/models/Order";
 import React from "react";
-import Image from 'next/image';
+import Image from "next/image";
 import { GrDownload } from "react-icons/gr";
 import { MdDeleteForever } from "react-icons/md";
 

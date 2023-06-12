@@ -3,7 +3,7 @@ import { createContext } from "react";
 
 export interface State {
   cart: {
-    cartItems: CartItem[];
+    cartItems: CartItem[] | [];
     userData: UserData;
     userAddress: UserAddress;
     orderId: string;
@@ -47,11 +47,10 @@ const CartContext = createContext<ContextType>({
         state_name: "",
         country_name: "",
       },
-      orderId:"",
+      orderId: "",
     },
   },
   dispatch: () => {},
 });
 
 export default CartContext;
-

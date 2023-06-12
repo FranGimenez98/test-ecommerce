@@ -13,6 +13,9 @@ declare module "next-auth" {
   interface User extends DefaultUser {
     isAdmin: boolean;
   }
+  interface AdapterUser extends User {
+    isAdmin: boolean;
+  }
 
   interface Profile {
     at_hash: string;

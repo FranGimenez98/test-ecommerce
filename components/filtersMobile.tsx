@@ -158,58 +158,58 @@ const FiltersMobile = ({
 
           {/* menu */}
           <div className="mb-3">
-          <div className="mb-3">
-            <div className="w-full border-[1px] border-slate-200 px-1 py-1">
-              <button
-                className="w-full flex justify-between items-center"
-                onClick={() => {
-                  openPrices ? setOpenPrices(false) : setOpenPrices(true);
-                }}
-              >
-                <span className="uppercase font-semibold pl-1">Prices</span>
-                {openPrices ? (
-                  <span className="text-black text-xl font-semibold cursor-pointer">
-                    <IoIosArrowForward />
-                  </span>
-                ) : (
-                  <span className="text-black text-xl font-semibold cursor-pointer">
-                    <IoIosArrowDown />
-                  </span>
-                )}
-              </button>
-              <AnimatePresence>
-                {openPrices && (
-                  <motion.div
-                    className="py-1 flex flex-col items-start"
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.1 }}
-                    style={{ overflow: "hidden" }}
-                    key="categories"
-                  >
-                    <button
-                      value="all"
-                      onClick={() => priceHandler("all")}
-                      className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
+            <div className="mb-3">
+              <div className="w-full border-[1px] border-slate-200 px-1 py-1">
+                <button
+                  className="w-full flex justify-between items-center"
+                  onClick={() => {
+                    openPrices ? setOpenPrices(false) : setOpenPrices(true);
+                  }}
+                >
+                  <span className="uppercase font-semibold pl-1">Prices</span>
+                  {openPrices ? (
+                    <span className="text-black text-xl font-semibold cursor-pointer">
+                      <IoIosArrowForward />
+                    </span>
+                  ) : (
+                    <span className="text-black text-xl font-semibold cursor-pointer">
+                      <IoIosArrowDown />
+                    </span>
+                  )}
+                </button>
+                <AnimatePresence>
+                  {openPrices && (
+                    <motion.div
+                      className="py-1 flex flex-col items-start"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.1 }}
+                      style={{ overflow: "hidden" }}
+                      key="categories"
                     >
-                      All
-                    </button>
-                    {prices &&
-                      prices.map((price) => (
-                        <button
-                          key={price.value}
-                          className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
-                          onClick={() => priceHandler(price.value)}
-                        >
-                          {price.name}
-                        </button>
-                      ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                      <button
+                        value="all"
+                        onClick={() => priceHandler("all")}
+                        className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
+                      >
+                        All
+                      </button>
+                      {prices &&
+                        prices.map((price) => (
+                          <button
+                            key={price.value}
+                            className="uppercase pl-1 text-sm w-full text-start hover:bg-slate-100"
+                            onClick={() => priceHandler(price.value)}
+                          >
+                            {price.name}
+                          </button>
+                        ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
-          </div>
           </div>
 
           <div className="mb-3">

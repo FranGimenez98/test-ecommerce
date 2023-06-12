@@ -35,7 +35,6 @@ export default function ProductScreen({
   const [sizeSelected, setSizeSelected] = useState("");
   const [counter, setCounter] = useState(0);
   const [userFavs, setUserFavs] = useState(favorites.map((fav: any) => fav));
-  console.log("product", userFavs);
   const { error, errorMessage, showError, hideError } = useError();
 
   const handleSizeSelected = (size: string) => {
@@ -149,7 +148,8 @@ export default function ProductScreen({
           <div className="w-full flex flex-col-reverse md:flex-row md:gap-2 h-full">
             <div className=" md:w-[27rem] md:h-[32rem] relative">
               <img
-                src={product?.image}
+                src={product?.images[0]}
+                alt={`${product.name} image`}
                 className=" md:w-full md:h-full object-cover bg-center"
               />
               <h2 className="text-3xl font-semibold mt-4 md:mt-0">
@@ -182,7 +182,7 @@ export default function ProductScreen({
               <div className="bg-red-500 w-[5.5rem] h-[5rem] md:h-[7.6rem] md:w-[7.6rem]"></div>
             </div>
             <div className="flex flex-row justify-end mt-4">
-              <ModalEditProduct/>
+              <ModalEditProduct product={product} />
               <MdDeleteForever
                 size="1.2rem"
                 className="text-red-600 cursor-pointer ml-2"

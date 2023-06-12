@@ -4,6 +4,7 @@ import React, { useContext, useEffect } from "react";
 import { ImCross } from "react-icons/im";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { CartItem } from "@/interfaces/IInitalState";
 
 interface CartProps {
   setIsOpenCart: (bool: boolean) => void;
@@ -12,6 +13,7 @@ interface CartProps {
 
 const Cart = ({ setIsOpenCart, isOpenCart }: CartProps) => {
   const { state, dispatch } = useContext(CartContext);
+  console.log(state);
   const { data: session } = useSession();
   const handleRemoveFromCart = (item: any) => {
     dispatch({ type: "CART_REMOVE_ITEM", payload: item });
@@ -27,10 +29,22 @@ const Cart = ({ setIsOpenCart, isOpenCart }: CartProps) => {
     });
   };
 
-  const totalCartPrice = state?.cart?.cartItems.reduce(
-    (a, c) => a + c.quantity * c.price,
-    0
-  );
+  const totalCartPrice: number =
+    (
+      state?.cart?.cartItems.reduce as (
+        callbackfn: (
+          previousValue: number,
+          currentValue: CartItem,
+          currentIndex: number,
+          array: CartItem[]
+        ) => number,
+        initialValue: number
+      ) => number
+    )(
+      (accumulator: number, currentItem: CartItem) =>
+        accumulator + currentItem.quantity * currentItem.price,
+      0
+    ) ?? 0;
 
   useEffect(() => {
     // Ocultar la barra de desplazamiento y deshabilitar el scroll al montar el componente
@@ -83,7 +97,8 @@ const Cart = ({ setIsOpenCart, isOpenCart }: CartProps) => {
                   </button>
                   <div className="flex gap-2 items-center">
                     <img
-                      src={product.image}
+                      src={product.images[0]}
+                      alt={`${product.name} image`}
                       className="h-[6rem] w-[6rem] object-cover bg-center rounded-md border-[1px] border-gray-200"
                     />
                     <div className="flex flex-col gap-1 w-[50%] lg:w-full">
@@ -144,7 +159,7 @@ const Cart = ({ setIsOpenCart, isOpenCart }: CartProps) => {
           {/* <div className="bg-red-500 w-full h-[10rem] absolute bottom-0">d</div> */}
         </motion.div>
         <motion.div
-          className="w-[90%] md:w-[35%] z-50 bottom-0 right-0 absolute h-[10rem] flex flex-col justify-around items-center border-t-[1px] border-gray-300 bg-white px-5"
+          className="w-full md:w-[35%] z-50 bottom-0 right-0 absolute h-[10rem] flex flex-col justify-around items-center border-t-[1px] border-gray-300 bg-white px-5"
           initial={{ transform: "translateX(100%)" }}
           animate={{ transform: "translateX(0%)" }}
           exit={{ transform: "translateX(100%)" }}
@@ -164,17 +179,12 @@ const Cart = ({ setIsOpenCart, isOpenCart }: CartProps) => {
               </button>
             </Link>
           ) : (
-            <Link
-              href={"/login"}
-              className="w-full"
-            >
+            <Link href={"/login"} className="w-full">
               <button className="bg-black text-white text-2xl w-full py-2">
                 Order Now
               </button>
             </Link>
           )}
-
-          
         </motion.div>
       </div>
     </AnimatePresence>

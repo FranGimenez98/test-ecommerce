@@ -64,9 +64,9 @@ const reducer = (state: State, action: Action) => {
       return {
         ...state,
         cart: {
-          cartItems: [],
-          userData: {},
-          userAddress: {},
+          cartItems: [] as CartItem[],
+          userData: {} as UserData,
+          userAddress: {} as UserAddress,
           orderId: "",
         },
       };

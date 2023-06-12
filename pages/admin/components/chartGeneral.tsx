@@ -53,17 +53,21 @@ export default function ChartGeneral({
   const [chartOptions, setChartOptions] = useState({});
 
   useEffect(() => {
-  
     const sortedOrders = Object.keys(ordersByMonth).sort((a, b) => {
-      const [yearA, monthA] = a.split('-').map((value) => parseInt(value));
-      const [yearB, monthB] = b.split('-').map((value) => parseInt(value));
+      const [yearA, monthA] = a.split("-").map((value) => parseInt(value));
+      const [yearB, monthB] = b.split("-").map((value) => parseInt(value));
       return yearB - yearA || monthB - monthA;
     });
-  
-    const labels = sortedOrders.map((key) => ordersByMonth[key].month).reverse();
-    const pendingData = sortedOrders.map((key) => ordersByMonth[key].pending).reverse();
-    const approvedData = sortedOrders.map((key) => ordersByMonth[key].approved).reverse();
-  
+
+    const labels = sortedOrders
+      .map((key) => ordersByMonth[key].month)
+      .reverse();
+    const pendingData = sortedOrders
+      .map((key) => ordersByMonth[key].pending)
+      .reverse();
+    const approvedData = sortedOrders
+      .map((key) => ordersByMonth[key].approved)
+      .reverse();
 
     const allMonths = [
       "Jan",

@@ -36,5 +36,13 @@ export default function useDropdownMenu<T extends HTMLElement>(
     setShowMenuMobile(!showMenuMobile);
   }
 
-  return { showMenu, showProducts, showMenuMobile, toggleMenu, toggleProducts, toggleMenuMobile, ref };
+  return {
+    showMenu,
+    showProducts,
+    showMenuMobile,
+    toggleMenu,
+    toggleProducts,
+    toggleMenuMobile,
+    ref,
+  };
 }

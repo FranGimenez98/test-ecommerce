@@ -66,8 +66,8 @@ interface SearchProps {
     size: string,
     quantity: number
   ) => void | undefined;
-  showSizes?: boolean[] | [];
-  setShowSizes?: React.Dispatch<React.SetStateAction<boolean[]>>;
+  showSizes: boolean[];
+  setShowSizes: React.Dispatch<React.SetStateAction<boolean[]>>;
   index: number;
   setIsOpenWishlistMessage?: (bool: boolean) => void | undefined;
 }
@@ -107,7 +107,6 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
   const [userFavs, setUserFavs] = useState(favorites.map((fav: any) => fav));
   const [openCategories, setOpenCategories] = useState(false);
   const [openPrices, setOpenPrices] = useState(false);
-  console.log(products);
   const { data: session } = useSession();
   const [ratingStar, setRatingStar] = useState<number | null>(null);
   const [filter, setFilter] = useState("Newest");
@@ -306,8 +305,6 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
     }
   };
 
-  console.log("productos", products);
-
   return (
     <Layout
       title="Products"
@@ -326,15 +323,16 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
       <div className="flex flex-col md:grid md:grid-cols-4 md:gap-5 mt-[2.5rem] w-full md:w-[91%] min-h-[calc(100vh-4rem)] verflow-x-hidden">
         {/* mobile */}
 
-        <div className="w-full md:hidden flex justify-between h-[2.5rem] mb-1 relative">
+        <div className="w-full md:hidden flex justify-between items-center h-[2.5rem] mb-1 relative bg-gray-200">
           <button
-            className="w-full h-full px-2 font-semibold  bg-gray-200"
+            className="w-full h-full px-2 font-semibold  "
             onClick={() => {
               setShowFilters(!showFilters), setShowSort(false);
             }}
           >
             FILTERS
           </button>
+          <div className="w-[2.2px] bg-gray-400 h-[70%]" />
           <button
             className="w-full h-full px-2 font-semibold  bg-gray-200 uppercase"
             onClick={() => {
@@ -377,7 +375,6 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
                 >
                   popular
                 </button>
-                
               </div>
             </div>
           )}
@@ -696,8 +693,8 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
                     userFavs={userFavs}
                     toggleFavorite={toggleFavorite}
                     handleAddToCart={handleAddToCart || (() => {})}
-                    showSizes={showSizes || []}
-                    setShowSizes={setShowSizes || (() => {})}
+                    showSizes={showSizes}
+                    setShowSizes={setShowSizes}
                     setIsOpenWishlistMessage={
                       setIsOpenWishlistMessage || undefined
                     }
@@ -743,7 +740,6 @@ export async function getServerSideProps({
   const sort = (query.sort as string) || "";
 
   const session = await getSession({ req });
-  console.log("session:", session);
 
   if (searchQuery && searchQuery !== "all") {
     filters.name = { $regex: searchQuery, $options: "i" };

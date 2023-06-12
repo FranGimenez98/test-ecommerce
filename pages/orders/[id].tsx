@@ -14,7 +14,6 @@ interface UserProps {
 }
 
 export default function UserScreen({ user, orders }: UserProps) {
-  console.log(orders);
   return (
     <Layout title="Profile">
       <section className="w-[97%] md:w-[90%] min-h-[calc(100vh-4rem)] flex flex-col items-center mt-4">

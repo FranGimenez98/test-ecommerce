@@ -63,9 +63,12 @@ export default function Hero() {
           </div>
           <div className="justify-center m-auto items-center md:mt-[10px] mt-[10px] w-full">
             <Link href="/products" className="w-full">
-              <motion.button className="border-[1px] border-white text-white py-1 text-sm  font-semibold w-full" initial={{ y: "-100vh", opacity: 0 }}
+              <motion.button
+                className="border-[1px] border-white text-white py-1 text-sm  font-semibold w-full"
+                initial={{ y: "-100vh", opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ type: "spring", delay: 1.6, bounce: 0.2 }}>
+                transition={{ type: "spring", delay: 1.6, bounce: 0.2 }}
+              >
                 VIEW ALL PRODUCTS
               </motion.button>
             </Link>

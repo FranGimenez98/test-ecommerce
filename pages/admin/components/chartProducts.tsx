@@ -50,14 +50,8 @@ export default function ChartProducts({
         datasets: [
           {
             data: [maleProducts, femaleProducts],
-            backgroundColor: [
-              "rgba(255, 99, 132, 1)",
-              "rgba(54, 162, 235, 1)",
-            ],
-            borderColor: [
-              "rgba(255, 99, 132, 0.2)",
-              "rgba(54, 162, 235, 0.2)",
-            ],
+            backgroundColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+            borderColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)"],
             borderWidth: 1,
           },
         ],
@@ -76,7 +70,7 @@ export default function ChartProducts({
               size: 16,
               weight: "bold",
               family: "Arial, sans-serif",
-            },      
+            },
           },
         },
         maintainAspectRatio: false,
@@ -85,10 +79,11 @@ export default function ChartProducts({
     }
   }, [totalProducts, maleProducts, femaleProducts]);
 
-  return chartData ? 
-  <div className="md:w-[95%] h-[280px] md:h-[100%]">
-    <Doughnut data={chartData} options={chartOptions}/> 
-  </div> : null;
+  return chartData ? (
+    <div className="md:w-[95%] h-[280px] md:h-[100%]">
+      <Doughnut data={chartData} options={chartOptions} />
+    </div>
+  ) : null;
 }
 
 export async function getServerSideProps() {
@@ -106,7 +101,6 @@ export async function getServerSideProps() {
       },
     };
   } catch (error) {
-    console.log("error", error);
     return {
       props: {
         totalProducts: 0,

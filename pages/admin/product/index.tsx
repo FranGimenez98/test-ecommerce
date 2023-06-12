@@ -48,7 +48,6 @@ export default function AdminProducts(
   const router = useRouter();
   const [openCategories, setOpenCategories] = useState(false);
   const [openPrices, setOpenPrices] = useState(false);
-  // console.log(products);
   const { data: session } = useSession();
   const [ratingStar, setRatingStar] = useState<number | null>(null);
   const [filter, setFilter] = useState("Newest");
@@ -226,7 +225,6 @@ export default function AdminProducts(
           "Content-Type": "application/json",
         },
       });
-      console.log("Producto eliminado exitosamente");
     } catch (error) {
       console.error("Error al eliminar el producto", error);
     }
@@ -495,7 +493,7 @@ export default function AdminProducts(
                       className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-black flex"
                     >
                       <img
-                        src={prod.image}
+                        src={prod.images[0]}
                         alt="product"
                         className="w-[50px] h-[55px]"
                       />

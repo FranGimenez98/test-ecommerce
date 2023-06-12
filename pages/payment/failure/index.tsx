@@ -16,9 +16,9 @@ export default function SuccessPaymentScreen() {
         </h1>
         <div className="md:w-[30%] mb-3">
           <p className="text-center text-gray-600">
-            Look like we can't confirm payment at this thime, please check your
-            card details. You will be redirected to the home page shortly or click here to
-            return to home page
+            Look like we can&apos;t confirm payment at this thime, please check your
+            card details. You will be redirected to the home page shortly or
+            click here to return to home page
           </p>
         </div>
 

@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import "react-toastify/dist/ReactToastify.css";
 // import { ToastContainer } from "react-toastify";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 
 const StoreProvider = dynamic(
   () => import("@/context/CartProvider").then((ctx) => ctx.default),
@@ -60,7 +60,7 @@ export default function App({
                 position="bottom-right"
                 autoClose={5000}
               /> */}
-              <Toaster  position="bottom-right" />
+              <Toaster position="bottom-right" />
               <Component {...pageProps} />
             </motion.div>
           </AnimatePresence>

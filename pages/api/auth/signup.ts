@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import bcryptjs from "bcryptjs";
-import {connect} from "@/lib/db";
+import { connect } from "@/lib/db";
 import User from "@/models/User";
 
 function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -13,7 +13,7 @@ const signUp = async (req: NextApiRequest, res: NextApiResponse) => {
   const { name, lastname, email, password } = req.body;
   if (
     !name ||
-    !lastname ||   
+    !lastname ||
     !email ||
     !email.includes("@") ||
     !password ||
@@ -53,4 +53,4 @@ const signUp = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default handler
+export default handler;
