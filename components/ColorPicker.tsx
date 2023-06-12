@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 import { RiSave3Fill } from "react-icons/ri";
 import { SketchPicker } from "react-color";
+import { useRouter } from "next/router";
+import { toast } from "react-hot-toast";
 
-export default function ColorPicker() {
+interface ColorPickerProps {
+  onClose: () => void;
+}
+
+export default function ColorPicker({ onClose }: ColorPickerProps) {
   const [selectedColorHex, setSelectedColorHex] = useState("#FFF");
   const [colorName, setColorName] = useState("");
   const [isNameValid, setIsNameValid] = useState(true);
   const [nameErrorMessage, setNameErrorMessage] = useState("");
+  const router = useRouter();
 
   const handleColorChange = (color: any) => {
     setSelectedColorHex(color.hex);
@@ -26,16 +33,13 @@ export default function ColorPicker() {
 
   const handleSaveColor = async () => {
     if (!isNameValid || !selectedColorHex) {
-      // No cumplen los requisitos de validación, salir de la función
       return;
     }
-
     try {
       const colorData = {
         name: colorName,
         color: selectedColorHex,
       };
-
       const response = await fetch("/api/color", {
         method: "POST",
         headers: {
@@ -43,23 +47,23 @@ export default function ColorPicker() {
         },
         body: JSON.stringify(colorData),
       });
-
       if (response.ok) {
         console.log("Color guardado exitosamente");
-        // Aquí puedes realizar cualquier acción adicional después de guardar el color
+        toast.success(`Color ${colorData.name} was created`);
+        onClose();
+        router.push("/admin/colors");
       } else {
         console.error("Error al guardar el color");
-        // Aquí puedes manejar el caso de error, si es necesario
+        toast.error(`This color or name is already created`);
       }
     } catch (error) {
       console.error(error);
-      // Aquí puedes manejar el caso de error, si ocurre una excepción
     }
   };
 
   return (
     <div className="bg-white p-3 rounded-lg shadow-2xl justify-center">
-      <div className="flex flex-row w-[94%] mb-4 justify-between">
+      <div className="flex flex-row w-[94%] mb-4 justify-between items-center">
         <input
           type="text"
           value={colorName}
@@ -77,9 +81,9 @@ export default function ColorPicker() {
             isNameValid && selectedColorHex
               ? "bg-blue-500 hover:bg-blue-600"
               : "bg-gray-300 cursor-not-allowed"
-          } text-white py-2 px-2 rounded`}
+          } text-white py-2 px-2 rounded h-9`}
         >
-          <RiSave3Fill size="1.4rem" />
+          <RiSave3Fill size="1.2rem" />
         </button>
       </div>
       <SketchPicker

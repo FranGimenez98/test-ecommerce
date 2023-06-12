@@ -1,11 +1,18 @@
 import React from "react";
-import { MdDashboard, MdNotificationsActive } from "react-icons/md";
+import {
+  MdCategory,
+  MdColorLens,
+  MdDashboard,
+  MdNotificationsActive,
+} from "react-icons/md";
 import useDropdownMenu from "../../hooks/useToggleMenu";
 import { HiShoppingBag, HiUsers } from "react-icons/hi";
 import { VscSignOut, VscSignIn } from "react-icons/vsc";
 import Link from "next/link";
 import { FaShoppingCart } from "react-icons/fa";
 import { BiMenuAltLeft } from "react-icons/bi";
+import { GiClothes } from "react-icons/gi";
+import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 
 interface AdminLayoutProps {
   children?: React.ReactNode;
@@ -56,13 +63,65 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               </Link>
             </li>
             <li>
-              <Link
-                href="/admin/product"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+              <button
+                type="button"
+                className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                aria-controls="dropdown-example"
+                data-collapse-toggle="dropdown-example"
+                onClick={toggleMenu}
               >
                 <HiShoppingBag />
-                <span className="flex-1 ml-3 whitespace-nowrap">Products</span>
-              </Link>
+                <span className="flex-1 ml-3 text-left whitespace-nowrap">
+                  Products
+                </span>
+                {showMenu ? (
+                  <span className="text-white text-xl font-semibold cursor-pointer px-2">
+                    <IoIosArrowDown className="text-white" />
+                  </span>
+                ) : (
+                  <span className="text-white text-xl font-semibold cursor-pointer px-2">
+                    <IoIosArrowForward className="text-white" />
+                  </span>
+                )}
+              </button>
+              <ul
+                id="dropdown-example"
+                className={showMenu ? "block" : "hidden py-2 space-y-2"}
+              >
+                <li>
+                  <Link
+                    href="/admin/product"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <GiClothes />
+                    <span className="flex-1 ml-3 whitespace-nowrap">
+                      All products
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/admin/categories"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <MdCategory />
+                    <span className="flex-1 ml-3 whitespace-nowrap">
+                      Categories
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/admin/colors"
+                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <MdColorLens />
+                    <span className="flex-1 ml-3 whitespace-nowrap">
+                      Colors
+                    </span>
+                  </Link>
+                </li>
+              </ul>
             </li>
             <li>
               <Link
