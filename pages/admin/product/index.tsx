@@ -48,7 +48,6 @@ export default function AdminProducts(
   const router = useRouter();
   const [openCategories, setOpenCategories] = useState(false);
   const [openPrices, setOpenPrices] = useState(false);
-  // console.log(products);
   const { data: session } = useSession();
   const [ratingStar, setRatingStar] = useState<number | null>(null);
   const [filter, setFilter] = useState("Newest");
@@ -235,7 +234,6 @@ export default function AdminProducts(
           "Content-Type": "application/json",
         },
       });
-      console.log("Producto eliminado exitosamente");
     } catch (error) {
       console.error("Error al eliminar el producto", error);
     }

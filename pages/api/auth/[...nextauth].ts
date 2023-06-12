@@ -18,8 +18,6 @@ export default NextAuth({
   callbacks: {
     async signIn({ account, profile, email, user }) {
       if (account?.provider === "google") {
-        console.log("account", account);
-        console.log("profile", profile);
 
         try {
           await connect();
@@ -33,7 +31,6 @@ export default NextAuth({
               lastname: profile?.family_name,
               name: profile?.given_name,
             });
-            console.log(newUser);
             await newUser.save();
 
             // Guardar el ID de MongoDB en el token

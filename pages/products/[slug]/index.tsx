@@ -35,8 +35,9 @@ export default function ProductScreen({
   const [counter, setCounter] = useState(0);
   const [userFavs, setUserFavs] = useState(favorites.map((fav: any) => fav));
   const [isOpenWishlistMessage, setIsOpenWishlistMessage] = useState(false);
-  console.log("product", userFavs);
   const { error, errorMessage, showError, hideError } = useError();
+  const [selectedImage, setSelectedImage] = useState(product.images[0]);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
 
   const handleSizeSelected = (size: string) => {
     if (sizeSelected === size) {
@@ -148,6 +149,11 @@ export default function ProductScreen({
     }
   };
 
+  const handleImage = (image: string, index: number) => {
+    setSelectedImage(image);
+    setSelectedImageIndex(index)
+  };
+
   return (
     <Layout
       isOpenWishlistMessage={isOpenWishlistMessage}
@@ -157,14 +163,24 @@ export default function ProductScreen({
         <div className="w-full h-full flex flex-col md:flex-row p-2 gap-2 md:gap-10">
           <div className="w-full flex flex-col-reverse md:flex-row md:gap-2 h-full">
             <div className="flex md:flex-col items-start gap-1 md:gap-2 mt-2 md:m-0">
-              <div className="bg-red-500 w-[5.5rem] h-[5rem] md:h-[7.6rem] md:w-[7.6rem]"></div>
-              <div className="bg-red-500 w-[5.5rem] h-[5rem] md:h-[7.6rem] md:w-[7.6rem]"></div>
-              <div className="bg-red-500 w-[5.5rem] h-[5rem] md:h-[7.6rem] md:w-[7.6rem]"></div>
-              <div className="bg-red-500 w-[5.5rem] h-[5rem] md:h-[7.6rem] md:w-[7.6rem]"></div>
+              {product.images.map((image, index) => (
+                <div
+                  className={`w-[5.5rem] h-[5rem] md:h-[7.6rem] md:w-[7.6rem] ${
+                    selectedImageIndex === index ?"border-[2px] border-black" : ""
+                  }`}
+                  onClick={() => handleImage(image, index)}
+                  key={index}
+                >
+                  <img
+                    src={image}
+                    className="w-[5.5rem] h-[4.8rem] md:h-[7.35rem] md:w-[7.6rem] object-cover bg-center"
+                  />
+                </div>
+              ))}
             </div>
             <div className=" md:w-[27rem] md:h-[32rem] relative">
               <img
-                src={product?.image}
+                src={selectedImage}
                 className=" md:w-full md:h-full object-cover bg-center"
               />
               {product.discount?.isActive && (
@@ -257,7 +273,7 @@ export default function ProductScreen({
                   key={index}
                   onClick={() => handleSizeSelected(size.size)}
                   className={`shadow-sm border-[1px] min-w-[2.5rem] border-slate-300 text-black text-xl px-2 py-1 ${
-                    size.quantity === 0 && "bg-gray-300"
+                    size.quantity === 0 && "bg-gray-200 text-gray-400"
                   }${sizeSelected === size.size ? " bg-black text-white" : ""}`}
                   disabled={size.quantity === 0}
                 >
@@ -303,39 +319,42 @@ export default function ProductScreen({
             )}
           </div>
         </div>
-        <div className="mt-32 w-full p-1">
-          <h1 className="uppercase font-semibold mb-1">
-            You might be interested in
-          </h1>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
-            {relatedProducts?.map((product) => (
-              // <ProductCard product={product} key={product._id} />
-              <Link href={`/products/${product.slug}`} key={product._id}>
-                <div className="h-[20rem] md:h-[25rem] w-full mb-20">
-                  <img
-                    src={product.image}
-                    className="h-full w-full object-cover bg-center"
-                  />
-                  <div className="flex flex-col justify-center mt-1">
-                    <p className="font-semibold">{product?.name}</p>
-                    {product?.discount?.isActive ? (
-                      <span className="font-semibold">
-                        ${product?.price * (1 - product?.discount.value / 100)}{" "}
-                        <span className="text-red-500 line-through">
-                          ${product?.price}
+        {relatedProducts.length > 0 && (
+          <div className="mt-32 w-full p-1">
+            <h1 className="uppercase font-semibold mb-1">
+              You might be interested in
+            </h1>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
+              {relatedProducts?.map((product) => (
+                // <ProductCard product={product} key={product._id} />
+                <Link href={`/products/${product.slug}`} key={product._id}>
+                  <div className="h-[20rem] md:h-[25rem] w-full mb-20">
+                    <img
+                      src={product.images[0]}
+                      className="h-full w-full object-cover bg-center"
+                    />
+                    <div className="flex flex-col justify-center mt-1">
+                      <p className="font-semibold">{product?.name}</p>
+                      {product?.discount?.isActive ? (
+                        <span className="font-semibold">
+                          $
+                          {product?.price * (1 - product?.discount.value / 100)}{" "}
+                          <span className="text-red-500 line-through">
+                            ${product?.price}
+                          </span>
                         </span>
-                      </span>
-                    ) : (
-                      <span className="font-semibold">
-                        ${product?.price}{" "}
-                      </span>
-                    )}
+                      ) : (
+                        <span className="font-semibold">
+                          ${product?.price}{" "}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </section>
     </Layout>
   );

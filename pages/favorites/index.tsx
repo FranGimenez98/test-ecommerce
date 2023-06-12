@@ -1,15 +1,11 @@
 import Layout from "@/components/layouts/layout";
 import { connect } from "@/lib/db";
 import Favorite from "@/models/Favorite";
-import User from "@/models/User";
 import React, { useState } from "react";
-import { IUser } from "@/interfaces/IUser";
-import { NextApiRequest } from "next";
 import { getSession, useSession } from "next-auth/react";
 import toJSON from "@/lib/toJSON";
-import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
+import { BsSuitHeartFill } from "react-icons/bs";
 import Link from "next/link";
-import ProductCard from "@/components/productCard";
 
 interface FavoritesProps {
   favorites: any;
@@ -19,7 +15,6 @@ const FavoritesScreen = (props: FavoritesProps) => {
   const { favorites } = props;
   const { data: session } = useSession();
   const [userFavs, setUserFavs] = useState(favorites || []);
-  console.log(userFavs);
 
   const handleDeleteFav = async (productId: string) => {
     await fetch(
@@ -84,8 +79,8 @@ const FavoritesScreen = (props: FavoritesProps) => {
                   >
                     <Link href={`/products/${fav?.product?.slug}`}>
                       <img
-                        src={fav?.product?.image}
-                        className="w-full h-[20rem] md:h-[20rem] m-auto mt-0 mb-0 object-cover bg-center"
+                        src={fav?.product?.images[0]}
+                        className="w-full h-[16rem] md:h-[20rem] m-auto mt-0 mb-0 object-cover bg-center"
                       />
                     </Link>
                     <h1 className="px-1 py-1 uppercase">{fav.product?.name}</h1>

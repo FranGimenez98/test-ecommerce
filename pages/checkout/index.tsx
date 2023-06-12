@@ -5,8 +5,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CartContext from "@/context/CartContext";
 import { useContext } from "react";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { useRouter } from 'next/router';
+import { NextPageContext } from "next";
 
 export default function CheckoutScreen() {
   const { state, dispatch } = useContext(CartContext);
@@ -91,6 +92,8 @@ export default function CheckoutScreen() {
     resolver: zodResolver(schema),
   });
 
+  console.log(state.cart.cartItems)
+
   const submitData = async (data: CheckOutData) => {
     dispatch({
       type: "SAVE_USER_DATA",
@@ -133,7 +136,7 @@ export default function CheckoutScreen() {
         orderItems: state.cart.cartItems.map((item) => ({
           product: item._id, // Assuming there's a productId field in the item
           name: item.name,
-          image: item.image,
+          image: item.images[0],
           size: item.size,
           quantity: item.quantity,
           price: item.price,
@@ -277,7 +280,7 @@ export default function CheckoutScreen() {
           </div>
           <div className="w-full flex gap-2 justify-center items-center">
             <div className="w-full flex flex-col justify-center h-full">
-              <label>{`Apartamento, habitación, etc.`}</label>
+              <label>{`Apartamento, habitación, etc. (opcional)`}</label>
               <input
                 type="text"
                 className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
@@ -292,9 +295,9 @@ export default function CheckoutScreen() {
               </div>
             </div>
 
-            <div className="flex flex-col w-[50%] items-center justify-center h-full">
+            <div className="flex flex-col w-[30%] md:w-[50%] items-center justify-center h-full">
               <div className="w-full flex flex-col justify-center">
-                <label>Piso</label>
+                <label>{`Piso (opcional)`}</label>
                 <input
                   type="text"
                   className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
@@ -370,4 +373,23 @@ export default function CheckoutScreen() {
       </div>
     </Layout>
   );
+}
+
+export async function getServerSideProps(context: NextPageContext) {
+  const { req } = context;
+  const session = await getSession({ req });
+
+  if (!session) {
+    // Redireccionar al usuario a la página de inicio de sesión si no está autenticado
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {}, // Props adicionales que deseas pasar a la página
+  };
 }

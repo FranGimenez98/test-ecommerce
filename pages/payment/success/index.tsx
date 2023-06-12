@@ -1,5 +1,6 @@
 import Layout from "@/components/layouts/layout";
 import CartContext from "@/context/CartContext";
+import { NextPageContext } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
@@ -23,7 +24,6 @@ export default function SuccessPaymentScreen() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get("status");
-    console.log(status);
 
     if (status === "approved") {
       dispatch({
@@ -82,7 +82,7 @@ export default function SuccessPaymentScreen() {
   );
 }
 
-export async function getServerSideProps(context: any) {
+export async function getServerSideProps(context: NextPageContext) {
   // Aquí debes realizar la verificación del estado del pago en el servidor
   const { payment_id } = context.query;
   const mercadopago = require("mercadopago");

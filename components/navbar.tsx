@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { GiClothes } from "react-icons/gi";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { FaBars } from "react-icons/fa";
 import { BsFillCartFill, BsSuitHeartFill } from "react-icons/bs";
@@ -9,18 +7,6 @@ import { signOut, useSession } from "next-auth/react";
 import useDropdownMenu from "../hooks/useToggleMenu";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
-
-// interface MyComponentProps {
-//   session: {
-//     expires: string;
-//     user: {
-//       email: string;
-//       id: string;
-//       isAdmin: boolean;
-//       name: string;
-//     };
-//   };
-// }
 
 const handleLogout = () => {
   Cookies.remove("cart");

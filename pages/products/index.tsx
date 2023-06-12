@@ -107,7 +107,6 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
   const [userFavs, setUserFavs] = useState(favorites.map((fav: any) => fav));
   const [openCategories, setOpenCategories] = useState(false);
   const [openPrices, setOpenPrices] = useState(false);
-  console.log(products);
   const { data: session } = useSession();
   const [ratingStar, setRatingStar] = useState<number | null>(null);
   const [filter, setFilter] = useState("Newest");
@@ -305,8 +304,6 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
       toast.success(`${product.name} added to cart`);
     }
   };
-
-  console.log("productos", products);
 
   return (
     <Layout
@@ -744,7 +741,6 @@ export async function getServerSideProps({
   const sort = (query.sort as string) || "";
 
   const session = await getSession({ req });
-  console.log("session:", session);
 
   if (searchQuery && searchQuery !== "all") {
     filters.name = { $regex: searchQuery, $options: "i" };
