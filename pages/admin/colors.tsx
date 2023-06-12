@@ -82,13 +82,6 @@ export default function Colors(props: ProductsProps): React.ReactElement {
     setEditColorValue("");
   };
 
-  // const handleEditColor = (color: IColor) => {
-  //   setSelectedColor(color);
-  //   setEditColorName(color.name);
-  //   setEditColorValue(color.color);
-  //   setShowEditModal(true);
-  // };
-
   const handleEditColorChange = (newColor: string) => {
     setEditColorValue(newColor);
   };
