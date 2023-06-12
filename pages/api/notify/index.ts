@@ -20,8 +20,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       let paymentStatus = payment.body.status;
       let orderId = payment.body.metadata.order;
       let items = payment.body.metadata.items;
-      console.log(payment.body);
-      console.log(payment.body.metadata);
 
       if (paymentStatus === "approved") {
         try {

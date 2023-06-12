@@ -56,7 +56,7 @@ export const ProductCardHome = ({
       >
         <Link href={`/products/${product.slug}`}>
           <img
-            src={product.image}
+            src={product.images[0]}
             alt="products"
             className="w-[16rem] md:w-[300px] h-[22rem] md:h-[25rem] m-auto mt-0 mb-0 object-cover bg-center"
           />

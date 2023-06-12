@@ -35,7 +35,6 @@ export default function ProductScreen({
   const [sizeSelected, setSizeSelected] = useState("");
   const [counter, setCounter] = useState(0);
   const [userFavs, setUserFavs] = useState(favorites.map((fav: any) => fav));
-  console.log("product", userFavs);
   const { error, errorMessage, showError, hideError } = useError();
 
   const handleSizeSelected = (size: string) => {

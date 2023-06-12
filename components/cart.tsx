@@ -12,6 +12,7 @@ interface CartProps {
 
 const Cart = ({ setIsOpenCart, isOpenCart }: CartProps) => {
   const { state, dispatch } = useContext(CartContext);
+  console.log(state)
   const { data: session } = useSession();
   const handleRemoveFromCart = (item: any) => {
     dispatch({ type: "CART_REMOVE_ITEM", payload: item });
@@ -83,7 +84,7 @@ const Cart = ({ setIsOpenCart, isOpenCart }: CartProps) => {
                   </button>
                   <div className="flex gap-2 items-center">
                     <img
-                      src={product.image}
+                      src={product.images[0]}
                       className="h-[6rem] w-[6rem] object-cover bg-center rounded-md border-[1px] border-gray-200"
                     />
                     <div className="flex flex-col gap-1 w-[50%] lg:w-full">
@@ -144,7 +145,7 @@ const Cart = ({ setIsOpenCart, isOpenCart }: CartProps) => {
           {/* <div className="bg-red-500 w-full h-[10rem] absolute bottom-0">d</div> */}
         </motion.div>
         <motion.div
-          className="w-[90%] md:w-[35%] z-50 bottom-0 right-0 absolute h-[10rem] flex flex-col justify-around items-center border-t-[1px] border-gray-300 bg-white px-5"
+          className="w-full md:w-[35%] z-50 bottom-0 right-0 absolute h-[10rem] flex flex-col justify-around items-center border-t-[1px] border-gray-300 bg-white px-5"
           initial={{ transform: "translateX(100%)" }}
           animate={{ transform: "translateX(0%)" }}
           exit={{ transform: "translateX(100%)" }}

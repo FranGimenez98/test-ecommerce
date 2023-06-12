@@ -31,17 +31,6 @@ const StoreProvider = ({ children }: StoreProviderProps) => {
     }
   }, [state.cart]);
 
-  // Obtener el estado del carrito desde el localStorage al iniciar la app
-  // useEffect(() => {
-  //   if (typeof window !== "undefined" && typeof localStorage === "object") {
-  //     const cartData = localStorage.getItem("cart");
-
-  //     if (cartData) {
-  //       dispatch({ type: "LOAD_CART", payload: JSON.parse(cartData) });
-  //     }
-  //   }
-  // }, []);
-
   return (
     <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
   );

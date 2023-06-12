@@ -202,7 +202,6 @@ export default function Home({
     isInViewMobileNewArrivalsRef,
   ]);
 
-  console.log(showSizes);
   return (
     <Layout
       isOpenWishlistMessage={isOpenWishlistMessage}

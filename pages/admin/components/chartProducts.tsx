@@ -106,7 +106,6 @@ export async function getServerSideProps() {
       },
     };
   } catch (error) {
-    console.log("error", error);
     return {
       props: {
         totalProducts: 0,

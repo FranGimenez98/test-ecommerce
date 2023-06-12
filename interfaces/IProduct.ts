@@ -7,7 +7,8 @@ export interface IProduct {
     name: string,
   };
   sizes: { size: string; quantity: number }[];
-  image: string;
+  // image: string;
+  images: string[];
   description?: string;
   stock: number;
   color: {
