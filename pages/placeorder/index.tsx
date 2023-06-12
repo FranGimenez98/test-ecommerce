@@ -1,5 +1,6 @@
 import Layout from "@/components/layouts/layout";
 import CartContext from "@/context/CartContext";
+import { CartItem } from "@/interfaces/IInitalState";
 import { NextPageContext } from "next";
 import { getSession, useSession } from "next-auth/react";
 import { useContext, useEffect, useState } from "react";
@@ -64,12 +65,21 @@ export default function PlaceOrderScreen() {
     };
 
     generateLink();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // dependencia vacía para que se ejecute solo una vez
 
-  const totalCartPrice = state?.cart?.cartItems.reduce(
-    (a, c) => a + c.quantity * c.price,
-    0
-  );
+  const totalCartPrice: number =
+    (
+      state?.cart?.cartItems.reduce as (
+        callbackfn: (
+          previousValue: number,
+          currentValue: CartItem,
+          currentIndex: number,
+          array: CartItem[]
+        ) => number,
+        initialValue: number
+      ) => number
+    )((a, c) => a + c.quantity * c.price, 0) ?? 0;
 
   return (
     <Layout>
@@ -86,6 +96,7 @@ export default function PlaceOrderScreen() {
                   <div className="flex gap-2 items-center">
                     <img
                       src={product.images[0]}
+                      alt={`${product.name} image`}
                       className="h-[7rem] w-[7rem] object-cover bg-center rounded-md border-[1px] border-gray-200"
                     />
                     <div className="flex flex-col gap-1 w-[90%] lg:w-full">

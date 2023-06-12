@@ -162,7 +162,6 @@ export default function SignupScreen() {
   );
 }
 
-
 export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context);
 

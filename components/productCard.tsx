@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useContext, useState } from "react";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
 import { IoFilter } from "react-icons/io5";

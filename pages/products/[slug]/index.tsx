@@ -37,7 +37,7 @@ export default function ProductScreen({
   const [isOpenWishlistMessage, setIsOpenWishlistMessage] = useState(false);
   const { error, errorMessage, showError, hideError } = useError();
   const [selectedImage, setSelectedImage] = useState(product.images[0]);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const handleSizeSelected = (size: string) => {
     if (sizeSelected === size) {
@@ -151,7 +151,7 @@ export default function ProductScreen({
 
   const handleImage = (image: string, index: number) => {
     setSelectedImage(image);
-    setSelectedImageIndex(index)
+    setSelectedImageIndex(index);
   };
 
   return (
@@ -166,13 +166,16 @@ export default function ProductScreen({
               {product.images.map((image, index) => (
                 <div
                   className={`w-[5.5rem] h-[5rem] md:h-[7.6rem] md:w-[7.6rem] ${
-                    selectedImageIndex === index ?"border-[2px] border-black" : ""
+                    selectedImageIndex === index
+                      ? "border-[2px] border-black"
+                      : ""
                   }`}
                   onClick={() => handleImage(image, index)}
                   key={index}
                 >
                   <img
                     src={image}
+                    alt={`${product.name} image`}
                     className="w-[5.5rem] h-[4.8rem] md:h-[7.35rem] md:w-[7.6rem] object-cover bg-center"
                   />
                 </div>
@@ -181,6 +184,7 @@ export default function ProductScreen({
             <div className=" md:w-[27rem] md:h-[32rem] relative">
               <img
                 src={selectedImage}
+                alt={`${product.name} image`}
                 className=" md:w-full md:h-full object-cover bg-center"
               />
               {product.discount?.isActive && (
@@ -331,6 +335,7 @@ export default function ProductScreen({
                   <div className="h-[20rem] md:h-[25rem] w-full mb-20">
                     <img
                       src={product.images[0]}
+                      alt={`${product.name} image`}
                       className="h-full w-full object-cover bg-center"
                     />
                     <div className="flex flex-col justify-center mt-1">

@@ -33,12 +33,12 @@ export default function ModalEditProduct({ product }: ModalEditProductProps) {
             {/* Contenido del modal */}
             <h2>Editando producto: {product._id}</h2>
             <label>
-                <p>Nombre: {product.name}</p>
-                <input type="text" placeholder="Product name..."/>
+              <p>Nombre: {product.name}</p>
+              <input type="text" placeholder="Product name..." />
             </label>
             <label>
-                <p>Price: {product.price}</p>
-                <input type="text" placeholder="Price..."/>
+              <p>Price: {product.price}</p>
+              <input type="text" placeholder="Price..." />
             </label>
             {/* <label>
                 <p>Nombre: {product.category}</p>
@@ -66,7 +66,9 @@ export default function ModalEditProduct({ product }: ModalEditProductProps) {
                 <p>Nombre: {product.stock}</p>
                 <input type="text" placeholder="Product name..."/>
             </label> */}
-            <button onClick={closeModal} className="text-white">Cerrar</button>
+            <button onClick={closeModal} className="text-white">
+              Cerrar
+            </button>
           </div>
         </div>
       )}

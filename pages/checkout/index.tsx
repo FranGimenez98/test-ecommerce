@@ -6,13 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import CartContext from "@/context/CartContext";
 import { useContext } from "react";
 import { getSession, useSession } from "next-auth/react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import { NextPageContext } from "next";
 
 export default function CheckoutScreen() {
   const { state, dispatch } = useContext(CartContext);
   const { data: session } = useSession();
-  const router = useRouter()
+  const router = useRouter();
 
   interface CheckOutData {
     name: string;
@@ -92,7 +92,7 @@ export default function CheckoutScreen() {
     resolver: zodResolver(schema),
   });
 
-  console.log(state.cart.cartItems)
+  console.log(state.cart.cartItems);
 
   const submitData = async (data: CheckOutData) => {
     dispatch({
@@ -146,7 +146,7 @@ export default function CheckoutScreen() {
     });
     const order = await response.json();
     dispatch({ type: "ADD_ORDER_ID", payload: { orderId: order._id } });
-    router.push("/placeorder")
+    router.push("/placeorder");
   };
 
   return (

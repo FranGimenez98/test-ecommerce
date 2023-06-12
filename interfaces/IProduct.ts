@@ -4,7 +4,7 @@ export interface IProduct {
   slug: string;
   price: number;
   category: {
-    name: string,
+    name: string;
   };
   sizes: { size: string; quantity: number }[];
   // image: string;
@@ -12,7 +12,7 @@ export interface IProduct {
   description?: string;
   stock: number;
   color: {
-    name: string,
+    name: string;
   };
   rating: number; // Nuevo campo de rating
   discount: {

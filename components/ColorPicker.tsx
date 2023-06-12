@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {RiSave3Fill} from "react-icons/ri";
+import { RiSave3Fill } from "react-icons/ri";
 import { SketchPicker } from "react-color";
 
 export default function ColorPicker() {
@@ -79,9 +79,8 @@ export default function ColorPicker() {
               : "bg-gray-300 cursor-not-allowed"
           } text-white py-2 px-2 rounded`}
         >
-          <RiSave3Fill size="1.4rem"/>
+          <RiSave3Fill size="1.4rem" />
         </button>
-
       </div>
       <SketchPicker
         color={selectedColorHex}

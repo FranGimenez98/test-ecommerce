@@ -18,7 +18,6 @@ export default NextAuth({
   callbacks: {
     async signIn({ account, profile, email, user }) {
       if (account?.provider === "google") {
-
         try {
           await connect();
           const existingUser = await User.findOne({ email: profile?.email });

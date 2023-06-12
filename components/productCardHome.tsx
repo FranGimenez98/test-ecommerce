@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useContext, useState } from "react";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
 import { IoFilter } from "react-icons/io5";
@@ -6,6 +7,7 @@ import { IProduct } from "@/interfaces/IProduct";
 import CartContext from "@/context/CartContext";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface ProductCardProps {
   product: IProduct;

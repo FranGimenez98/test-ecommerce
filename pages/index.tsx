@@ -190,6 +190,7 @@ export default function Home({
     if (isInViewPopularsViewAll) popularsViewAllControls.start("visible");
     if (isInViewSalesViewAll) salesViewAllControls.start("visible");
     if (isInViewArrivalsViewAll) newArrivalsViewAllControls.start("visible");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isInViewPopulars,
     isInViewSales,

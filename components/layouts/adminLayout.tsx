@@ -19,7 +19,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     toggleMenu,
     toggleProducts,
     toggleMenuMobile,
-    ref
+    ref,
   } = useDropdownMenu(false);
 
   return (
@@ -33,13 +33,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         onClick={toggleMenuMobile}
       >
         <span className="sr-only">Open sidebar</span>
-        <BiMenuAltLeft size="1.5rem"/>
+        <BiMenuAltLeft size="1.5rem" />
       </button>
 
       <aside
         id="separator-sidebar"
         className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${
-          showMenuMobile ? 'translate-x-0' : '-translate-x-full'
+          showMenuMobile ? "translate-x-0" : "-translate-x-full"
         } sm:translate-x-0`}
         aria-label="Sidebar"
         ref={ref}

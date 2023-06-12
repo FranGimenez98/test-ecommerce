@@ -24,7 +24,7 @@ const editColor = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!updateColor) {
       return res.status(404).json({ error: "Category not found" });
     }
-    
+
     return res.status(200).json(updateColor);
   } catch (error) {
     return res.status(500).json({ error: "Internal server error" });

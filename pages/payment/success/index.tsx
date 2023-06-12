@@ -54,6 +54,7 @@ export default function SuccessPaymentScreen() {
     return () => {
       clearTimeout(notificationTimeout);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -47,11 +47,10 @@ const CartContext = createContext<ContextType>({
         state_name: "",
         country_name: "",
       },
-      orderId:"",
+      orderId: "",
     },
   },
   dispatch: () => {},
 });
 
 export default CartContext;
-

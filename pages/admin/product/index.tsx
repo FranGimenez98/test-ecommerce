@@ -502,7 +502,7 @@ export default function AdminProducts(
                       className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-black flex"
                     >
                       <img
-                        src={prod.image}
+                        src={prod.images[0]}
                         alt="product"
                         className="w-[50px] h-[55px]"
                       />

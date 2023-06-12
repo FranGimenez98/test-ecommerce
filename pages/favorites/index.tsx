@@ -40,8 +40,8 @@ const FavoritesScreen = (props: FavoritesProps) => {
         </h2>
         <div className="w-[30%] text-center">
           <p className="text-gray-600">
-            Login or create an account to view to your wishlist. We'll drop you
-            back at your wishlist after you have entered your details.
+            Login or create an account to view to your wishlist. We&apos;ll drop
+            you back at your wishlist after you have entered your details.
           </p>
         </div>
         <div className="w-[30%] flex flex-col gap-4 mt-[3.5rem]">
@@ -80,6 +80,7 @@ const FavoritesScreen = (props: FavoritesProps) => {
                     <Link href={`/products/${fav?.product?.slug}`}>
                       <img
                         src={fav?.product?.images[0]}
+                        alt={`${fav?.product.name} image`}
                         className="w-full h-[16rem] md:h-[20rem] m-auto mt-0 mb-0 object-cover bg-center"
                       />
                     </Link>

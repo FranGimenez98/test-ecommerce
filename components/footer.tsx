@@ -19,7 +19,6 @@ export default function Footer() {
     <footer className="bg-white min-h-[270px]  md:h-[275px] border-t-[1px] border-b-slate-200 mt-[5rem] flex flex-col justify-center items-center py-4">
       <div className="w-full md:w-[80%] h-[100%]">
         <div className="flex flex-col md:flex-row md:justify-between justify-center items-center mb-4">
-
           <div className="hidden md:flex flex-col">
             <div className="flex flex-col text-black gap-1">
               <h4 className="text-lg font-medium">Contact</h4>
@@ -53,9 +52,11 @@ export default function Footer() {
             <span className="text-lg md:text-sm ">Quienes Somos</span>
             <span className="text-lg md:text-sm ">Contacto</span>
           </div>
-          
+
           <div className="flex flex-col w-[23%]">
-            <h4 className="hidden md:block text-lg font-medium">Social Media</h4>
+            <h4 className="hidden md:block text-lg font-medium">
+              Social Media
+            </h4>
             <p className="hidden md:block text-sm">
               Follow us on social media to find out the latest updates on our
               progress

@@ -375,7 +375,6 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
                 >
                   popular
                 </button>
-                
               </div>
             </div>
           )}

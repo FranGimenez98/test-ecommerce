@@ -1,8 +1,6 @@
 import { Document } from "mongoose";
 import { IProduct } from "./IProduct";
 
-
-
 interface CartItem {
   price: number;
   product: IProduct;
@@ -10,7 +8,7 @@ interface CartItem {
   _id: string;
 }
 
-export interface ICart{
+export interface ICart {
   user: string;
   products: CartItem[];
   totalPrice: number;

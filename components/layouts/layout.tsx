@@ -4,6 +4,7 @@ import { ILayoutProps } from "@/interfaces/ILayout";
 import Cart from "@/components/cart";
 import CartContext from "@/context/CartContext";
 import dynamic from "next/dynamic";
+import { CartItem } from "@/interfaces/IInitalState";
 
 const Navbar = dynamic(
   () => import("@/components/navbar").then((ctx) => ctx.default),
@@ -58,8 +59,24 @@ export default function Layout({
   const { state } = useContext(CartContext);
 
   useEffect(() => {
-    setCartItems(state?.cart.cartItems.reduce((a, b) => a + b.quantity, 0));
-  }, [state.cart.cartItems]);
+    setCartItems(
+      (
+        state?.cart?.cartItems.reduce as (
+          callbackfn: (
+            previousValue: number,
+            currentValue: CartItem,
+            currentIndex: number,
+            array: CartItem[]
+          ) => number,
+          initialValue: number
+        ) => number
+      )(
+        (accumulator: number, currentItem: CartItem) =>
+          accumulator + currentItem.quantity,
+        0
+      ) ?? 0
+    );
+  }, [state?.cart.cartItems]);
 
   return (
     <>
