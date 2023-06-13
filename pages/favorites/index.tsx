@@ -38,13 +38,13 @@ const FavoritesScreen = (props: FavoritesProps) => {
         <h2 className="text-2xl font-semibold mt-[3rem] mb-[1.5rem]">
           🔒 SAVE TO WISHLIST
         </h2>
-        <div className="w-[30%] text-center">
+        <div className="w-[97%] md:w-[30%] text-center">
           <p className="text-gray-600">
             Login or create an account to view to your wishlist. We&apos;ll drop
             you back at your wishlist after you have entered your details.
           </p>
         </div>
-        <div className="w-[30%] flex flex-col gap-4 mt-[3.5rem]">
+        <div className="w-[60%] md:w-[30%] flex flex-col gap-4 mt-[3.5rem]">
           <Link href="/login" className="w-full">
             <button className="bg-gray-200 px-4 py-1 uppercase text-lg text-black font-semibold w-full">
               Login

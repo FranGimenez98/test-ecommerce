@@ -47,10 +47,10 @@ export default function Footer() {
               <span className="text-lg md:text-sm ">Products</span>
             </Link>
             <Link href="/login">
-              <span className="text-lg md:text-sm ">Iniciar sesion</span>
+              <span className="text-lg md:text-sm ">Log in</span>
             </Link>
-            <span className="text-lg md:text-sm ">Quienes Somos</span>
-            <span className="text-lg md:text-sm ">Contacto</span>
+            <span className="text-lg md:text-sm ">About us</span>
+            <span className="text-lg md:text-sm ">Contact</span>
           </div>
 
           <div className="flex flex-col w-[23%]">

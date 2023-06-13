@@ -703,10 +703,8 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
                 </motion.div>
               ))}
             </motion.div>
-            {products.length ? (
+            {products.length > 12 && (
               <Pagination currentPage={currentPage} totalPages={pages} />
-            ) : (
-              <div className="hidden" />
             )}
           </div>
         </div>
