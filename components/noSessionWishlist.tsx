@@ -39,7 +39,7 @@ const NoSessionWishlist = ({ setIsOpenWishlistMessage }: Props) => {
               you back at your wishlist after you have entered your details.
             </p>
           </div>
-          <div className="w-[50%] md:w-[35%] flex flex-col gap-2 mt-[2rem]">
+          <div className="w-[60%] md:w-[35%] flex flex-col gap-2 mt-[2rem]">
             <Link href="/login" className="w-full">
               <button className="bg-gray-200 px-4 py-1 uppercase text-black font-semibold w-full">
                 Login

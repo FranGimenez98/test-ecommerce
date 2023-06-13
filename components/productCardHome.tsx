@@ -49,7 +49,7 @@ export const ProductCardHome = ({
   return (
     <div
       key={product._id}
-      className="bg-white w-[16rem] md:w-[100%] h-[20rem] md:h-[100%] m-auto text-left relative md:mb-5 mb-20"
+      className="bg-white w-[16rem] md:w-[100%]  md:h-[100%] m-auto text-left relative md:mb-5 mb-20 pb-2"
     >
       <div
         onMouseEnter={onMouseEnter}
