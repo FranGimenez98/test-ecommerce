@@ -100,6 +100,7 @@ export default function Layout({
             isOpenSignOutMessage={isOpenSignOutMessage}
             setIsOpenSignOutMessage={setIsOpenSignOutMessage}
           />
+
           {isOpenSidebar && (
             <Sidebar
               isOpenSidebar={isOpenSidebar}

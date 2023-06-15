@@ -66,13 +66,13 @@ export default function SignupScreen() {
   return (
     <Layout>
       {/* <div className="w-[97%] lg:w-[25%] min-h-[30rem] my-[3rem] flex flex-col items-center"> */}
-      <div className="w-[97%] lg:w-[25%] min-h-[30rem] my-[3rem] bg-white shadow-md flex flex-col items-center justify-center">
+      <div className="w-[97%] lg:w-[25%] min-h-[30rem] my-[3rem] bg-white md:shadow-md flex flex-col items-center justify-center">
         {/* <h2 className="text-lg font-semibold">Sign up</h2> */}
         <form
           className="w-full flex flex-col items-center justify-center"
           onSubmit={handleSubmit(submitData)}
         >
-          <div className="w-[70%] flex flex-col mt-4 mb-3">
+          <div className="w-[80%] flex flex-col mt-4 mb-3">
             <label className="font-semibold text-slate-600">Name</label>
             <input
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
@@ -84,7 +84,7 @@ export default function SignupScreen() {
               </span>
             )}
           </div>
-          <div className="w-[70%] flex flex-col mb-3">
+          <div className="w-[80%] flex flex-col mb-3">
             <label className="font-semibold text-slate-600">Last name</label>
             <input
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
@@ -96,7 +96,7 @@ export default function SignupScreen() {
               </span>
             )}
           </div>
-          <div className="w-[70%] flex flex-col mb-3">
+          <div className="w-[80%] flex flex-col mb-3">
             <label className="font-semibold text-slate-600">Email</label>
             <input
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
@@ -108,7 +108,7 @@ export default function SignupScreen() {
               </span>
             )}
           </div>
-          <div className="w-[70%] flex flex-col ">
+          <div className="w-[80%] flex flex-col ">
             <label className="font-semibold text-slate-600">Password</label>
             <input
               type="password"
@@ -122,7 +122,7 @@ export default function SignupScreen() {
             )}
           </div>
 
-          <div className="w-[70%] flex flex-col justify-center my-4">
+          <div className="w-[80%] flex flex-col justify-center my-4">
             <button
               className="bg-black text-white text-center py-1 w-full font-semibold"
               type="submit"
@@ -136,7 +136,7 @@ export default function SignupScreen() {
             )}
           </div>
         </form>
-        <div className="w-[70%] flex items-center justify-center">
+        <div className="w-[80%] flex items-center justify-center">
           <h3 className="text-sm text-gray-500 font-medium">
             Already have and account?{" "}
             <Link href="/login">
@@ -144,12 +144,12 @@ export default function SignupScreen() {
             </Link>
           </h3>
         </div>
-        <div className="w-[70%] flex items-center justify-center gap-3 my-3">
+        <div className="w-[80%] flex items-center justify-center gap-3 my-3">
           <div className="bg-gray-300 w-full h-[1px]" />
           <h3 className="text-sm text-gray-500">Or</h3>
           <div className="bg-gray-300 w-full h-[1px]" />
         </div>
-        <div className="w-[70%] flex flex-col items-center justify-between gap-3 mb-8">
+        <div className="w-[80%] flex flex-col items-center justify-between gap-3 mb-8">
           <button
             className="bg-[#fafafa]  border-[1px] border-gray-200 flex gap-2 items-center justify-center w-full py-1 text-gray-500 font-medium"
             onClick={() => signIn("google")}
