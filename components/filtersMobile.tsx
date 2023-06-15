@@ -83,17 +83,17 @@ const FiltersMobile = ({
       />
 
       <motion.div
-        className="absolute w-[90%] h-full bg-white top-0 right-0 z-50 shadow-2xl transition-transform duration-500"
+        className="absolute w-[80%] h-full bg-white top-0 right-0 z-50 shadow-2xl transition-transform duration-500"
         initial={{ transform: "translateX(100%)" }}
         animate={{ transform: "translateX(0%)" }}
         exit={{ transform: "translateX(100%)" }}
         transition={{ duration: 0.3 }}
       >
         <button
-          className="absolute  w-8 h-8 top-3 left-3 z-50 rounded-full flex items-center justify-center"
+          className="absolute top-3 left-3 text-sm cursor-pointer"
           onClick={() => setShowFilters(false)}
         >
-          <ImCross className="text-xl text-black" />
+          <ImCross  />
         </button>
 
         <div
@@ -214,7 +214,7 @@ const FiltersMobile = ({
 
           <div className="mb-3">
             <h2 className="uppercase font-semibold text-xl">Colors</h2>
-            <div className="grid grid-cols-7 w-[80%] gap-1">
+            <div className="grid grid-cols-7 w-[90%] gap-1">
               <button
                 className="h-7 w-7 border-[1px] border-slate-200 cursor-pointer text-center text-red"
                 onClick={() => {

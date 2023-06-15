@@ -67,12 +67,12 @@ export default function LoginScreen() {
 
   return (
     <Layout>
-      <div className="w-[97%] my-[3rem] min-h-[30rem] lg:w-[25%] bg-white shadow-md flex flex-col items-center justify-center">
+      <div className="w-[97%] my-[3rem] min-h-[30rem] lg:w-[25%] bg-white md:shadow-md flex flex-col items-center justify-center">
         <form
           className="w-full  flex flex-col items-center justify-center"
           onSubmit={handleSubmit(submitData)}
         >
-          <div className="w-[70%] flex flex-col mt-4 mb-3">
+          <div className="w-[80%] flex flex-col mt-4 mb-3">
             <label className="font-semibold text-slate-600">Email</label>
             <input
               className="w-full border-[1px] border-gray-200 rounded-md py-1 px-2 outline-none"
@@ -84,7 +84,7 @@ export default function LoginScreen() {
               </span>
             )}
           </div>
-          <div className="w-[70%] flex flex-col mb-3">
+          <div className="w-[80%] flex flex-col mb-3">
             <label className="font-semibold text-slate-600">Password</label>
             <input
               type="password"
@@ -97,7 +97,7 @@ export default function LoginScreen() {
               </span>
             )}
           </div>
-          <div className="w-[70%] flex flex-col">
+          <div className="w-[80%] flex flex-col">
             <label className="font-semibold text-slate-600">
               Repeat password
             </label>
@@ -113,7 +113,7 @@ export default function LoginScreen() {
             )}
           </div>
 
-          <div className="w-[70%] flex flex-col justify-center my-4">
+          <div className="w-[80%] flex flex-col justify-center my-4">
             <button
               className="bg-black text-white text-center py-1 w-full font-semibold"
               type="submit"
@@ -136,7 +136,7 @@ export default function LoginScreen() {
             </button>
           </div> */}
         </form>
-        <div className="w-[70%] flex items-center justify-center">
+        <div className="w-[80%] flex items-center justify-center">
           <h3 className="text-sm text-gray-500 font-semibold">
             New to our platform?{" "}
             <Link href="/signup">
@@ -144,12 +144,12 @@ export default function LoginScreen() {
             </Link>
           </h3>
         </div>
-        <div className="w-[70%] flex items-center justify-center gap-3 my-3">
+        <div className="w-[80%] flex items-center justify-center gap-3 my-3">
           <div className="bg-gray-300 w-full h-[1px]" />
           <h3 className="text-sm text-gray-500">Or</h3>
           <div className="bg-gray-300 w-full h-[1px]" />
         </div>
-        <div className="w-[70%] flex flex-col items-center justify-between gap-3 mb-8">
+        <div className="w-[80%] flex flex-col items-center justify-between gap-3 mb-8">
           <button
             className="bg-[#fafafa]  border-[1px] border-gray-200 flex gap-2 items-center justify-center w-full py-1 text-gray-500 font-medium"
             onClick={() =>
