@@ -44,7 +44,7 @@ const SortMobile = ({ showSort, setShowSort, sortHandler }: Props) => {
         </div>
         <div className="border-b-[1px] border-gray-200 pb-1">
           <button
-            className="text-xl"
+            className="text-xl w-full text-start"
             onClick={() => {
               if (sortHandler) {
                 sortHandler("newest");
@@ -57,7 +57,7 @@ const SortMobile = ({ showSort, setShowSort, sortHandler }: Props) => {
 
         <div className="border-b-[1px] border-gray-200 pb-1">
           <button
-            className="text-xl"
+            className="text-xl w-full text-start"
             onClick={() => {
               if (sortHandler) {
                 sortHandler("featured");
@@ -70,7 +70,7 @@ const SortMobile = ({ showSort, setShowSort, sortHandler }: Props) => {
 
         <div className="border-b-[1px] border-gray-200 pb-1">
           <button
-            className="text-xl"
+            className="text-xl w-full text-start"
             onClick={() => {
               if (sortHandler) {
                 sortHandler("toprated");
@@ -81,23 +81,25 @@ const SortMobile = ({ showSort, setShowSort, sortHandler }: Props) => {
           </button>
         </div>
 
-        <div
-          className="border-b-[1px] border-gray-200 pb-1"
-          onClick={() => {
-            if (sortHandler) {
-              sortHandler("highest");
-            }
-          }}
-        >
-          <button className="text-xl">Price: Low to High</button>
+        <div className="border-b-[1px] border-gray-200 pb-1">
+          <button
+            className="text-xl w-full text-start"
+            onClick={() => {
+              if (sortHandler) {
+                sortHandler("lowest");
+              }
+            }}
+          >
+            Price: Low to High
+          </button>
         </div>
 
         <div className="border-b-[1px] border-gray-200 pb-1 mb-4">
           <button
-            className="text-xl"
+            className="text-xl w-full text-start"
             onClick={() => {
               if (sortHandler) {
-                sortHandler("lowest");
+                sortHandler("highest");
               }
             }}
           >
