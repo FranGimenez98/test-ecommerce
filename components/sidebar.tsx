@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ImCross } from "react-icons/im";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { TiArrowSortedDown } from "react-icons/ti";
 
@@ -28,7 +28,7 @@ export default function Sidebar({
   return (
     <div className="fixed md:hidden top-0 w-full h-full z-20 flex items-center justify-center">
       <motion.div
-        className={`fixed top-0 right-0 bg-white w-[90%] h-full z-20 `}
+        className={`fixed top-0 right-0 bg-white w-[80%] h-full z-20 `}
         initial={{ transform: "translateX(100%)" }}
         animate={
           isOpenSidebar
@@ -59,35 +59,45 @@ export default function Sidebar({
               <span className="font-medium text-2xl">PRODUCTS</span>
               <TiArrowSortedDown className="text-2xl" />
             </button>
-            {isOpenMenu && (
-              <div className="flex flex-col ml-3 justify-center gap-2 w-full mb-2">
-                <Link href="/products">
-                  <button
-                    onClick={() => setIsOpenSidebar(false)}
-                    className="text-lg"
-                  >
-                    All products
-                  </button>
-                </Link>
+            <AnimatePresence>
+              {isOpenMenu && (
+                <motion.div
+                  className="flex flex-col ml-3 justify-center gap-2 w-full mb-2"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.1 }}
+                  style={{ overflow: "hidden" }}
+                >
+                  <Link href="/products">
+                    <button
+                      onClick={() => setIsOpenSidebar(false)}
+                      className="text-lg"
+                    >
+                      All products
+                    </button>
+                  </Link>
 
-                <Link href="/products?sex=Women">
-                  <button
-                    onClick={() => setIsOpenSidebar(false)}
-                    className="text-lg"
-                  >
-                    Women products
-                  </button>
-                </Link>
-                <Link href="/products?sex=Men">
-                  <button
-                    onClick={() => setIsOpenSidebar(false)}
-                    className="text-lg"
-                  >
-                    Men products
-                  </button>
-                </Link>
-              </div>
-            )}
+                  <Link href="/products?sex=Women">
+                    <button
+                      onClick={() => setIsOpenSidebar(false)}
+                      className="text-lg"
+                    >
+                      Women products
+                    </button>
+                  </Link>
+                  <Link href="/products?sex=Men">
+                    <button
+                      onClick={() => setIsOpenSidebar(false)}
+                      className="text-lg"
+                    >
+                      Men products
+                    </button>
+                  </Link>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <Link href="/" className="font-medium text-2xl">
               SERVICES
             </Link>
