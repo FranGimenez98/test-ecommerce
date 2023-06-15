@@ -190,7 +190,7 @@ export default function Home({
     if (isInViewPopularsViewAll) popularsViewAllControls.start("visible");
     if (isInViewSalesViewAll) salesViewAllControls.start("visible");
     if (isInViewArrivalsViewAll) newArrivalsViewAllControls.start("visible");
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isInViewPopulars,
     isInViewSales,
@@ -215,141 +215,138 @@ export default function Home({
         // exit={{ x: window.innerWidth, transition: { duration: 0.5 } }}
       >
         <Hero />
-        {populars.length ? (
-          <motion.div
-            className="md:w-[91%] w-[97%] md:h-[calc(100vh-4rem)] md:mt-0 md:flex items-center justify-center flex-col"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <div className="w-full flex justify-between items-end mt-[6rem]">
-              <motion.h2
-                className="mt-12 mb-2 text-2xl font-semibold uppercase"
-                initial={{ opacity: 0, x: 100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ type: "easeIn", duration: 0.8 }}
-                viewport={{ once: true }}
-              >
-                POPULARS
-              </motion.h2>
-              <motion.div
-                ref={popularsViewAll}
-                initial={{ opacity: 0, y: 100 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ type: "easeIn", duration: 0.8 }}
-                viewport={{ once: true }}
-                animate={popularsViewAllControls}
-                className="mb-2 md:mb-1"
-              >
-                <Link
-                  href="/products?rating=5"
-                  className="font-semibold underline text-sm"
-                >
-                  View All
-                </Link>
-              </motion.div>
-            </div>
 
-            {/* mobile */}
-            <motion.div
-              ref={mobilePopularRef}
-              variants={{
-                hidden: { opacity: 0 },
-                visible: {
-                  opacity: 1,
-                  transition: {
-                    staggerChildren: 0.1, // Adjust the stagger delay as needed
-                  },
-                },
-              }}
-              initial="hidden"
-              animate={mobileCardControls}
-              transition={{ duration: 1, delay: 0.5 }}
+        <motion.div
+          className="md:w-[91%] w-[97%] md:h-[calc(100vh-4rem)] mt-[5rem] md:flex items-center justify-center flex-col"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <div className="w-full flex justify-between items-end mt-[6rem]">
+            <motion.h2
+              className="mt-12 mb-2 text-2xl font-semibold uppercase"
+              initial={{ opacity: 0, x: 100 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ type: "easeIn", duration: 0.8 }}
+              viewport={{ once: true }}
             >
-              <Splide
-                options={{
-                  arrows: false,
-                  pagination: false,
-                  drag: "free",
-                  rewind: true,
-                  interval: 4000,
-                  breakpoints: {
-                    640: { fixedWidth: "16rem", gap: "1rem" },
-                  },
-                }}
-                className="md:hidden"
-              >
-                {populars?.map((product, index) => (
-                  <SplideSlide key={product._id}>
-                    <motion.div
-                      variants={{
-                        hidden: { opacity: 0, y: 75 },
-                        visible: { opacity: 1, y: 0 },
-                      }}
-                      transition={{ duration: 0.8, delay: index * 0.2 }}
-                    >
-                      <ProductCardHome
-                        product={product}
-                        userFavs={userFavs}
-                        toggleFavorite={toggleFavorite}
-                        handleAddToCart={handleAddToCart}
-                        showSizes={showSizesPopulars}
-                        setShowSizes={setShowSizesPopulars}
-                        setIsOpenWishlistMessage={
-                          setIsOpenWishlistMessage || undefined
-                        }
-                        index={index}
-                      />
-                    </motion.div>
-                  </SplideSlide>
-                ))}
-              </Splide>
-            </motion.div>
-
+              POPULARS
+            </motion.h2>
             <motion.div
-              ref={popularsRef}
-              className="hidden md:grid grid-cols-5 gap-4"
-              variants={{
-                hidden: { opacity: 0 },
-                visible: {
-                  opacity: 1,
-                  transition: {
-                    staggerChildren: 0.1, // Adjust the stagger delay as needed
-                  },
+              ref={popularsViewAll}
+              initial={{ opacity: 0, y: 100 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ type: "easeIn", duration: 0.8 }}
+              viewport={{ once: true }}
+              animate={popularsViewAllControls}
+              className="mb-2 md:mb-1"
+            >
+              <Link
+                href="/products?rating=5"
+                className="font-semibold underline text-sm"
+              >
+                View All
+              </Link>
+            </motion.div>
+          </div>
+
+          {/* mobile */}
+          <motion.div
+            ref={mobilePopularRef}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.1, // Adjust the stagger delay as needed
+                },
+              },
+            }}
+            initial="hidden"
+            animate={mobileCardControls}
+            transition={{ duration: 1, delay: 0.5 }}
+          >
+            <Splide
+              options={{
+                arrows: false,
+                pagination: false,
+                drag: "free",
+                rewind: true,
+                interval: 4000,
+                breakpoints: {
+                  640: { fixedWidth: "16rem", gap: "1rem" },
                 },
               }}
-              initial="hidden"
-              animate={cardControls}
-              transition={{ duration: 1, delay: 0.5 }} // Adjust the duration and delay values
+              className="md:hidden"
             >
               {populars?.map((product, index) => (
-                <motion.div
-                  key={product._id}
-                  variants={{
-                    hidden: { opacity: 0, y: 75 },
-                    visible: { opacity: 1, y: 0 },
-                  }}
-                  transition={{ duration: 0.8, delay: index * 0.3 }} // Adjust the delay for each card
-                >
-                  <ProductCardHome
-                    product={product}
-                    userFavs={userFavs}
-                    toggleFavorite={toggleFavorite}
-                    handleAddToCart={handleAddToCart}
-                    showSizes={showSizesPopulars}
-                    setShowSizes={setShowSizesPopulars}
-                    setIsOpenWishlistMessage={
-                      setIsOpenWishlistMessage || undefined
-                    }
-                    index={index}
-                  />
-                </motion.div>
+                <SplideSlide key={product._id}>
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0, y: 75 },
+                      visible: { opacity: 1, y: 0 },
+                    }}
+                    transition={{ duration: 0.8, delay: index * 0.2 }}
+                  >
+                    <ProductCardHome
+                      product={product}
+                      userFavs={userFavs}
+                      toggleFavorite={toggleFavorite}
+                      handleAddToCart={handleAddToCart}
+                      showSizes={showSizesPopulars}
+                      setShowSizes={setShowSizesPopulars}
+                      setIsOpenWishlistMessage={
+                        setIsOpenWishlistMessage || undefined
+                      }
+                      index={index}
+                    />
+                  </motion.div>
+                </SplideSlide>
               ))}
-            </motion.div>
+            </Splide>
           </motion.div>
-        ) : (
-          <div></div>
-        )}
+
+          <motion.div
+            ref={popularsRef}
+            className="hidden md:grid grid-cols-5 gap-4"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.1, // Adjust the stagger delay as needed
+                },
+              },
+            }}
+            initial="hidden"
+            animate={cardControls}
+            transition={{ duration: 1, delay: 0.5 }} // Adjust the duration and delay values
+          >
+            {populars?.map((product, index) => (
+              <motion.div
+                key={product._id}
+                variants={{
+                  hidden: { opacity: 0, y: 75 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                transition={{ duration: 0.8, delay: index * 0.3 }} // Adjust the delay for each card
+              >
+                <ProductCardHome
+                  product={product}
+                  userFavs={userFavs}
+                  toggleFavorite={toggleFavorite}
+                  handleAddToCart={handleAddToCart}
+                  showSizes={showSizesPopulars}
+                  setShowSizes={setShowSizesPopulars}
+                  setIsOpenWishlistMessage={
+                    setIsOpenWishlistMessage || undefined
+                  }
+                  index={index}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+        </motion.div>
 
         <motion.div
           className="md:w-[91%] w-[97%] md:h-[calc(100vh-4rem)] mt-[5rem] md:flex items-center justify-center flex-col"
@@ -483,7 +480,7 @@ export default function Home({
         </motion.div>
 
         <motion.div
-          className="md:w-[91%] w-[97%] md:h-[calc(100vh-4rem)] mt-[5rem] md:mt-0 md:flex items-center justify-center flex-col"
+          className="md:w-[91%] w-[97%] md:h-[calc(100vh-4rem)] mt-[5rem] md:flex items-center justify-center flex-col"
           initial={{ opacity: 0, x: -100 }} // Animación desde la izquierda
           animate={{ opacity: 1, x: 0 }} // Posición final y opacidad 1
           transition={{ duration: 0.5, delay: 0.3 }}

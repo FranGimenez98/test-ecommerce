@@ -5,6 +5,7 @@ import Cart from "@/components/cart";
 import CartContext from "@/context/CartContext";
 import dynamic from "next/dynamic";
 import { CartItem } from "@/interfaces/IInitalState";
+import SortMobile from "../sortMobile";
 
 const Navbar = dynamic(
   () => import("@/components/navbar").then((ctx) => ctx.default),
@@ -44,6 +45,9 @@ export default function Layout({
   colors,
   showFilters,
   setShowFilters,
+  showSort,
+  setShowSort,
+  sortHandler,
   categoryHandler,
   priceHandler,
   sexHandler,
@@ -133,6 +137,13 @@ export default function Layout({
             <SignOutModal
               isOpenSignOutMessage={isOpenSignOutMessage}
               setIsOpenSignOutMessage={setIsOpenSignOutMessage}
+            />
+          )}
+          {showSort && (
+            <SortMobile
+              showSort={showSort}
+              setShowSort={setShowSort }
+              sortHandler={sortHandler}
             />
           )}
 
