@@ -70,6 +70,10 @@ interface SearchProps {
   setShowSizes: React.Dispatch<React.SetStateAction<boolean[]>>;
   index: number;
   setIsOpenWishlistMessage?: (bool: boolean) => void | undefined;
+
+  showSort?: boolean | undefined;
+  setShowSort?: (bool: boolean) => void | undefined | undefined;
+  sortHandler?: (sort: string) => void | undefined;
 }
 
 // const PAGE_SIZE = 2;
@@ -122,6 +126,8 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
   const [showSort, setShowSort] = useState(false);
   const [isOpenWishlistMessage, setIsOpenWishlistMessage] = useState(false);
   const { state, dispatch } = useContext(CartContext);
+
+  console.log(showSort);
 
   const {
     query = "all",
@@ -319,6 +325,9 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
       colorHandler={colorHandler}
       isOpenWishlistMessage={isOpenWishlistMessage}
       setIsOpenWishlistMessage={setIsOpenWishlistMessage}
+      showSort={showSort}
+      setShowSort={setShowSort}
+      sortHandler={sortHandler}
     >
       <div className="flex flex-col md:grid md:grid-cols-4 md:gap-5 mt-[2.5rem] w-full md:w-[91%] min-h-[calc(100vh-4rem)] verflow-x-hidden">
         {/* mobile */}
@@ -341,43 +350,6 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
           >
             SORT BY {filter === "featured" ? "Features" : filter}
           </button>
-
-          {showSort && (
-            <div className="w-full bg-gray-200 min-h-[9rem] absolute z-20 top-[2.45rem] shadow-md">
-              <div className="flex flex-col text-black absolute w-full pl-3 py-2">
-                <button
-                  className="w-full text-start uppercase"
-                  onClick={() => sortHandler("newest")}
-                >
-                  Newest Arrivals
-                </button>
-                <button
-                  className="w-full text-start uppercase"
-                  onClick={() => sortHandler("featured")}
-                >
-                  Featured
-                </button>
-                <button
-                  className="w-full text-start uppercase"
-                  onClick={() => sortHandler("lowest")}
-                >
-                  Price: Low to High
-                </button>
-                <button
-                  className="w-full text-start uppercase"
-                  onClick={() => sortHandler("highest")}
-                >
-                  Price: High to Low
-                </button>
-                <button
-                  className="w-full text-start uppercase"
-                  onClick={() => sortHandler("toprated")}
-                >
-                  popular
-                </button>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* desktop */}
@@ -564,7 +536,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
           </div>
         </div>
         <div className="md:col-span-3">
-          <div className="flex items-center justify-between ml-1 mt-2 mb-2 md:ml-0 md:mt-0">
+          <div className="flex items-center justify-between ml-1 mt-1 md:mb-2 md:ml-0 md:mt-0">
             <div>
               {((query !== "all" && query !== "") ||
                 category !== "all" ||
@@ -572,7 +544,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
                 sex !== "all" ||
                 rating !== "all" ||
                 price !== "all") && (
-                <div className="flex items-center gap-1 border-[1px] border-slate-200 px-2 py-1 text-sm uppercase">
+                <div className="flex items-center gap-1 border-[1px] border-slate-200 px-2 py-1 text-sm uppercase mb-2 md:mb-0">
                   {products.length === 0 ? "NOT FOUND" : countProducts}
                   {query !== "all" && query !== " " && " : " + query}
                   {category !== "all" && " " + category}

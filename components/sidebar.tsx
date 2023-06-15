@@ -46,46 +46,58 @@ export default function Sidebar({
         </button>
 
         <div className="w-full flex flex-col justify-center items-center mt-[4rem] gap-2">
-          <Link href="/" className="font-medium text-2xl">
-            HOME
-          </Link>
-          <button
-            className="flex gap-1 items-center justify-center"
-            onClick={() => {
-              isOpenMenu ? setIsOpenMenu(false) : setIsOpenMenu(true);
-            }}
-          >
-            <span className="font-medium text-2xl">PRODUCTS</span>
-            <TiArrowSortedDown className="text-2xl" />
-          </button>
-          {isOpenMenu && (
-            <div className="flex flex-col items-center gap-2 w-full mb-2">
-              <Link href="/products">
-                <button onClick={() => setIsOpenSidebar(false)} className="text-lg">
-                  All products
-                </button>
-              </Link>
-              <Link href="/products?sex=Women">
-                <button onClick={() => setIsOpenSidebar(false)} className="text-lg">
-                  Women products
-                </button>
-              </Link>
-              <Link href="/products?sex=Men">
-                <button onClick={() => setIsOpenSidebar(false)} className="text-lg">
-                  Men products
-                </button>
-              </Link>
-            </div>
-          )}
-          <Link href="/" className="font-medium text-2xl">
-            SERVICES
-          </Link>
-          <Link href="/" className="font-medium text-2xl">
-            ABOUT
-          </Link>
-          <Link href="/" className="font-medium text-2xl">
-            CONTACT
-          </Link>
+          <div className="flex flex-col justify-center gap-2">
+            <Link href="/" className="font-medium text-2xl">
+              HOME
+            </Link>
+            <button
+              className="flex gap-1 items-center justify-center"
+              onClick={() => {
+                isOpenMenu ? setIsOpenMenu(false) : setIsOpenMenu(true);
+              }}
+            >
+              <span className="font-medium text-2xl">PRODUCTS</span>
+              <TiArrowSortedDown className="text-2xl" />
+            </button>
+            {isOpenMenu && (
+              <div className="flex flex-col ml-3 justify-center gap-2 w-full mb-2">
+                <Link href="/products">
+                  <button
+                    onClick={() => setIsOpenSidebar(false)}
+                    className="text-lg"
+                  >
+                    All products
+                  </button>
+                </Link>
+
+                <Link href="/products?sex=Women">
+                  <button
+                    onClick={() => setIsOpenSidebar(false)}
+                    className="text-lg"
+                  >
+                    Women products
+                  </button>
+                </Link>
+                <Link href="/products?sex=Men">
+                  <button
+                    onClick={() => setIsOpenSidebar(false)}
+                    className="text-lg"
+                  >
+                    Men products
+                  </button>
+                </Link>
+              </div>
+            )}
+            <Link href="/" className="font-medium text-2xl">
+              SERVICES
+            </Link>
+            <Link href="/" className="font-medium text-2xl">
+              ABOUT
+            </Link>
+            <Link href="/" className="font-medium text-2xl">
+              CONTACT
+            </Link>
+          </div>
         </div>
       </motion.div>
       <div

@@ -30,4 +30,8 @@ export interface ILayoutProps {
 
   isOpenSignOutMessage?: boolean | undefined;
   setIsOpenSignOutMessage?: (bool: boolean) => void | undefined;
+
+  showSort?: boolean | undefined;
+  setShowSort?: (bool: boolean) => void | undefined;
+  sortHandler?: (sort: string) => void | undefined;
 }
