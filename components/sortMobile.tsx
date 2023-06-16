@@ -94,7 +94,7 @@ const SortMobile = ({ showSort, setShowSort, sortHandler }: Props) => {
           </button>
         </div>
 
-        <div className="border-b-[1px] border-gray-200 pb-1 mb-4">
+        <div className="pb-1 mb-4">
           <button
             className="text-xl w-full text-start"
             onClick={() => {
