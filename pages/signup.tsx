@@ -5,9 +5,9 @@ import { useForm } from "react-hook-form";
 import { z, ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getSession, signIn } from "next-auth/react";
-import { BsFacebook } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
 import { NextPageContext } from "next";
+import { useRouter } from "next/router";
 
 type SignUpData = {
   name: string;
@@ -18,6 +18,7 @@ type SignUpData = {
 
 export default function SignupScreen() {
   const [userError, setUserError] = useState(false);
+  const router = useRouter();
 
   const schema: ZodType<SignUpData> = z.object({
     name: z.string().min(4).max(20),
@@ -57,6 +58,8 @@ export default function SignupScreen() {
         email: data.email,
         password: data.password,
       });
+
+      router.push("/");
     } catch (error) {
       console.error(error);
       console.log("Error:", error);

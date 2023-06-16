@@ -126,9 +126,9 @@ export const ProductCard = ({
         )}
       </div>
 
-      <div className="flex flex-col px-2">
+      <div className="flex flex-col">
         <Link href={`/products/${product?.slug}`}>
-          <span className="text-base font-semibold uppercase text-gray-700">
+          <span className="text-base font-medium uppercase text-gray-600">
             {product?.name}
           </span>
         </Link>
