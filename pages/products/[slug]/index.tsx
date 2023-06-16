@@ -163,7 +163,7 @@ export default function ProductScreen({
       isOpenWishlistMessage={isOpenWishlistMessage}
       setIsOpenWishlistMessage={setIsOpenWishlistMessage}
     >
-      <section className="md:w-[91%] w-[99%] min-h-[calc(100vh-4rem)] bg-white mt-9">
+      <section className="md:w-[91%] w-[99%] min-h-[calc(100vh-4rem)] bg-white mt-2 md:mt-9">
         <div className="w-full h-full flex flex-col md:flex-row p-2 gap-2 md:gap-10">
           <div className="w-full flex flex-col-reverse md:flex-row md:gap-2 h-full">
             <div className="flex md:flex-col items-start gap-1 md:gap-2 mt-2 md:m-0">
@@ -185,11 +185,11 @@ export default function ProductScreen({
                 </div>
               ))}
             </div>
-            <div className=" md:w-[27rem] md:h-[32rem] relative">
+            <div className="md:w-[27rem] md:h-[32rem] relative">
               <img
                 src={selectedImage}
                 alt={`${product.name} image`}
-                className=" md:w-full md:h-full object-cover bg-center"
+                className=" md:w-full h-[35rem] md:h-full object-cover bg-center"
               />
               {product.discount?.isActive && (
                 <div className="text-xl absolute top-2 left-2 bg-black text-white uppercase font-bold px-2">
@@ -245,7 +245,7 @@ export default function ProductScreen({
             </div>
             {product.discount?.isActive ? (
               <div className="w-full flex gap-2 items-center ">
-                <span className="font-semibold text-2xl">
+                <span className="font-semibold text-3xl">
                   ${product.price * (1 - product.discount.value / 100)}{" "}
                   <span className="text-gray text-lg text-gray-400 font-normal line-through">
                     ${product.price}
@@ -257,7 +257,7 @@ export default function ProductScreen({
                 </div>
               </div>
             ) : (
-              <span className="font-semibold text-2xl">${product.price} </span>
+              <span className="font-semibold text-3xl">${product.price} </span>
             )}
             <div>
               <span className="text-gray-500 text-sm">
