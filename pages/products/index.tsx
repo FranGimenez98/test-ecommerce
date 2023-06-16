@@ -675,7 +675,7 @@ const ProductsScreen: React.FC<SearchProps> = (props) => {
                 </motion.div>
               ))}
             </motion.div>
-            {products.length > 12 && (
+            {products.length && (
               <Pagination currentPage={currentPage} totalPages={pages} />
             )}
           </div>

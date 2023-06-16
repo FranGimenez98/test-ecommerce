@@ -7,7 +7,7 @@ import toJSON from "@/lib/toJSON";
 import Product from "@/models/Product";
 import { GetServerSidePropsContext } from "next";
 import Link from "next/link";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
@@ -38,6 +38,10 @@ export default function ProductScreen({
   const { error, errorMessage, showError, hideError } = useError();
   const [selectedImage, setSelectedImage] = useState(product.images[0]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  useEffect(() => {
+    setSelectedImage(product.images[0]);
+  }, [product]);
 
   const handleSizeSelected = (size: string) => {
     if (sizeSelected === size) {
@@ -325,14 +329,14 @@ export default function ProductScreen({
         </div>
         {relatedProducts.length > 0 && (
           <div className="mt-32 w-full p-1">
-            <h1 className="uppercase font-semibold mb-1">
+            <h1 className="text-sm uppercase font-semibold mb-1">
               You might be interested in
             </h1>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
               {relatedProducts?.map((product) => (
                 // <ProductCard product={product} key={product._id} />
                 <Link href={`/products/${product.slug}`} key={product._id}>
-                  <div className="h-[20rem] md:h-[25rem] w-full mb-20">
+                  <div className="h-[18rem] md:h-[25rem] w-full mb-20">
                     <img
                       src={product.images[0]}
                       alt={`${product.name} image`}
